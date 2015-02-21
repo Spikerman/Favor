@@ -1,0 +1,29 @@
+﻿<Page
+    x:Class="Favor.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Favor"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid Background="Transparent">
+        <TextBox x:Name="TextInput" Margin="10,36,129,565" TextWrapping="Wrap" VerticalAlignment="Stretch" Height="58" />
+        <Button x:Name="SaveButton" Content="发布" HorizontalAlignment="Left" IsEnabled="False" Margin="281,0,0,556" VerticalAlignment="Bottom" Height="58" Click="ButtonSave_Click"/>
+        <StackPanel HorizontalAlignment="Left" Height="480" VerticalAlignment="Top" Width="380" Margin="10,150,0,0">
+            <ListView  Grid.Row="4" Grid.ColumnSpan="2" Name="ListItems">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox Name="CheckBoxComplete" IsChecked="{Binding completed, Mode=TwoWay}" Checked="CheckBoxComplete_Checked" Content="{Binding information}" Margin="10,5" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackPanel>
+
+
+
+    </Grid>
+</Page>
