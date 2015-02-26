@@ -112,34 +112,18 @@ namespace Favor
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            await Authenticate();
+            await FavorUser.instance.Authenticate();
            // NavigationContext nav = new NavigationContext();
             Frame.Navigate(typeof(MainPage));
         }
-       
-        private MobileServiceUser user;
-        private async System.Threading.Tasks.Task Authenticate()
+
+        private async void SignUpButton_Click(object sender, RoutedEventArgs e)
         {
-            while (user == null)
-            {
-                string message;
-                try
-                {
-                    user = await App.MobileService
-                        .LoginAsync(MobileServiceAuthenticationProvider.WindowsAzureActiveDirectory);
-                    message =
-                        string.Format("You are now logged in - {0}", user.UserId);
-                    var dialog = new MessageDialog(message, "Login Status");
-                    await dialog.ShowAsync();
-                }
-                catch (InvalidOperationException)
-                {
-                    //message = "You must log in. Login Required";
-                }
-                
-            }
-           
+            var accountItem = new Account { Email = userEmail.Text, Password = userPassword.Password };
+            await FavorUser.instance.SignUp(accountItem);
         }
+
         
+  
     }
 }
