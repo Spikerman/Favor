@@ -112,18 +112,26 @@ namespace Favor
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            await FavorUser.instance.Authenticate();
-           // NavigationContext nav = new NavigationContext();
-            Frame.Navigate(typeof(MainPage));
+            Account accountItem = new Account { Email = userEmail.Text, Password = userPassword.Password };
+            Frame.IsEnabled = false;                      //通信期间禁止操作界面
+            await FavorUser.instance.Login(accountItem);
+            Frame.IsEnabled = true;                       //解除禁止操作界面
+            if (FavorUser.instance.account != null)
+            {
+                Frame.Navigate(typeof(MainPage));
+            }
         }
 
         private async void SignUpButton_Click(object sender, RoutedEventArgs e)
         {
             var accountItem = new Account { Email = userEmail.Text, Password = userPassword.Password };
+            Frame.IsEnabled = false;                             //通信期间禁止操作界面
             await FavorUser.instance.SignUp(accountItem);
+            Frame.IsEnabled = true;                              //解除禁止操作界面
+            if (FavorUser.instance.account != null)
+            {
+                Frame.Navigate(typeof(MainPage));
+            }
         }
-
-        
-  
     }
 }

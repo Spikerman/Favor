@@ -16,31 +16,41 @@ namespace Favor.Common
         private FavorUser() { }
         public static readonly FavorUser instance = new FavorUser();
 
-        public MobileServiceUser mobileServiceUser { get; set; }
-        public MobileServiceCollection<Mission, Mission> items { get; set; }//两个参数
+        public MobileServiceUser mobileServiceUser { get; set; }                          //For Authenticate()
+        public MobileServiceCollection<Mission, Mission> missionCollection { get; set; }  //mission的集合
+        public Account account { get; set; }                                              //用户账户信息
 
-        private IMobileServiceTable<Mission> mission = App.MobileService.GetTable<Mission>();
-        private IMobileServiceTable<Account> account = App.MobileService.GetTable<Account>();
+        private IMobileServiceTable<Mission> missionOperator = App.MobileService.GetTable<Mission>();   //用来操作Mission表
+        private IMobileServiceTable<Account> accountOperator = App.MobileService.GetTable<Account>();   //用来操作Account表
 
-        public IMobileServiceTable<Mission> Mission
+        public IMobileServiceTable<Mission> MissionOperator
         {
-            get { return mission; }
-            set { mission = value; }
+            get { return missionOperator; }
+            set { missionOperator = value; }
         }
 
+
+        /// <summary>
+        /// 将任务插入MissionTable
+        /// </summary>
+        /// <param name="entryItem">需要插入的任务</param>
+        /// <returns></returns>
         public async Task InsertMissionTable(Mission entryItem)
         {
-            await mission.InsertAsync(entryItem);
-            items.Add(entryItem);
+            await missionOperator.InsertAsync(entryItem);
         }
 
+        /// <summary>
+        /// 刷新missionCollection
+        /// </summary>
+        /// <returns></returns>
         public async Task RefreshMissionTable()
         {
             MobileServiceInvalidOperationException exception = null;
             try
             {
-                items = await mission
-                    .Where(missionTable => missionTable.completed == false)
+                missionCollection = await missionOperator
+                    .Where(missionTable => missionTable.completed == false & missionTable.userId == this.account.Id)
                     .ToCollectionAsync();
             }
             catch (MobileServiceInvalidOperationException e)
@@ -54,16 +64,22 @@ namespace Favor.Common
             else
             {
             }
-
-
         }
 
-        public async Task UpdateChenkedMissionTable(Mission entry)
+        /// <summary>
+        /// 选中之后更新MssionTable
+        /// </summary>
+        /// <param name="checkedMission">被选中的Mission</param>
+        /// <returns></returns>
+        public async Task UpdateChenkedMissionTable(Mission checkedMission)
         {
-            await mission.UpdateAsync(entry);
-            items.Remove(entry);
+            await missionOperator.UpdateAsync(checkedMission);
         }
 
+        /// <summary>
+        /// 使用microsoft账号验证用户
+        /// </summary>
+        /// <returns></returns>
         public async Task Authenticate()
         {
             while (mobileServiceUser == null)
@@ -87,19 +103,89 @@ namespace Favor.Common
 
         }
 
-        public async Task SignUp(Account entry)
+        /// <summary>
+        /// 用户登录
+        /// </summary>
+        /// <param name="LoginAccount">要登陆的用户信息</param>
+        /// <returns></returns>
+        public async Task Login(Account LoginAccount)
+        {
+            if (this.account == null)
+            {
+                string message;
+                //验证账号格式
+                string pattern = @"^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$";
+
+                if (!Regex.IsMatch(LoginAccount.Email, pattern))
+                {
+                    message = "请输入正确的邮箱格式";
+                    var dialog = new MessageDialog(message);
+                    await dialog.ShowAsync();
+                }
+                else if (LoginAccount.Password.Length < 8)
+                {
+                    message = "密码长度必须大于8位";
+                    var dialog = new MessageDialog(message);
+                    await dialog.ShowAsync();
+                }
+                else
+                {
+                    //执行登陆操作
+                    MobileServiceInvalidOperationException exception = null;
+                    try
+                    {
+                        List<Account> accountList = await accountOperator.Where(accountTable => accountTable.Email == LoginAccount.Email
+                                                                                 & accountTable.Password == LoginAccount.Password)
+                                                                         .ToListAsync();
+                        if (accountList.Count != 0)
+                        {
+                            this.account = accountList.First();
+                        }
+                    }
+                    catch (MobileServiceInvalidOperationException e)
+                    {
+                        exception = e;
+                    }
+                    
+                    //如果用户不存在
+                    if (account == null)
+                    {
+                        await new MessageDialog("账号或用户名错误").ShowAsync();
+                    }
+                    else
+                    {
+                        message = "登陆成功!";
+                        var dialog = new MessageDialog(message);
+                        await dialog.ShowAsync();
+                    }
+                }
+            }
+            else
+            {
+                await new MessageDialog("您已登陆").ShowAsync();
+            }
+
+
+        }
+
+        /// <summary>
+        /// 用户注册账户
+        /// </summary>
+        /// <param name="entry">需要注册的账户</param>
+        /// <returns></returns>
+        public async Task SignUp(Account SigningUpAccount)
         {
             //EventHandler OnSuccess;
             string message;
             string pattern = @"^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$";
 
-            if (!Regex.IsMatch(entry.Email, pattern))
+            if (!Regex.IsMatch(SigningUpAccount.Email, pattern))
             {
                 message = "请输入正确的邮箱格式";
                 var dialog = new MessageDialog(message);
                 await dialog.ShowAsync();
             }
-            else if (entry.Password.Length < 8)
+            else if (SigningUpAccount.Password.Length < 8)
             {
                 message = "密码长度必须大于8位";
                 var dialog = new MessageDialog(message);
@@ -110,7 +196,7 @@ namespace Favor.Common
                 MobileServiceInvalidOperationException exception = null;
                 try
                 {
-                    await account.InsertAsync(entry);
+                    await accountOperator.InsertAsync(SigningUpAccount);
                 }
                 catch (MobileServiceInvalidOperationException e)
                 {

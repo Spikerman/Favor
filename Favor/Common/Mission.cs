@@ -10,6 +10,9 @@ namespace Favor.Common
     public class Mission
     {
         public string id { get; set; }
+        
+        [JsonProperty(PropertyName="userId")]
+        public string userId { get; set; }
 
         [JsonProperty(PropertyName = "information")]
         public string information { get; set; }

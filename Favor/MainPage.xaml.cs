@@ -46,20 +46,27 @@ namespace Favor
         /// 此参数通常用于配置页。</param>
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            
-            //await Authenticate();
             await FavorUser.instance.RefreshMissionTable();
-            ListItems.ItemsSource = FavorUser.instance.items;
+            ListItems.ItemsSource = FavorUser.instance.missionCollection;
             this.SaveButton.IsEnabled = true;
         }
-       
-        
 
+        /// <summary>
+        /// 同步后台任务数据和前台任务列表
+        /// </summary>
+        private async void RefreshListItems()
+        {
+            await FavorUser.instance.RefreshMissionTable();
+            ListItems.ItemsSource = FavorUser.instance.missionCollection;
+        }
 
         private async void ButtonSave_Click(object sender, RoutedEventArgs e)
         {
-            var missionItem = new Mission { information = TextInput.Text };
+            Frame.IsEnabled = false;
+            var missionItem = new Mission { information = TextInput.Text, userId = FavorUser.instance.account.Id };
             await FavorUser.instance.InsertMissionTable(missionItem);
+            RefreshListItems();
+            Frame.IsEnabled = true;
         }
 
         private async void CheckBoxComplete_Checked(object sender, RoutedEventArgs e)
@@ -67,6 +74,7 @@ namespace Favor
             CheckBox cb = (CheckBox)sender;
             Mission x = cb.DataContext as Mission;
             await FavorUser.instance.UpdateChenkedMissionTable(x);
+            RefreshListItems();
             ListItems.Focus(Windows.UI.Xaml.FocusState.Unfocused);
         }
 
