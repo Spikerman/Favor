@@ -141,23 +141,34 @@ namespace Favor.Common
                         {
                             this.account = accountList.First();
                         }
+                        else
+                        {
+                            this.account = null;
+                        }
                     }
                     catch (MobileServiceInvalidOperationException e)
                     {
                         exception = e;
                     }
-                    
-                    //如果用户不存在
-                    if (account == null)
+                    if (exception != null)
                     {
-                        await new MessageDialog("账号或用户名错误").ShowAsync();
+                        await new MessageDialog(exception.Message, "通信错误").ShowAsync();
                     }
                     else
                     {
-                        message = "登陆成功!";
-                        var dialog = new MessageDialog(message);
-                        await dialog.ShowAsync();
+                        //如果用户不存在
+                        if (account == null)
+                        {
+                            await new MessageDialog("账号或用户名错误").ShowAsync();
+                        }
+                        else
+                        {
+                            message = "登陆成功!";
+                            var dialog = new MessageDialog(message);
+                            await dialog.ShowAsync();
+                        }
                     }
+                    
                 }
             }
             else
