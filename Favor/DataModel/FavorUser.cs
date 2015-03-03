@@ -19,10 +19,10 @@ namespace Favor.Common
 
         public MobileServiceUser mobileServiceUser { get; set; }                          //For Authenticate()
         public MobileServiceCollection<Mission, Mission> missionCollection { get; set; }  //mission的集合
-        public MobileServiceCollection<UsersRelation, UsersRelation> relationPairCollection { get; set; }//好友关系集合
+        public MobileServiceCollection<UsersRelation, UsersRelation> usersRelationCollection { get; set; }//好友关系集合
 
         public Account account { get; set; }                                              //用户账户信息
-        public UsersRelation relationPair { get; set; }
+        public UsersRelation usersRelation { get; set; }
 
         /// <summary>
         /// 对应Mission表中的一条记录
@@ -37,7 +37,7 @@ namespace Favor.Common
         /// <summary>
         /// 对应UsersRelation表中的一条记录
         /// </summary>
-        private IMobileServiceTable<UsersRelation> relationPairItem = App.MobileService.GetTable<UsersRelation>();
+        private IMobileServiceTable<UsersRelation> usersRelationItem = App.MobileService.GetTable<UsersRelation>();
         public IMobileServiceTable<Mission> MissionOperator
         {
             get { return missionItem; }
@@ -303,36 +303,61 @@ namespace Favor.Common
             }
             else
             {
-                if (searchFriendResultList.Count == 0)
+                if (searchFriendResultList.Count == 0)//Account表中并没有该用户记录
                 {
                     var dialog = new MessageDialog("无此账号信息，请检查所输入账号是否正确");
                     await dialog.ShowAsync();
                 }
                 else
                 {
-                    string friendId = searchFriendResultList[0].Id;//获取朋友用户id
+                    string friendId = searchFriendResultList[0].Id;//获取希望添加为好友的用户id
                     string accountDetail = searchFriendResultList[0].Password;//此处访问取回用户密码信息作为查询验证<之后需要修改>
 
-                    UsersRelation relationPair = new UsersRelation { UserId = account.Id, FriendId = friendId };
-
+                    List<UsersRelation> searchDuplicatedUserIdList = new List<UsersRelation>();//用户搜索好友关系表中是否已经存在该好友，避免重复添加
+                    
                     try
                     {
-                        await relationPairItem.InsertAsync(relationPair);
+                        searchDuplicatedUserIdList = await usersRelationItem
+                            .Where(usersRelationTable => usersRelationTable.FriendId == friendId).ToListAsync();
                     }
                     catch (MobileServiceInvalidOperationException e)
                     {
                         exception = e;
                     }
+
                     if (exception != null)
                     {
                         await new MessageDialog(exception.Message, "登陆状态").ShowAsync();
                     }
                     else
                     {
-                        var dialog = new MessageDialog("成功！密码: "+accountDetail);
-                        await dialog.ShowAsync();
+                        if (searchDuplicatedUserIdList.Count != 0)//用户关系表中已有记录
+                        {
+                            var dialog = new MessageDialog("已是好友，无需添加");
+                            await dialog.ShowAsync();
+                        }
+                        else
+                        {
+                            UsersRelation userRelation = new UsersRelation { UserId = account.Id, FriendId = friendId };
+                            try
+                            {
+                                await usersRelationItem.InsertAsync(userRelation);//若为新好友，则向用户关系表中插入数据
+                            }
+                            catch (MobileServiceInvalidOperationException e)
+                            {
+                                exception = e;
+                            }
+                            if (exception != null)
+                            {
+                                await new MessageDialog(exception.Message, "登陆状态").ShowAsync();
+                            }
+                            else
+                            {
+                                var dialog = new MessageDialog("成功！密码: " + accountDetail);//若插入成功，则返回密码作为验证
+                                await dialog.ShowAsync();
+                            }
+                        }
                     }
-
                 }
 
             }
@@ -353,4 +378,10 @@ namespace Favor.Common
 
 
 
+
+
+
+
+
+                    
 
