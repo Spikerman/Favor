@@ -78,6 +78,12 @@ namespace Favor
             ListItems.Focus(Windows.UI.Xaml.FocusState.Unfocused);
         }
 
+        private async void ButtonLogout_Click(object sender, RoutedEventArgs e)
+        {
+            await FavorUser.instance.LoginOut();
+            Frame.Navigate(typeof(Login));
+        }
+
 
 
     }

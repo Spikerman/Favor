@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Popups;
 using System.Text.RegularExpressions;
+using Windows.Storage;
 
 namespace Favor.Common
 {
@@ -13,7 +14,7 @@ namespace Favor.Common
     {
         //单实例模式，只允许有一个FavorUser对象，不允许使用构造函数。
         //请使用FavorUser.instance获取FavorUser对象。
-        private FavorUser() { }
+        private FavorUser() {}
         public static readonly FavorUser instance = new FavorUser();
 
         public MobileServiceUser mobileServiceUser { get; set; }                          //For Authenticate()
@@ -150,6 +151,7 @@ namespace Favor.Common
                     {
                         exception = e;
                     }
+
                     if (exception != null)
                     {
                         await new MessageDialog(exception.Message, "通信错误").ShowAsync();
@@ -163,6 +165,8 @@ namespace Favor.Common
                         }
                         else
                         {
+                            //存储用户信息
+                            AccountLocalStorage.instance.SaveAccount(account);
                             message = "登陆成功!";
                             var dialog = new MessageDialog(message);
                             await dialog.ShowAsync();
@@ -224,6 +228,19 @@ namespace Favor.Common
                     await dialog.ShowAsync();
                 }
             }
+        }
+
+        
+        /// <summary>
+        /// 用户注销当前账户
+        /// </summary>
+        /// <returns></returns>
+        public async Task LoginOut()
+        {
+            this.account = null;
+            AccountLocalStorage.instance.ClearStorage();
+            await new MessageDialog("注销成功").ShowAsync();
+
         }
     }
 }

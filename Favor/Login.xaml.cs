@@ -8,6 +8,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
+using Windows.Storage;
 using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -34,9 +35,20 @@ namespace Favor
         {
             this.InitializeComponent();
 
+            this.Loaded += Login_Loaded;
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
+        }
+
+        void Login_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (AccountLocalStorage.instance.isvaild())
+            {
+                FavorUser.instance.account = new Account();
+                AccountLocalStorage.instance.LoadAccount(FavorUser.instance.account);
+                Frame.Navigate(typeof(MainPage));
+            }
         }
 
         /// <summary>
