@@ -118,7 +118,7 @@ namespace Favor
             Frame.IsEnabled = true;                       //解除禁止操作界面
             if (FavorUser.instance.account != null)
             {
-                Frame.Navigate(typeof(MainPage));
+                Frame.Navigate(typeof(MissionsWall));
             }
         }
 
@@ -130,7 +130,7 @@ namespace Favor
             Frame.IsEnabled = true;                              //解除禁止操作界面
             if (FavorUser.instance.account != null)
             {
-                Frame.Navigate(typeof(MainPage));
+                Frame.Navigate(typeof(MissionsWall));
             }
         }
     }
