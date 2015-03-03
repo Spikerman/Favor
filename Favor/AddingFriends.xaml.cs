@@ -1,5 +1,4 @@
 ﻿using Favor.Common;
-using Microsoft.WindowsAzure.MobileServices;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,7 +7,6 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
-using Windows.Storage;
 using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -26,29 +24,18 @@ namespace Favor
     /// <summary>
     /// 可独立使用或用于导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class Login : Page
+    public sealed partial class AddingFriends : Page
     {
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
 
-        public Login()
+        public AddingFriends()
         {
             this.InitializeComponent();
 
-            this.Loaded += Login_Loaded;
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
-        }
-
-        void Login_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (AccountLocalStorage.instance.isvaild())
-            {
-                FavorUser.instance.account = new Account();
-                AccountLocalStorage.instance.LoadAccount(FavorUser.instance.account);
-                Frame.Navigate(typeof(MissionsWall));
-            }
         }
 
         /// <summary>
@@ -122,28 +109,18 @@ namespace Favor
 
         #endregion
 
-        private async void LoginButton_Click(object sender, RoutedEventArgs e)
+        private async void Add_Button_Click(object sender, RoutedEventArgs e)
         {
-            Account accountItem = new Account { Email = userEmail.Text, Password = userPassword.Password };
-            Frame.IsEnabled = false;                      //通信期间禁止操作界面
-            await FavorUser.instance.Login(accountItem);
-            Frame.IsEnabled = true;                       //解除禁止操作界面
-            if (FavorUser.instance.account != null)
+            Frame.IsEnabled = false;
+            if (SearchInput.Text == "")
             {
-                Frame.Navigate(typeof(MissionsWall));
+                var dialog = new MessageDialog("请输入账号");
             }
-        }
-
-        private async void SignUpButton_Click(object sender, RoutedEventArgs e)
-        {
-            var accountItem = new Account { Email = userEmail.Text, Password = userPassword.Password };
-            Frame.IsEnabled = false;                             //通信期间禁止操作界面
-            await FavorUser.instance.SignUp(accountItem);
-            Frame.IsEnabled = true;                              //解除禁止操作界面
-            if (FavorUser.instance.account != null)
+            else
             {
-                Frame.Navigate(typeof(MissionsWall));
+                await FavorUser.instance.AddingFriend(SearchInput.Text);
             }
+            Frame.IsEnabled = true;
         }
     }
 }

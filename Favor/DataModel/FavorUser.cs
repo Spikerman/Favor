@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Windows.UI.Popups;
 using System.Text.RegularExpressions;
 using Windows.Storage;
+using Favor.DataModel;
 
 namespace Favor.Common
 {
@@ -19,15 +20,29 @@ namespace Favor.Common
 
         public MobileServiceUser mobileServiceUser { get; set; }                          //For Authenticate()
         public MobileServiceCollection<Mission, Mission> missionCollection { get; set; }  //mission的集合
+        public MobileServiceCollection<UsersRelation, UsersRelation> usersRelationCollection { get; set; }//好友关系集合
+
         public Account account { get; set; }                                              //用户账户信息
+        public UsersRelation usersRelation { get; set; }
 
-        private IMobileServiceTable<Mission> missionOperator = App.MobileService.GetTable<Mission>();   //用来操作Mission表
-        private IMobileServiceTable<Account> accountOperator = App.MobileService.GetTable<Account>();   //用来操作Account表
+        /// <summary>
+        /// 对应Mission表中的一条记录
+        /// </summary>
+        private IMobileServiceTable<Mission> missionItem = App.MobileService.GetTable<Mission>();
 
+        /// <summary>
+        /// 对应Account表中的 一条记录
+        /// </summary>
+        private IMobileServiceTable<Account> accountItem = App.MobileService.GetTable<Account>();
+
+        /// <summary>
+        /// 对应UsersRelation表中的一条记录
+        /// </summary>
+        private IMobileServiceTable<UsersRelation> usersRelationItem = App.MobileService.GetTable<UsersRelation>();
         public IMobileServiceTable<Mission> MissionOperator
         {
-            get { return missionOperator; }
-            set { missionOperator = value; }
+            get { return missionItem; }
+            set { missionItem = value; }
         }
 
 
@@ -38,19 +53,20 @@ namespace Favor.Common
         /// <returns></returns>
         public async Task InsertMissionTable(Mission entryItem)
         {
-            await missionOperator.InsertAsync(entryItem);
+            await missionItem.InsertAsync(entryItem);
         }
 
         /// <summary>
-        /// 刷新missionCollection
+        /// 刷新missionCollection,显示中的心愿墙
+        /// 原函数为RefreshMissionTable
         /// </summary>
         /// <returns></returns>
-        public async Task RefreshMissionTable()
+        public async Task RefreshMissionsWall()
         {
             MobileServiceInvalidOperationException exception = null;
             try
             {
-                missionCollection = await missionOperator
+                missionCollection = await missionItem
                     .Where(missionTable => missionTable.completed == false & missionTable.userId == this.account.Id)
                     .ToCollectionAsync();
             }
@@ -62,10 +78,7 @@ namespace Favor.Common
             {
                 await new MessageDialog(exception.Message, "Error loding").ShowAsync();
             }
-            else
-            {
             }
-        }
 
         /// <summary>
         /// 选中之后更新MssionTable
@@ -74,7 +87,7 @@ namespace Favor.Common
         /// <returns></returns>
         public async Task UpdateChenkedMissionTable(Mission checkedMission)
         {
-            await missionOperator.UpdateAsync(checkedMission);
+            await missionItem.UpdateAsync(checkedMission);
         }
 
         /// <summary>
@@ -135,18 +148,14 @@ namespace Favor.Common
                     MobileServiceInvalidOperationException exception = null;
                     try
                     {
-                        List<Account> accountList = await accountOperator.Where(accountTable => accountTable.Email == LoginAccount.Email
+                        List<Account> accountList = await accountItem.Where(accountTable => accountTable.Email == LoginAccount.Email
                                                                                  & accountTable.Password == LoginAccount.Password)
                                                                          .ToListAsync();
                         if (accountList.Count != 0)
                         {
                             this.account = accountList.First();
                         }
-                        else
-                        {
-                            this.account = null;
                         }
-                    }
                     catch (MobileServiceInvalidOperationException e)
                     {
                         exception = e;
@@ -154,7 +163,7 @@ namespace Favor.Common
 
                     if (exception != null)
                     {
-                        await new MessageDialog(exception.Message, "通信错误").ShowAsync();
+                        await new MessageDialog(exception.Message, "登陆状态").ShowAsync();
                     }
                     else
                     {
@@ -172,9 +181,9 @@ namespace Favor.Common
                             await dialog.ShowAsync();
                         }
                     }
-                    
                 }
             }
+
             else
             {
                 await new MessageDialog("您已登陆").ShowAsync();
@@ -211,7 +220,7 @@ namespace Favor.Common
                 MobileServiceInvalidOperationException exception = null;
                 try
                 {
-                    await accountOperator.InsertAsync(SigningUpAccount);
+                    await accountItem.InsertAsync(SigningUpAccount);
                 }
                 catch (MobileServiceInvalidOperationException e)
                 {
@@ -230,6 +239,47 @@ namespace Favor.Common
             }
         }
 
+        /// <summary>
+        /// 根据用户密码查找用户账号（暂时未用）
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public async Task SearchFriend(string email)
+        {
+            MobileServiceInvalidOperationException exception = null;
+            List<Account> searchFriendResultList = new List<Account>();
+            try
+            {
+                searchFriendResultList = await accountItem
+                        .Where(accountTable => accountTable.Email == email).ToListAsync();
+            }
+
+            catch (MobileServiceInvalidOperationException e)
+            {
+                exception = e;
+            }
+
+            if (exception != null)
+            {
+                await new MessageDialog(exception.Message, "登陆状态").ShowAsync();
+            }
+            else
+            {
+                if (searchFriendResultList.Count == 0)
+                {
+                    var dialog = new MessageDialog("无此账号信息，请检查所输入账号是否正确");
+                    await dialog.ShowAsync();
+                }
+                else
+                {
+                    string accountDetail = searchFriendResultList[0].Password;//此处访问取回用户密码信息作为查询验证
+
+                    await new MessageDialog(accountDetail, "账号信息").ShowAsync();
+                }
+            }
+
+        }
+
         
         /// <summary>
         /// 用户注销当前账户
@@ -242,8 +292,108 @@ namespace Favor.Common
             await new MessageDialog("注销成功").ShowAsync();
 
         }
+
+        /// <summary>
+        /// 通过查找用户账号增加朋友
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public async Task AddingFriend(string email)
+        {
+            MobileServiceInvalidOperationException exception = null;
+            List<Account> searchFriendResultList = new List<Account>();
+            try
+            {
+                searchFriendResultList = await accountItem
+                        .Where(accountTable => accountTable.Email == email).ToListAsync();
+            }
+
+            catch (MobileServiceInvalidOperationException e)
+            {
+                exception = e;
+            }
+
+            if (exception != null)
+            {
+                await new MessageDialog(exception.Message, "登陆状态").ShowAsync();
+            }
+            else
+            {
+                if (searchFriendResultList.Count == 0)//Account表中并没有该用户记录
+                {
+                    var dialog = new MessageDialog("无此账号信息，请检查所输入账号是否正确");
+                    await dialog.ShowAsync();
+                }
+                else
+                {
+                    string friendId = searchFriendResultList[0].Id;//获取希望添加为好友的用户id
+                    string accountDetail = searchFriendResultList[0].Password;//此处访问取回用户密码信息作为查询验证<之后需要修改>
+
+                    List<UsersRelation> searchDuplicatedUserIdList = new List<UsersRelation>();//用户搜索好友关系表中是否已经存在该好友，避免重复添加
+                    
+                    try
+                    {
+                        searchDuplicatedUserIdList = await usersRelationItem
+                            .Where(usersRelationTable => usersRelationTable.FriendId == friendId).ToListAsync();
+                    }
+                    catch (MobileServiceInvalidOperationException e)
+                    {
+                        exception = e;
+                    }
+
+                    if (exception != null)
+                    {
+                        await new MessageDialog(exception.Message, "登陆状态").ShowAsync();
+                    }
+                    else
+                    {
+                        if (searchDuplicatedUserIdList.Count != 0)//用户关系表中已有记录
+                        {
+                            var dialog = new MessageDialog("已是好友，无需添加");
+                            await dialog.ShowAsync();
+                        }
+                        else
+                        {
+                            UsersRelation userRelation = new UsersRelation { UserId = account.Id, FriendId = friendId };
+                            try
+                            {
+                                await usersRelationItem.InsertAsync(userRelation);//若为新好友，则向用户关系表中插入数据
+                            }
+                            catch (MobileServiceInvalidOperationException e)
+                            {
+                                exception = e;
+                            }
+                            if (exception != null)
+                            {
+                                await new MessageDialog(exception.Message, "登陆状态").ShowAsync();
+                            }
+                            else
+                            {
+                                var dialog = new MessageDialog("成功！密码: " + accountDetail);//若插入成功，则返回密码作为验证
+                                await dialog.ShowAsync();
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+
     }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

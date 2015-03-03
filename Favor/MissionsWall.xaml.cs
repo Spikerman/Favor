@@ -17,15 +17,15 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Core;
 using Favor.Common;
-
+using Favor.DataModel;
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=391641 上有介绍
 
 namespace Favor
 {
 
-    public sealed partial class MainPage : Page
+    public sealed partial class MissionsWall : Page
     {
-        public MainPage()
+        public MissionsWall()
         {
             this.InitializeComponent();
            
@@ -46,7 +46,7 @@ namespace Favor
         /// 此参数通常用于配置页。</param>
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            await FavorUser.instance.RefreshMissionTable();
+            await FavorUser.instance.RefreshMissionsWall();
             ListItems.ItemsSource = FavorUser.instance.missionCollection;
             this.SaveButton.IsEnabled = true;
         }
@@ -56,7 +56,7 @@ namespace Favor
         /// </summary>
         private async void RefreshListItems()
         {
-            await FavorUser.instance.RefreshMissionTable();
+            await FavorUser.instance.RefreshMissionsWall();
             ListItems.ItemsSource = FavorUser.instance.missionCollection;
         }
 
@@ -76,6 +76,11 @@ namespace Favor
             await FavorUser.instance.UpdateChenkedMissionTable(x);
             RefreshListItems();
             ListItems.Focus(Windows.UI.Xaml.FocusState.Unfocused);
+        }
+
+        private void ShowAddingPageButton_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(AddingFriends));
         }
 
         private async void ButtonLogout_Click(object sender, RoutedEventArgs e)

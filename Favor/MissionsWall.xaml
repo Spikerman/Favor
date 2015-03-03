@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="Favor.MainPage"
+    x:Class="Favor.MissionsWall"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Favor"
@@ -8,10 +8,10 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid Background="Transparent" Height="640" Margin="0,0.333,0,-0.333" VerticalAlignment="Top">
-        <TextBox x:Name="TextInput" Margin="10,36,129,565" TextWrapping="Wrap" VerticalAlignment="Stretch" Height="58" />
-        <Button x:Name="SaveButton" Content="发布" HorizontalAlignment="Left" IsEnabled="False" Margin="281,0,0,556" VerticalAlignment="Bottom" Height="58" Click="ButtonSave_Click"/>
-        <StackPanel HorizontalAlignment="Left" Height="417" VerticalAlignment="Top" Width="380" Margin="10,150,0,0">
+    <Grid Background="Transparent">
+        <TextBox x:Name="TextInput" Margin="10,84,129,517" TextWrapping="Wrap" VerticalAlignment="Stretch" />
+        <Button x:Name="SaveButton" Content="发布" HorizontalAlignment="Left" IsEnabled="False" Margin="281,0,0,508" VerticalAlignment="Bottom" Height="58" Click="ButtonSave_Click"/>
+        <StackPanel HorizontalAlignment="Left" Height="480" VerticalAlignment="Top" Width="380" Margin="10,150,0,0">
             <ListView  Grid.Row="4" Grid.ColumnSpan="2" Name="ListItems">
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -22,6 +22,7 @@
                 </ListView.ItemTemplate>
             </ListView>
         </StackPanel>
+        <Button x:Name="ShowAddingPageButton" Content="加好友" HorizontalAlignment="Left" Margin="281,20,0,0" VerticalAlignment="Top" Width="60" Click="ShowAddingPageButton_Click"/>
         <Button x:Name="SaveButton_Copy" Content="注销" HorizontalAlignment="Left" IsEnabled="True" Margin="147,0,0,20" VerticalAlignment="Bottom" Height="58" Click="ButtonLogout_Click" RenderTransformOrigin="-0.91,10.074"/>
 
 
