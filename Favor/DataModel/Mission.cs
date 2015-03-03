@@ -16,10 +16,16 @@ namespace Favor.Common
 
         [JsonProperty(PropertyName = "information")]
         public string information { get; set; }
+        
         [JsonProperty(PropertyName = "completed")]
         public bool completed { get; set; }
 
-        //public int receivednum;
+        [JsonProperty(PropertyName = "received")]
+        public bool received { get; set; } //默认值为false
+
+        [JsonProperty(PropertyName = "receiverId")]
+        public string receiverId { get; set; }//默认值为 null
+        
 
     }
 }

@@ -16,7 +16,7 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
-                            <CheckBox Name="CheckBoxComplete" IsChecked="{Binding completed, Mode=TwoWay}" Checked="CheckBoxComplete_Checked" Content="{Binding information}" Margin="10,5" VerticalAlignment="Center"/>
+                            <CheckBox Name="CheckBoxComplete" IsChecked="{Binding received, Mode=TwoWay}" Checked="CheckBoxComplete_Checked" Content="{Binding information}" Margin="10,5" VerticalAlignment="Center"/>
                         </StackPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>

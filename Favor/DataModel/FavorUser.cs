@@ -15,15 +15,17 @@ namespace Favor.Common
     {
         //单实例模式，只允许有一个FavorUser对象，不允许使用构造函数。
         //请使用FavorUser.instance获取FavorUser对象。
-        private FavorUser() {}
+        private FavorUser() { }
         public static readonly FavorUser instance = new FavorUser();
 
         public MobileServiceUser mobileServiceUser { get; set; }                          //For Authenticate()
         public MobileServiceCollection<Mission, Mission> missionCollection { get; set; }  //mission的集合
-        public MobileServiceCollection<UsersRelation, UsersRelation> usersRelationCollection { get; set; }//好友关系集合
+
+        //public MobileServiceCollection<UsersRelation, UsersRelation> usersRelationCollection { get; set; }//好友关系集合
 
         public Account account { get; set; }                                              //用户账户信息
-        public UsersRelation usersRelation { get; set; }
+
+        //public UsersRelation usersRelation { get; set; }
 
         /// <summary>
         /// 对应Mission表中的一条记录
@@ -45,6 +47,7 @@ namespace Favor.Common
             set { missionItem = value; }
         }
 
+        List<UsersRelation> userAllFriendsRelationItem = new List<UsersRelation>();//存储所有好友的账户
 
         /// <summary>
         /// 将任务插入MissionTable
@@ -68,7 +71,14 @@ namespace Favor.Common
             {
                 missionCollection = await missionItem
                     .Where(missionTable => missionTable.completed == false & missionTable.userId == this.account.Id)
-                    .ToCollectionAsync();
+                    .ToCollectionAsync();//导入自己发布的任务
+
+                //导入朋友所发任务
+                await RefreshUserAllFriendsId(account.Id);
+                foreach(UsersRelation relation in userAllFriendsRelationItem)
+                {
+                   await ExtractUserMissions(relation.FriendId);
+                }
             }
             catch (MobileServiceInvalidOperationException e)
             {
@@ -78,7 +88,7 @@ namespace Favor.Common
             {
                 await new MessageDialog(exception.Message, "Error loding").ShowAsync();
             }
-            }
+        }
 
         /// <summary>
         /// 选中之后更新MssionTable
@@ -87,6 +97,7 @@ namespace Favor.Common
         /// <returns></returns>
         public async Task UpdateChenkedMissionTable(Mission checkedMission)
         {
+            checkedMission.receiverId = account.Id;
             await missionItem.UpdateAsync(checkedMission);
         }
 
@@ -155,7 +166,7 @@ namespace Favor.Common
                         {
                             this.account = accountList.First();
                         }
-                        }
+                    }
                     catch (MobileServiceInvalidOperationException e)
                     {
                         exception = e;
@@ -240,7 +251,7 @@ namespace Favor.Common
         }
 
         /// <summary>
-        /// 根据用户密码查找用户账号（暂时未用）
+        /// 根据用户账号查找密码（暂时未用）
         /// </summary>
         /// <param name="email"></param>
         /// <returns></returns>
@@ -280,7 +291,7 @@ namespace Favor.Common
 
         }
 
-        
+
         /// <summary>
         /// 用户注销当前账户
         /// </summary>
@@ -330,7 +341,7 @@ namespace Favor.Common
                     string accountDetail = searchFriendResultList[0].Password;//此处访问取回用户密码信息作为查询验证<之后需要修改>
 
                     List<UsersRelation> searchDuplicatedUserIdList = new List<UsersRelation>();//用户搜索好友关系表中是否已经存在该好友，避免重复添加
-                    
+
                     try
                     {
                         searchDuplicatedUserIdList = await usersRelationItem
@@ -379,6 +390,67 @@ namespace Favor.Common
             }
         }
 
+        /// <summary>
+        /// 根据用户ID参数查找并收集该用户存储在userRelation表中的所有相关好友关系对
+        /// </summary>
+        /// <param name="userId">
+        /// 传入参数为希望查找好友的自身用户ID
+        /// </param>
+        /// <returns></returns>
+        public async Task RefreshUserAllFriendsId(string userId)
+        {
+            MobileServiceInvalidOperationException exception = null;
+            try
+            {
+                userAllFriendsRelationItem = await usersRelationItem
+                    .Where(usersRelationTable => usersRelationTable.UserId == userId).ToListAsync();
+            }
+            catch (MobileServiceInvalidOperationException e)
+            {
+                exception = e;
+            }
+
+            if (exception != null)
+            {
+                await new MessageDialog(exception.Message, "Error,try again").ShowAsync();
+            }
+            else
+            {
+
+            }
+        }
+        /// <summary>
+        /// 根据输入ID查找对应用户的已发布但未完成的所有任务
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task ExtractUserMissions(string userId)
+        {
+            MobileServiceInvalidOperationException exception = null;
+            List<Mission> userMissionList=new List<Mission>();
+            try
+            {
+                userMissionList=await missionItem
+                    .Where(missionTable => missionTable.completed == false & missionTable.userId == userId).ToListAsync();
+                    
+            }
+            catch (MobileServiceInvalidOperationException e)
+            {
+                exception = e;
+            }
+
+            if (exception != null)
+            {
+                await new MessageDialog(exception.Message, "Error,try again").ShowAsync();
+            }
+            else
+            {
+                foreach(Mission mission in userMissionList)
+                {
+                    missionCollection.Add(mission);
+                }
+            }
+        }
     }
 
 }
