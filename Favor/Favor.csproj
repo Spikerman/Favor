@@ -103,6 +103,9 @@
     <Compile Include="MissionsWall.xaml.cs">
       <DependentUpon>MissionsWall.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MissionWrite.xaml.cs">
+      <DependentUpon>MissionWrite.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Signup.xaml.cs">
       <DependentUpon>Signup.xaml</DependentUpon>
@@ -142,6 +145,10 @@
     <Page Include="MissionsWall.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MissionWrite.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Signup.xaml">
       <SubType>Designer</SubType>

@@ -28,9 +28,9 @@ namespace Favor
         public MissionsWall()
         {
             this.InitializeComponent();
-           
+
             //this.Loaded += MainPage_Loaded;
-           // this.NavigationCacheMode = NavigationCacheMode.Required;
+            // this.NavigationCacheMode = NavigationCacheMode.Required;
         }
 
         void MainPage_Loaded(object sender, RoutedEventArgs e)
@@ -38,7 +38,7 @@ namespace Favor
             throw new NotImplementedException();
         }
 
-      
+
         /// <summary>
         /// 在此页将要在 Frame 中显示时进行调用。
         /// </summary>
@@ -48,7 +48,6 @@ namespace Favor
         {
             await FavorUser.instance.RefreshMissionsWall();
             ListItems.ItemsSource = FavorUser.instance.missionCollection;
-            this.SaveButton.IsEnabled = true;
         }
 
         /// <summary>
@@ -60,35 +59,44 @@ namespace Favor
             ListItems.ItemsSource = FavorUser.instance.missionCollection;
         }
 
-        private async void ButtonSave_Click(object sender, RoutedEventArgs e)
+        private void WishBtn_Click(object sender, RoutedEventArgs e)
         {
-            Frame.IsEnabled = false;
-            var missionItem = new Mission { information = TextInput.Text, userId = FavorUser.instance.account.Id };
-            await FavorUser.instance.InsertMissionTable(missionItem);
-            RefreshListItems();
-            Frame.IsEnabled = true;
+            this.Frame.Navigate(typeof(MissionWrite));
         }
 
-        private async void CheckBoxComplete_Checked(object sender, RoutedEventArgs e)
+        private void WallBtn_Click(object sender, RoutedEventArgs e)
         {
-            CheckBox cb = (CheckBox)sender;
-            Mission x = cb.DataContext as Mission;
-            await FavorUser.instance.UpdateChenkedMissionTable(x);
-            RefreshListItems();
-            ListItems.Focus(Windows.UI.Xaml.FocusState.Unfocused);
+            this.Frame.Navigate(typeof(MissionsWall));
         }
 
-        private void ShowAddingPageButton_Click(object sender, RoutedEventArgs e)
+        private async void Cancel_AppBarButton_Click(object sender, RoutedEventArgs e)
         {
+            //暂时作为注销按钮
+            await FavorUser.instance.LoginOut();
+            Frame.Navigate(typeof(Login));
+
+        }
+
+        private void Back_AppBarButton_Click(object sender, RoutedEventArgs e)
+        {
+            //回退按钮
+            this.Frame.GoBack();
+
+        }
+
+        private void AddingFriendsBtn_Click(object sender, RoutedEventArgs e)
+        {
+            //暂时转到加好友页面
             Frame.Navigate(typeof(AddingFriends));
         }
 
-        private async void ButtonLogout_Click(object sender, RoutedEventArgs e)
+        private async void Accept_AppBarButton_Click(object sender, RoutedEventArgs e)
         {
-            await FavorUser.instance.LoginOut();
-            Frame.Navigate(typeof(Login));
+            ListViewItem item = (ListViewItem)sender;
+            Mission x = item.DataContext as Mission;
+            await FavorUser.instance.UpdateChenkedMissionTable(x);
+            ListItems.Focus(Windows.UI.Xaml.FocusState.Unfocused);
         }
-
 
 
     }
