@@ -1,4 +1,5 @@
-﻿using Microsoft.WindowsAzure.MobileServices;
+﻿using Favor.Common;
+using Microsoft.WindowsAzure.MobileServices;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -96,7 +97,16 @@ namespace Favor
                 // 当导航堆栈尚未还原时，导航到第一页，
                 // 并通过将所需信息作为导航参数传入来配置
                 // 新页面
-                if (!rootFrame.Navigate(typeof(MainPage), e.Arguments))
+                if (AccountLocalStorage.instance.isvaild())
+                {
+                    FavorUser.instance.account = new Account();
+                    AccountLocalStorage.instance.LoadAccount(FavorUser.instance.account);
+                    if (!rootFrame.Navigate(typeof(MissionsWall), e.Arguments))
+                    {
+                        throw new Exception("Failed to create initial page");
+                    }
+                }
+                else if (!rootFrame.Navigate(typeof(MainPage), e.Arguments))
                 {
                     throw new Exception("Failed to create initial page");
                 }
