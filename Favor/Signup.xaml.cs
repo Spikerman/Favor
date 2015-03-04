@@ -19,19 +19,19 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// “基本页”项模板在 http://go.microsoft.com/fwlink/?LinkID=390556 上有介绍
+// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
 
 namespace Favor
 {
     /// <summary>
-    /// 可独立使用或用于导航至 Frame 内部的空白页。
+    /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class Login : Page
+    public sealed partial class Signup : Page
     {
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
-
-        public Login()
+        
+        public Signup()
         {
             this.InitializeComponent();
 
@@ -122,18 +122,16 @@ namespace Favor
 
         #endregion
 
-
-        private async void LoginButton_Click(object sender, RoutedEventArgs e)
+        private async void SignUpButton_Click(object sender, RoutedEventArgs e)
         {
-            Account accountItem = new Account { Email = userEmail.Text, Password = userPassword.Password };
-            Frame.IsEnabled = false;                      //通信期间禁止操作界面
-            await FavorUser.instance.Login(accountItem);
-            Frame.IsEnabled = true;                       //解除禁止操作界面
+            var accountItem = new Account { Email = userEmail.Text, Password = userPassword.Password };
+            Frame.IsEnabled = false;                             //通信期间禁止操作界面
+            await FavorUser.instance.SignUp(accountItem);
+            Frame.IsEnabled = true;                              //解除禁止操作界面
             if (FavorUser.instance.account != null)
             {
-                Frame.Navigate(typeof(MissionsWall));
+                Frame.Navigate(typeof(Login));
             }
-
         }
 
     }

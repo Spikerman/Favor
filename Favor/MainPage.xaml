@@ -1,0 +1,18 @@
+﻿<Page
+    x:Class="Favor.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Favor"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Image HorizontalAlignment="Left" Height="640" VerticalAlignment="Top" Width="400" Source="Assets/Images/space.png" Stretch="Fill"/>
+        <TextBlock Margin="135,67,111,0" TextWrapping="Wrap" Text="Favor" VerticalAlignment="Top" FontSize="60"/>
+        <Button x:Name="ToSignupBtn" Content="Sign up" HorizontalAlignment="Stretch" Margin="25,555,210,12" VerticalAlignment="Stretch" BorderBrush="{x:Null}" Background="#E5FF813E" FontSize="22" Click="ToSignupBtn_Click"/>
+        <Button x:Name="ToLoginBtn" Content="Log in" HorizontalAlignment="Stretch" Margin="210,554,25,12" VerticalAlignment="Stretch" BorderBrush="{x:Null}" Background="#E5FF813E" FontSize="22" Click="ToLoginBtn_Click" />
+
+    </Grid>
+</Page>
