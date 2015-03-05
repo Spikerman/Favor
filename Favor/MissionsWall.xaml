@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
+
     <Page.BottomAppBar>
         <CommandBar Background="#FFFF8F3D">
             <AppBarButton Icon="Accept" Label="Accept" Click="Accept_AppBarButton_Click"/>
@@ -40,6 +41,6 @@
         </Grid>
         <AppBarButton x:Name="WishBtn" HorizontalAlignment="Stretch" Icon="Edit" Label="" Margin="300,-2,20,502" VerticalAlignment="Bottom" Height="80" Width="80" Click="WishBtn_Click"/>
         <AppBarButton x:Name="WallBtn" HorizontalAlignment="Stretch" Icon="AllApps" Label="" Margin="110,-2,210,0" VerticalAlignment="Top" Height="80" Width="80" Click="WallBtn_Click"/>
-        <ListView x:Name="ListItems" HorizontalAlignment="Left" Height="520" Margin="0,60,0,0" VerticalAlignment="Top" Width="400" Background="#F2F9F6F6" Foreground="Black" FontSize="20" ItemTemplate="{StaticResource MessagesDataTemplate}" SelectionMode="Single" />
+        <ListView x:Name="ListItems" HorizontalAlignment="Left" Height="520" Margin="0,60,0,0" VerticalAlignment="Top" Width="400" Background="#F2F9F6F6" Foreground="Black" FontSize="20" ItemTemplate="{StaticResource MessagesDataTemplate}" SelectionMode="Single"/>
     </Grid>
 </Page>
