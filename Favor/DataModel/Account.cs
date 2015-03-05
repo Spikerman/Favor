@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace Favor.Common
+namespace Favor.DataModel
 {
     public class Account
     {

@@ -1,4 +1,5 @@
-﻿using Favor.Common;
+﻿using Favor.DataModel;
+using Favor.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;

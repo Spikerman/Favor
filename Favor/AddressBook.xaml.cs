@@ -1,4 +1,4 @@
-﻿using Favor.Common;
+﻿using Favor.DataModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -33,8 +34,10 @@ namespace Favor
         /// </summary>
         /// <param name="e">描述如何访问此页的事件数据。
         /// 此参数通常用于配置页。</param>
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
+            await FavorUser.instance.RefreshUserAllFriends();
+            ListItems.ItemsSource = FavorUser.instance.AllFriendsCollection;
         }
 
         private void WishBtn_Click(object sender, RoutedEventArgs e)
@@ -62,17 +65,17 @@ namespace Favor
 
         }
 
-        private void AddressBookBtn_Click(object sender, RoutedEventArgs e)
+        private async void AddressBookBtn_Click(object sender, RoutedEventArgs e)
         {
             //暂时转到加好友页面
-            Frame.Navigate(typeof(AddingFriends));
+            await FavorUser.instance.RefreshUserAllFriends();
         }
 
 
         private void Add_AppBarButton_Click(object sender, RoutedEventArgs e)
         {
             //回退按钮
-            this.Frame.GoBack();
+            Frame.Navigate(typeof(AddingFriends));
 
         }
     }

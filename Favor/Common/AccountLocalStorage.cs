@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.UI.Popups;
+using Favor.DataModel;
 
 namespace Favor.Common
 {

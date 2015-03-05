@@ -16,7 +16,6 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Core;
-using Favor.Common;
 using Favor.DataModel;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
