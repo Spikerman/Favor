@@ -16,7 +16,6 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Core;
-using Favor.Common;
 using Favor.DataModel;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
@@ -53,7 +52,7 @@ namespace Favor
         private async void ButtonSave_Click(object sender, RoutedEventArgs e)
         {
             Frame.IsEnabled = false;
-            var missionItem = new Mission { information = TextInput.Text, userId = FavorUser.instance.account.Id };
+            var missionItem = new Mission { information = TextInput.Text, userId = FavorUser.instance.account.Id,publisher=FavorUser.instance.account.UserName };
             await FavorUser.instance.InsertMissionTable(missionItem);
             //RefreshListItems();
             Frame.IsEnabled = true;

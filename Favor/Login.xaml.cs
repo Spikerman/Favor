@@ -1,4 +1,5 @@
-﻿using Favor.Common;
+﻿using Favor.DataModel;
+using Favor.Common;
 using Microsoft.WindowsAzure.MobileServices;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+
 
 // “基本页”项模板在 http://go.microsoft.com/fwlink/?LinkID=390556 上有介绍
 
@@ -120,10 +122,18 @@ namespace Favor
             Frame.IsEnabled = true;                       //解除禁止操作界面
             if (FavorUser.instance.account != null)
             {
+                if(FavorUser.instance.account.UserName==null)//注册后第一次登陆,跳转到填写用户名界面
+                {
+                    Frame.Navigate(typeof(AfterLogin));
+                }
+                else
+                {
                 Frame.Navigate(typeof(MissionsWall));
             }
 
         }
+
+    }
 
     }
 }

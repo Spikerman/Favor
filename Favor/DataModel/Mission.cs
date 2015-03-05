@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace Favor.Common
+namespace Favor.DataModel
 {
     public class Mission
     {
@@ -14,6 +14,9 @@ namespace Favor.Common
         [JsonProperty(PropertyName="userId")]
         public string userId { get; set; }
 
+        [JsonProperty(PropertyName = "publisher")]
+        public string publisher { get; set; }
+        
         [JsonProperty(PropertyName = "information")]
         public string information { get; set; }
         

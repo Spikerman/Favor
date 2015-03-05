@@ -22,8 +22,8 @@
                     <Image Source="Assets/SmallLogo.png" Stretch="UniformToFill"/>
                 </Border>
                 <StackPanel Orientation="Vertical" VerticalAlignment="Top" Margin="0,10,0,0">
-                    <TextBlock Text="{Binding userId}" FontSize="20" FontWeight="Semilight" 
-                       Margin="10,0,0,0" Width="320" Height="26" TextTrimming="WordEllipsis" 
+                    <TextBlock Text="{Binding publisher}" FontSize="20" FontWeight="Semilight" 
+                       Margin="10,0,0,0" Width="320" Height="36" TextTrimming="WordEllipsis" 
                        HorizontalAlignment="Left" VerticalAlignment="Top"/>
                     <TextBlock Text="{Binding information}" 
                        Margin="10,2,0,0" Width="320" TextTrimming="WordEllipsis" TextWrapping="Wrap" 

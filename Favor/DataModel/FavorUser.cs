@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using Windows.UI.Popups;
 using System.Text.RegularExpressions;
 using Windows.Storage;
-using Favor.DataModel;
+using Favor.Common;
 
-namespace Favor.Common
+namespace Favor.DataModel
 {
     public class FavorUser
     {
@@ -21,7 +21,7 @@ namespace Favor.Common
         public MobileServiceUser mobileServiceUser { get; set; }                          //For Authenticate()
         public MobileServiceCollection<Mission, Mission> missionCollection { get; set; }  //mission的集合
 
-        //public MobileServiceCollection<UsersRelation, UsersRelation> usersRelationCollection { get; set; }//好友关系集合
+        public MobileServiceCollection<Account, Account> AllFriendsCollection { get; set; }         //用户的所有好友
 
         public Account account { get; set; }                                              //用户账户信息
 
@@ -46,8 +46,6 @@ namespace Favor.Common
             get { return missionItem; }
             set { missionItem = value; }
         }
-
-        List<UsersRelation> userAllFriendsRelationItem = new List<UsersRelation>();//存储所有好友的账户
 
         /// <summary>
         /// 将任务插入MissionTable
@@ -74,10 +72,10 @@ namespace Favor.Common
                     .ToCollectionAsync();//导入自己发布的任务
 
                 //导入朋友所发任务
-                await RefreshUserAllFriendsId(account.Id);
-                foreach(UsersRelation relation in userAllFriendsRelationItem)
+                await RefreshUserAllFriends();
+                foreach(Account friendAccount in AllFriendsCollection)
                 {
-                   await ExtractUserMissions(relation.FriendId);
+                   await ExtractUserMissions(friendAccount.Id);
                 }
             }
             catch (MobileServiceInvalidOperationException e)
@@ -239,6 +237,7 @@ namespace Favor.Common
                 }
                 if (exception != null)
                 {
+
                     await new MessageDialog(exception.Message, "登陆状态").ShowAsync();
                 }
                 else
@@ -397,13 +396,39 @@ namespace Favor.Common
         /// 传入参数为希望查找好友的自身用户ID
         /// </param>
         /// <returns></returns>
-        public async Task RefreshUserAllFriendsId(string userId)
+        public async Task RefreshUserAllFriends()
         {
             MobileServiceInvalidOperationException exception = null;
             try
             {
-                userAllFriendsRelationItem = await usersRelationItem
-                    .Where(usersRelationTable => usersRelationTable.UserId == userId).ToListAsync();
+                //查询所有和该用户有关的关系记录
+                MobileServiceCollection<UsersRelation, UsersRelation> userAllFriendsRelationItem
+                    = await (from relation in usersRelationItem
+                             where relation.UserId == this.account.Id || relation.FriendId == this.account.Id
+                             select relation).ToCollectionAsync();
+
+                //根据所有记录查找用户的信息
+                this.AllFriendsCollection = null;                        //清空好友列表
+                foreach (UsersRelation FriendRelation in userAllFriendsRelationItem)
+                {
+                    if (this.AllFriendsCollection != null)
+                    {
+                        List<Account> friend = await (from account in accountItem
+                                                      where account.Id == FriendRelation.UserId || account.Id == FriendRelation.FriendId
+                                                      where account.Id != this.account.Id
+                                                      select account).ToListAsync();
+                        AllFriendsCollection.Add(friend.First());
+                    }
+                    else
+                    {
+                        MobileServiceCollection<Account,Account> friend = await (from account in accountItem
+                                                                                 where account.Id == FriendRelation.UserId || account.Id == FriendRelation.FriendId
+                                                                                 where account.Id != this.account.Id
+                                                                                 select account).ToCollectionAsync();
+                        AllFriendsCollection = friend;
+                    }
+                    
+                }
             }
             catch (MobileServiceInvalidOperationException e)
             {
@@ -427,10 +452,10 @@ namespace Favor.Common
         public async Task ExtractUserMissions(string userId)
         {
             MobileServiceInvalidOperationException exception = null;
-            List<Mission> userMissionList=new List<Mission>();
+            List<Mission> userMissionList = new List<Mission>();
             try
             {
-                userMissionList=await missionItem
+                userMissionList = await missionItem
                     .Where(missionTable => missionTable.completed == false & missionTable.userId == userId).ToListAsync();
                     
             }
@@ -445,15 +470,47 @@ namespace Favor.Common
             }
             else
             {
-                foreach(Mission mission in userMissionList)
+                foreach (Mission mission in userMissionList)
                 {
                     missionCollection.Add(mission);
                 }
             }
         }
-    }
 
+        /// <summary>
+        /// 为Account表增加user在注册后填入的用户名
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        public async Task AddUserName(string userName)
+        {
+            account.UserName = userName;
+            MobileServiceInvalidOperationException exception = null;
+            try
+            {
+                await accountItem.UpdateAsync(account);
+    }
+            catch (MobileServiceInvalidOperationException e)
+            {
+                exception = e;
+            }
+
+            if (exception != null)
+            {
+                await new MessageDialog(exception.Message, "Error,try again").ShowAsync();
+            }
+            else
+            {
+                var dialog = new MessageDialog("Welcome: " + userName);
+                await dialog.ShowAsync();
+            }
+        }
 }
+}
+
+
+
+
 
 
 
