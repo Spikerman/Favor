@@ -84,6 +84,7 @@ namespace Favor
         {
             Mission x = (Mission)ListItems.SelectedItem;
             await FavorUser.instance.UpdateChenkedMissionTable(x);
+            
             //SelectionMode="Single"
             //ListItems.Focus(Windows.UI.Xaml.FocusState.Unfocused);注释掉这句话才可以
         }

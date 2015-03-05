@@ -64,6 +64,7 @@ namespace Favor.DataModel
         /// <returns></returns>
         public async Task RefreshMissionsWall()
         {
+            
             MobileServiceInvalidOperationException exception = null;
             try
             {
@@ -73,9 +74,12 @@ namespace Favor.DataModel
 
                 //导入朋友所发任务
                 await RefreshUserAllFriends();
-                foreach(Account friendAccount in AllFriendsCollection)
+                if (AllFriendsCollection != null)
                 {
-                   await ExtractUserMissions(friendAccount.Id);
+                    foreach (Account friendAccount in AllFriendsCollection)
+                    {
+                        await ExtractUserMissions(friendAccount.Id);
+                    }
                 }
             }
             catch (MobileServiceInvalidOperationException e)
@@ -344,7 +348,7 @@ namespace Favor.DataModel
                     try
                     {
                         searchDuplicatedUserIdList = await usersRelationItem
-                            .Where(usersRelationTable => usersRelationTable.FriendId == friendId).ToListAsync();
+                            .Where(usersRelationTable => usersRelationTable.FriendId == friendId || usersRelationTable.UserId == friendId).ToListAsync();
                     }
                     catch (MobileServiceInvalidOperationException e)
                     {
@@ -421,13 +425,13 @@ namespace Favor.DataModel
                     }
                     else
                     {
-                        MobileServiceCollection<Account,Account> friend = await (from account in accountItem
-                                                                                 where account.Id == FriendRelation.UserId || account.Id == FriendRelation.FriendId
-                                                                                 where account.Id != this.account.Id
-                                                                                 select account).ToCollectionAsync();
+                        MobileServiceCollection<Account, Account> friend = await (from account in accountItem
+                                                                                  where account.Id == FriendRelation.UserId || account.Id == FriendRelation.FriendId
+                                                                                  where account.Id != this.account.Id
+                                                                                  select account).ToCollectionAsync();
                         AllFriendsCollection = friend;
                     }
-                    
+
                 }
             }
             catch (MobileServiceInvalidOperationException e)
@@ -457,7 +461,7 @@ namespace Favor.DataModel
             {
                 userMissionList = await missionItem
                     .Where(missionTable => missionTable.completed == false & missionTable.userId == userId).ToListAsync();
-                    
+
             }
             catch (MobileServiceInvalidOperationException e)
             {
@@ -489,7 +493,7 @@ namespace Favor.DataModel
             try
             {
                 await accountItem.UpdateAsync(account);
-    }
+            }
             catch (MobileServiceInvalidOperationException e)
             {
                 exception = e;
@@ -505,7 +509,7 @@ namespace Favor.DataModel
                 await dialog.ShowAsync();
             }
         }
-}
+    }
 }
 
 
