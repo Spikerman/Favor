@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Favor.DataModel;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -43,7 +44,6 @@ namespace Favor
                     Application.Current.Exit();
                 }
             };
-
         }
 
         /// <summary>

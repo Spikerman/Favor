@@ -85,6 +85,9 @@
     <Compile Include="AfterLogin.xaml.cs">
       <DependentUpon>AfterLogin.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AddressBook.xaml.cs">
+      <DependentUpon>AddressBook.xaml</DependentUpon>
+    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
@@ -138,6 +141,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AfterLogin.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddressBook.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

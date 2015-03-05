@@ -1,4 +1,5 @@
-﻿using Favor.Common;
+﻿using Favor.DataModel;
+using Favor.Common;
 using Microsoft.WindowsAzure.MobileServices;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
+
 // “基本页”项模板在 http://go.microsoft.com/fwlink/?LinkID=390556 上有介绍
 
 namespace Favor
@@ -35,20 +37,9 @@ namespace Favor
         {
             this.InitializeComponent();
 
-            this.Loaded += Login_Loaded;
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
-        }
-
-        void Login_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (AccountLocalStorage.instance.isvaild())
-            {
-                FavorUser.instance.account = new Account();
-                AccountLocalStorage.instance.LoadAccount(FavorUser.instance.account);
-                Frame.Navigate(typeof(MissionsWall));
-            }
         }
 
         /// <summary>
@@ -137,12 +128,12 @@ namespace Favor
                 }
                 else
                 {
-                    Frame.Navigate(typeof(MissionsWall));
-                }
-               
+                Frame.Navigate(typeof(MissionsWall));
             }
 
         }
+
+    }
 
     }
 }

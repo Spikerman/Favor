@@ -1,10 +1,9 @@
-﻿using Microsoft.WindowsAzure.MobileServices;
+﻿using Favor.DataModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Popups;
@@ -15,16 +14,17 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using Windows.UI.Core;
-using Favor.DataModel;
-// “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=391641 上有介绍
+
+// “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkID=390556 上有介绍
 
 namespace Favor
 {
-
-    public sealed partial class MissionsWall : Page
+    /// <summary>
+    /// 可用于自身或导航至 Frame 内部的空白页。
+    /// </summary>
+    public sealed partial class AddressBook : Page
     {
-        public MissionsWall()
+        public AddressBook()
         {
             this.InitializeComponent();
         }
@@ -36,17 +36,8 @@ namespace Favor
         /// 此参数通常用于配置页。</param>
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            await FavorUser.instance.RefreshMissionsWall();
-            ListItems.ItemsSource = FavorUser.instance.missionCollection;
-        }
-
-        /// <summary>
-        /// 同步后台任务数据和前台任务列表
-        /// </summary>
-        private async void RefreshListItems()
-        {
-            await FavorUser.instance.RefreshMissionsWall();
-            ListItems.ItemsSource = FavorUser.instance.missionCollection;
+            await FavorUser.instance.RefreshUserAllFriends();
+            ListItems.ItemsSource = FavorUser.instance.AllFriendsCollection;
         }
 
         private void WishBtn_Click(object sender, RoutedEventArgs e)
@@ -56,13 +47,7 @@ namespace Favor
 
         private void WallBtn_Click(object sender, RoutedEventArgs e)
         {
-            RefreshListItems();
-        }
-
-        private void AddressBookBtn_Click(object sender, RoutedEventArgs e)
-        {
-            //暂时转到加好友页面
-            Frame.Navigate(typeof(AddressBook));
+            this.Frame.Navigate(typeof(MissionsWall));
         }
 
         private async void Cancel_AppBarButton_Click(object sender, RoutedEventArgs e)
@@ -80,13 +65,18 @@ namespace Favor
 
         }
 
-        private async void Accept_AppBarButton_Click(object sender, RoutedEventArgs e)
+        private async void AddressBookBtn_Click(object sender, RoutedEventArgs e)
         {
-            Mission x = (Mission)ListItems.SelectedItem;
-            await FavorUser.instance.UpdateChenkedMissionTable(x);
-            //ListItems.Focus(Windows.UI.Xaml.FocusState.Unfocused);注释掉这句话才可以
+            //暂时转到加好友页面
+            await FavorUser.instance.RefreshUserAllFriends();
         }
 
 
+        private void Add_AppBarButton_Click(object sender, RoutedEventArgs e)
+        {
+            //回退按钮
+            Frame.Navigate(typeof(AddingFriends));
+
+        }
     }
 }

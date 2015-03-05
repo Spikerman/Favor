@@ -1,6 +1,4 @@
-﻿using Favor.DataModel;
-using Favor.Common;
-using Microsoft.WindowsAzure.MobileServices;
+﻿using Favor.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,7 +7,6 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
-using Windows.Storage;
 using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -20,36 +17,25 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
+// “基本页”项模板在 http://go.microsoft.com/fwlink/?LinkID=390556 上有介绍
 
 namespace Favor
 {
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// 可独立使用或用于导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class Signup : Page
+    public sealed partial class AfterLogin : Page
     {
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
-        
-        public Signup()
+
+        public AfterLogin()
         {
             this.InitializeComponent();
 
-            this.Loaded += Login_Loaded;
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
-        }
-
-        void Login_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (AccountLocalStorage.instance.isvaild())
-            {
-                FavorUser.instance.account = new Account();
-                AccountLocalStorage.instance.LoadAccount(FavorUser.instance.account);
-                Frame.Navigate(typeof(MissionsWall));
-            }
         }
 
         /// <summary>
@@ -123,17 +109,25 @@ namespace Favor
 
         #endregion
 
-        private async void SignUpButton_Click(object sender, RoutedEventArgs e)
+        private async void UserNameButton_Click(object sender, RoutedEventArgs e)
         {
-            var accountItem = new Account { Email = userEmail.Text, Password = userPassword.Password};
-            Frame.IsEnabled = false;                             //通信期间禁止操作界面
-            await FavorUser.instance.SignUp(accountItem);
-            Frame.IsEnabled = true;                              //解除禁止操作界面
-            //if (FavorUser.instance.account != null)
-            //{
-                Frame.Navigate(typeof(Login));
-            //}
+
+            if(InputUserName.Text!="")
+            {
+                
+                await FavorUser.instance.AddUserName(InputUserName.Text);
+                Frame.Navigate(typeof(MissionsWall));
+            }
+
+           
         }
 
+        private void InputUserName_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextBox textbox = (TextBox)sender;
+
+            if (textbox.Text != "")
+                InputUserName.IsEnabled = true;
+        }
     }
 }
