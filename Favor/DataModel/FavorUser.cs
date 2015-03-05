@@ -75,9 +75,9 @@ namespace Favor.Common
 
                 //导入朋友所发任务
                 await RefreshUserAllFriendsId(account.Id);
-                foreach(UsersRelation relation in userAllFriendsRelationItem)
+                foreach (UsersRelation relation in userAllFriendsRelationItem)
                 {
-                   await ExtractUserMissions(relation.FriendId);
+                    await ExtractUserMissions(relation.FriendId);
                 }
             }
             catch (MobileServiceInvalidOperationException e)
@@ -239,6 +239,7 @@ namespace Favor.Common
                 }
                 if (exception != null)
                 {
+
                     await new MessageDialog(exception.Message, "登陆状态").ShowAsync();
                 }
                 else
@@ -427,12 +428,12 @@ namespace Favor.Common
         public async Task ExtractUserMissions(string userId)
         {
             MobileServiceInvalidOperationException exception = null;
-            List<Mission> userMissionList=new List<Mission>();
+            List<Mission> userMissionList = new List<Mission>();
             try
             {
-                userMissionList=await missionItem
+                userMissionList = await missionItem
                     .Where(missionTable => missionTable.completed == false & missionTable.userId == userId).ToListAsync();
-                    
+
             }
             catch (MobileServiceInvalidOperationException e)
             {
@@ -445,15 +446,47 @@ namespace Favor.Common
             }
             else
             {
-                foreach(Mission mission in userMissionList)
+                foreach (Mission mission in userMissionList)
                 {
                     missionCollection.Add(mission);
                 }
             }
         }
-    }
 
+        /// <summary>
+        /// 为Account表增加user在注册后填入的用户名
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        public async Task AddUserName(string userName)
+        {
+            account.UserName = userName;
+            MobileServiceInvalidOperationException exception = null;
+            try
+            {
+                await accountItem.UpdateAsync(account);
+            }
+            catch (MobileServiceInvalidOperationException e)
+            {
+                exception = e;
+            }
+
+            if (exception != null)
+            {
+                await new MessageDialog(exception.Message, "Error,try again").ShowAsync();
+            }
+            else
+            {
+                var dialog = new MessageDialog("Welcome: " + userName);
+                await dialog.ShowAsync();
+            }
+        }
+    }
 }
+
+
+
+
 
 
 

@@ -17,5 +17,8 @@ namespace Favor.Common
         
         [JsonProperty(PropertyName="password")]
         public string Password { get; set; }
+
+        [JsonProperty(PropertyName = "username")]
+        public string UserName { get; set; }
     }
 }

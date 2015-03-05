@@ -131,7 +131,15 @@ namespace Favor
             Frame.IsEnabled = true;                       //解除禁止操作界面
             if (FavorUser.instance.account != null)
             {
-                Frame.Navigate(typeof(MissionsWall));
+                if(FavorUser.instance.account.UserName==null)//注册后第一次登陆,跳转到填写用户名界面
+                {
+                    Frame.Navigate(typeof(AfterLogin));
+                }
+                else
+                {
+                    Frame.Navigate(typeof(MissionsWall));
+                }
+               
             }
 
         }

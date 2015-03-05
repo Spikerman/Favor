@@ -124,14 +124,14 @@ namespace Favor
 
         private async void SignUpButton_Click(object sender, RoutedEventArgs e)
         {
-            var accountItem = new Account { Email = userEmail.Text, Password = userPassword.Password };
+            var accountItem = new Account { Email = userEmail.Text, Password = userPassword.Password};
             Frame.IsEnabled = false;                             //通信期间禁止操作界面
             await FavorUser.instance.SignUp(accountItem);
             Frame.IsEnabled = true;                              //解除禁止操作界面
-            if (FavorUser.instance.account != null)
-            {
+            //if (FavorUser.instance.account != null)
+            //{
                 Frame.Navigate(typeof(Login));
-            }
+            //}
         }
 
     }
