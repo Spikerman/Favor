@@ -82,10 +82,9 @@ namespace Favor
 
         private async void Accept_AppBarButton_Click(object sender, RoutedEventArgs e)
         {
-            ListViewItem item = (ListViewItem)sender;
-            Mission x = item.DataContext as Mission;
+            Mission x = (Mission)ListItems.SelectedItem;
             await FavorUser.instance.UpdateChenkedMissionTable(x);
-            ListItems.Focus(Windows.UI.Xaml.FocusState.Unfocused);
+            //ListItems.Focus(Windows.UI.Xaml.FocusState.Unfocused);注释掉这句话才可以
         }
 
 
