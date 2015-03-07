@@ -8,6 +8,8 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
+using Windows.Storage;
+using Windows.Storage.Pickers;
 using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -16,6 +18,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
 // “基本页”项模板在 http://go.microsoft.com/fwlink/?LinkID=390556 上有介绍
@@ -29,7 +32,7 @@ namespace Favor
     {
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
-
+        private static readonly IEnumerable<string> SupportedImageFileTypes = new List<string> { ".jpeg", ".jpg", ".png", ".bmp" };
         public AfterLogin()
         {
             this.InitializeComponent();
@@ -37,6 +40,13 @@ namespace Favor
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
+
+            // Attach event which will return the picked files
+            var app = Application.Current as App;
+            if (app != null)
+            {
+                app.FilesPicked += OnFilesPicked;
+            }
         }
 
         /// <summary>
@@ -113,14 +123,45 @@ namespace Favor
         private async void UserNameButton_Click(object sender, RoutedEventArgs e)
         {
 
-            if(InputUserName.Text!="")
+            if (InputUserName.Text != "")
             {
-                
-                await FavorUser.instance.AddUserName(InputUserName.Text);
-                Frame.Navigate(typeof(MissionsWall));
+                if (FavorUser.instance.userImageStorageFile != null)
+                {
+                    await FavorUser.instance.UploadUserImage();
+                    await FavorUser.instance.AddUserName(InputUserName.Text);
+                    Frame.Navigate(typeof(MissionsWall));
+                }
+                else
+                {
+                    var dialog = new MessageDialog("Please Choose Photo Please");
+                    await dialog.ShowAsync();
+                }
             }
+            else
+            {
+                var dialog = new MessageDialog("Please enter the name");
+                await dialog.ShowAsync();
+            }
+        }
 
-           
+
+
+
+
+        private async void OnFilesPicked(IReadOnlyList<StorageFile> files)
+        {
+            Image.Source = null;
+            if (files.Count > 0)
+            {
+                var imageFile = files.FirstOrDefault(f => SupportedImageFileTypes.Contains(f.FileType.ToLower()));
+                FavorUser.instance.userImageStorageFile = imageFile;
+                if (imageFile != null)
+                {
+                    var bitmapImage = new BitmapImage();
+                    await bitmapImage.SetSourceAsync(await imageFile.OpenReadAsync());
+                    Image.Source = bitmapImage;
+                }
+            }
         }
 
         private void InputUserName_TextChanged(object sender, TextChangedEventArgs e)
@@ -130,5 +171,31 @@ namespace Favor
             if (textbox.Text != "")
                 InputUserName.IsEnabled = true;
         }
+
+        private void ChoosePhotoButton_Click(object sender, RoutedEventArgs e)
+        {
+            FileOpenPicker imagePicker = new FileOpenPicker
+            {
+                ViewMode = PickerViewMode.Thumbnail,
+                SuggestedStartLocation = PickerLocationId.PicturesLibrary,
+                FileTypeFilter = { ".jpg", ".jpeg", ".png", ".bmp" }
+            };
+            //FavorUser.instance.userImage =await imagePicker.PickSingleFileAsync();
+            imagePicker.PickSingleFileAndContinue();
+        }
+
+        //private async void UploadButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (FavorUser.instance.userImageStorageFile != null)
+        //    {
+        //        await FavorUser.instance.UploadUserImage();
+        //        Frame.Navigate(typeof(MissionsWall));
+        //    }
+        //    else
+        //    {
+        //        var dialog = new MessageDialog("Please Choose Photo Please");
+        //        await dialog.ShowAsync();
+        //    }
+        //}
     }
 }

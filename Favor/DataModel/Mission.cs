@@ -28,6 +28,9 @@ namespace Favor.DataModel
 
         [JsonProperty(PropertyName = "receiverId")]
         public string receiverId { get; set; }//默认值为 null
+
+        [JsonProperty(PropertyName = "publisherimageuri")]
+        public string publisherImageUri { get; set; }//任务发布者头像的URI
         
 
     }

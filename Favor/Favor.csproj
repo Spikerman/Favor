@@ -92,6 +92,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Common\AccountLocalStorage.cs" />
+    <Compile Include="Common\StringToImageConverter.cs" />
     <Compile Include="DataModel\Account.cs" />
     <Compile Include="DataModel\UserImage.cs" />
     <Compile Include="DataModel\Mission.cs" />

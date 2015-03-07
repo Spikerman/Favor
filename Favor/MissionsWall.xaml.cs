@@ -37,6 +37,7 @@ namespace Favor
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             await FavorUser.instance.RefreshMissionsWall();
+            
             ListItems.ItemsSource = FavorUser.instance.missionCollection;
         }
 
@@ -46,7 +47,9 @@ namespace Favor
         private async void RefreshListItems()
         {
             await FavorUser.instance.RefreshMissionsWall();
+                      
             ListItems.ItemsSource = FavorUser.instance.missionCollection;
+
         }
 
         private void WishBtn_Click(object sender, RoutedEventArgs e)

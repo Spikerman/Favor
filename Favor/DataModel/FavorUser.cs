@@ -10,6 +10,7 @@ using Windows.Storage;
 using Favor.Common;
 using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Blob;
+using Windows.UI.Xaml.Controls;
 
 
 namespace Favor.DataModel
@@ -29,7 +30,7 @@ namespace Favor.DataModel
         public Account account { get; set; }                                              //用户账户信息
 
         public UserImage userImage = new UserImage();//存储本用户头像
-        
+
         public StorageFile userImageStorageFile;//存储用户头像文件
 
 
@@ -81,6 +82,7 @@ namespace Favor.DataModel
                     .Where(missionTable => missionTable.completed == false & missionTable.userId == this.account.Id)
                     .ToCollectionAsync();//导入自己发布的任务
 
+
                 //导入朋友所发任务
                 await RefreshUserAllFriends();
                 if (AllFriendsCollection != null)
@@ -99,7 +101,26 @@ namespace Favor.DataModel
             {
                 await new MessageDialog(exception.Message, "Error loding").ShowAsync();
             }
+            else
+            {
+                try
+                {
+                    await accountItem.UpdateAsync(account);
+                }
+                catch (MobileServiceInvalidOperationException e)
+                {
+                    exception = e;
+                }
+                if (exception != null)
+                {
+                    await new MessageDialog(exception.Message, "Error loding").ShowAsync();
+                }
+            }
         }
+
+
+
+
 
         /// <summary>
         /// 选中之后更新MssionTable
@@ -523,13 +544,13 @@ namespace Favor.DataModel
         {
             MobileServiceInvalidOperationException exception = null;
             string errorString = string.Empty;
-
+            
             if (userImageStorageFile != null)
             {
-                
+
                 // Set blob properties
                 userImage.ContainerName = "userimages";
-                userImage.ResourceName = userImageStorageFile.Name;
+                userImage.ResourceName = userImageStorageFile.Name+account.Id;
                 userImage.userId = account.Id;
             }
 
@@ -559,24 +580,22 @@ namespace Favor.DataModel
                     var imageUri = new Uri(userImage.ImageUri);
 
                     // Instantiate a Blob store container based on the info in the returned item.
-                    CloudBlobContainer container = new CloudBlobContainer(
-                        new Uri(string.Format("https://{0}/{1}",
-                            imageUri.Host, userImage.ContainerName)), cred);
-                    
+                    CloudBlobContainer container = new CloudBlobContainer(new Uri(string.Format("https://{0}/{1}", imageUri.Host, userImage.ContainerName)), cred);
+
+                    //Get the new image as a stream.
+                    using (var fileStream = await userImageStorageFile.OpenReadAsync())
+                    {
+                        // Upload the new image as a BLOB from the stream.
+                        CloudBlockBlob blobFromSASCredential = container.GetBlockBlobReference(userImage.ResourceName);
+                        await blobFromSASCredential.UploadFromStreamAsync(fileStream);
+
+                    }
+
+                    account.UserImageUri = userImage.ImageUri;
+
                     var dialog = new MessageDialog("upload success!");
                     await dialog.ShowAsync();
-                    
-                    //Get the new image as a stream.
-                    //using (var fileStream = await userImageStorageFile.OpenSequentialReadAsync())
-                    //{
-                    //    // Upload the new image as a BLOB from the stream.
-                    //    CloudBlockBlob blobFromSASCredential =
-                    //        container.GetBlockBlobReference(userImage.ResourceName);
-                    //    await blobFromSASCredential.UploadFromStreamAsync(fileStream.AsInputStream());
-                    //}
 
-                    // When you request an SAS at the container-level instead of the blob-level,
-                    // you are able to upload multiple streams using the same container credentials.
                 }
                 else
                 {
@@ -588,6 +607,10 @@ namespace Favor.DataModel
         }
     }
 }
+
+
+
+
 
 
 
