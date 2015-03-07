@@ -18,6 +18,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
+using Windows.Storage;
 
 // “空白应用程序”模板在 http://go.microsoft.com/fwlink/?LinkId=391641 上有介绍
 
@@ -33,7 +34,8 @@ namespace Favor
     {
         private TransitionCollection transitions;
         public static MobileServiceClient MobileService = new MobileServiceClient("https://favor2.azure-mobile.cn/","VCqxNhmGtoObtTIClgjNeaVKdoVpIj46");
-        
+
+        public event Action<IReadOnlyList<StorageFile>> FilesPicked;
         /// <summary>
         /// 初始化单一实例应用程序对象。    这是执行的创作代码的第一行，
         /// 逻辑上等同于 main() 或 WinMain()。
@@ -146,6 +148,16 @@ namespace Favor
 
         protected override void OnActivated(IActivatedEventArgs args)
         {
+            var fopArgs = args as FileOpenPickerContinuationEventArgs;
+            if (fopArgs != null)
+            {
+                // Pass the picked files to the subscribed event handlers
+                // In a real world app you could also use a Messenger, Listener or any other subscriber-based model
+                if (fopArgs.Files.Any() && FilesPicked != null)
+                {
+                    FilesPicked(fopArgs.Files);
+                }
+            }
             base.OnActivated(args);
             
             if (args.Kind == ActivationKind.WebAuthenticationBrokerContinuation)

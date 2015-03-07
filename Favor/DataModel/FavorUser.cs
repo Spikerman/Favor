@@ -8,6 +8,9 @@ using Windows.UI.Popups;
 using System.Text.RegularExpressions;
 using Windows.Storage;
 using Favor.Common;
+using Microsoft.WindowsAzure.Storage.Auth;
+using Microsoft.WindowsAzure.Storage.Blob;
+
 
 namespace Favor.DataModel
 {
@@ -25,7 +28,10 @@ namespace Favor.DataModel
 
         public Account account { get; set; }                                              //用户账户信息
 
-        //public UsersRelation usersRelation { get; set; }
+        public UserImage userImage = new UserImage();//存储本用户头像
+        
+        public StorageFile userImageStorageFile;//存储用户头像文件
+
 
         /// <summary>
         /// 对应Mission表中的一条记录
@@ -41,6 +47,9 @@ namespace Favor.DataModel
         /// 对应UsersRelation表中的一条记录
         /// </summary>
         private IMobileServiceTable<UsersRelation> usersRelationItem = App.MobileService.GetTable<UsersRelation>();
+
+        public IMobileServiceTable<UserImage> userImageItem = App.MobileService.GetTable<UserImage>();
+
         public IMobileServiceTable<Mission> MissionOperator
         {
             get { return missionItem; }
@@ -64,7 +73,7 @@ namespace Favor.DataModel
         /// <returns></returns>
         public async Task RefreshMissionsWall()
         {
-            
+
             MobileServiceInvalidOperationException exception = null;
             try
             {
@@ -508,6 +517,74 @@ namespace Favor.DataModel
                 var dialog = new MessageDialog("Welcome: " + userName);
                 await dialog.ShowAsync();
             }
+        }
+
+        public async Task UploadUserImage()
+        {
+            MobileServiceInvalidOperationException exception = null;
+            string errorString = string.Empty;
+
+            if (userImageStorageFile != null)
+            {
+                
+                // Set blob properties
+                userImage.ContainerName = "userimages";
+                userImage.ResourceName = userImageStorageFile.Name;
+                userImage.userId = account.Id;
+            }
+
+            // Send the item to be inserted. When blob properties are set this
+            // generates an SAS in the response.
+            try
+            {
+                await userImageItem.InsertAsync(userImage);
+            }
+            catch (MobileServiceInvalidOperationException e)
+            {
+                exception = e;
+            }
+
+            if (exception != null)
+            {
+                await new MessageDialog(exception.Message, "Error,try again").ShowAsync();
+            }
+            else
+            {
+                // If we have a returned SAS, then upload the blob.
+                if (!string.IsNullOrEmpty(userImage.SasQueryString))
+                {
+                    // Get the URI generated that contains the SAS 
+                    // and extract the storage credentials.
+                    StorageCredentials cred = new StorageCredentials(userImage.SasQueryString);
+                    var imageUri = new Uri(userImage.ImageUri);
+
+                    // Instantiate a Blob store container based on the info in the returned item.
+                    CloudBlobContainer container = new CloudBlobContainer(
+                        new Uri(string.Format("https://{0}/{1}",
+                            imageUri.Host, userImage.ContainerName)), cred);
+                    
+                    var dialog = new MessageDialog("upload success!");
+                    await dialog.ShowAsync();
+                    
+                    //Get the new image as a stream.
+                    //using (var fileStream = await userImageStorageFile.OpenSequentialReadAsync())
+                    //{
+                    //    // Upload the new image as a BLOB from the stream.
+                    //    CloudBlockBlob blobFromSASCredential =
+                    //        container.GetBlockBlobReference(userImage.ResourceName);
+                    //    await blobFromSASCredential.UploadFromStreamAsync(fileStream.AsInputStream());
+                    //}
+
+                    // When you request an SAS at the container-level instead of the blob-level,
+                    // you are able to upload multiple streams using the same container credentials.
+                }
+                else
+                {
+                    var dialog = new MessageDialog("sasquerystring is NULL");
+                    await dialog.ShowAsync();
+                }
+            }
+
         }
     }
 }

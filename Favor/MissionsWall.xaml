@@ -36,7 +36,7 @@
 
     <Grid Background="#FFFF8F3D">
         <Grid HorizontalAlignment="Left" Width="400" Grid.ColumnSpan="2" Background="#FFFF8F3D" Height="60" VerticalAlignment="Top">
-            <AppBarButton HorizontalAlignment="Left" Label="" Margin="20,-2,0,-18" VerticalAlignment="Top" Height="80" Icon="Contact" Width="80"/>
+            <AppBarButton HorizontalAlignment="Left" Label="" Margin="20,-2,0,-18" VerticalAlignment="Top" Height="80" Icon="Contact" Width="80" Click="AppBarButton_Click"/>
             <AppBarButton x:Name="AddressBookBtn" HorizontalAlignment="Left" Icon="People" Label="" Margin="210,-2,0,-18" VerticalAlignment="Top" Height="80" Click="AddressBookBtn_Click"/>
         </Grid>
         <AppBarButton x:Name="WishBtn" HorizontalAlignment="Stretch" Icon="Edit" Label="" Margin="300,-2,20,502" VerticalAlignment="Bottom" Height="80" Width="80" Click="WishBtn_Click"/>

@@ -89,5 +89,10 @@ namespace Favor
             //ListItems.Focus(Windows.UI.Xaml.FocusState.Unfocused);注释掉这句话才可以
         }
 
+        private void AppBarButton_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(UserCenter));
+        }
+
     }
 }
