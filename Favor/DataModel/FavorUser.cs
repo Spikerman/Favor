@@ -79,7 +79,9 @@ namespace Favor.DataModel
             try
             {
                 missionCollection = await missionItem
-                    .Where(missionTable => missionTable.completed == false & missionTable.userId == this.account.Id)
+                    .Where(missionTable => missionTable.completed == false 
+                        & missionTable.userId == this.account.Id 
+                        & missionTable.__createdAt > DateTime.Now.AddHours(Mission.ACTIVETIME))
                     .ToCollectionAsync();//导入自己发布的任务
 
 
@@ -490,7 +492,10 @@ namespace Favor.DataModel
             try
             {
                 userMissionList = await missionItem
-                    .Where(missionTable => missionTable.completed == false & missionTable.userId == userId).ToListAsync();
+                    .Where(missionTable => missionTable.completed == false 
+                            & missionTable.userId == userId
+                            & missionTable.__createdAt > DateTime.Now.AddHours(Mission.ACTIVETIME))
+                    .ToListAsync();
 
             }
             catch (MobileServiceInvalidOperationException e)

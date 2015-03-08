@@ -31,7 +31,24 @@ namespace Favor.DataModel
 
         [JsonProperty(PropertyName = "publisherimageuri")]
         public string publisherImageUri { get; set; }//任务发布者头像的URI
-        
 
+        [JsonProperty(PropertyName = "__createdAt")]
+        public DateTime __createdAt { get; set; }  //任务的创建时间
+
+        public static double ACTIVETIME = -144;    //任务的有效时间常量，必须为负数（表示从结束到开始的时间）
+
+        private string restTime;                   //任务剩余时间
+        public string RestTime
+        {
+            get
+            {
+                return restTime = (DateTime.Now.Subtract(__createdAt).Days*24 + DateTime.Now.Subtract(__createdAt).Hours) + "h"   //计算小时
+                            + DateTime.Now.Subtract(__createdAt).Minutes.ToString() + "min";
+            }
+            set
+            {
+                restTime = value;
+            }
+        }
     }
 }
