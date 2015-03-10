@@ -24,17 +24,17 @@ using Windows.Storage;
 
 namespace Favor
 {
-   
-    
-    
+
+
+
     /// <summary>
     /// 提供特定于应用程序的行为，以补充默认的应用程序类。
     /// </summary>
     public sealed partial class App : Application
     {
         private TransitionCollection transitions;
-        public static MobileServiceClient MobileService = new MobileServiceClient("https://favor2.azure-mobile.cn/","VCqxNhmGtoObtTIClgjNeaVKdoVpIj46");
-
+        //public static MobileServiceClient MobileService = new MobileServiceClient("https://favor2.azure-mobile.cn/","VCqxNhmGtoObtTIClgjNeaVKdoVpIj46");
+        public static MobileServiceClient MobileService = new MobileServiceClient("https://favor3.azure-mobile.cn/","JhkGhUGIjXOEqfTsQgIeTVFJvpKtlu78");
         public event Action<IReadOnlyList<StorageFile>> FilesPicked;
         /// <summary>
         /// 初始化单一实例应用程序对象。    这是执行的创作代码的第一行，
@@ -159,7 +159,7 @@ namespace Favor
                 }
             }
             base.OnActivated(args);
-            
+
             if (args.Kind == ActivationKind.WebAuthenticationBrokerContinuation)
             {
                 App.MobileService.LoginComplete(args as WebAuthenticationBrokerContinuationEventArgs);
