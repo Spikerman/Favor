@@ -42,8 +42,9 @@ namespace Favor.DataModel
         {
             get
             {
-                return restTime = (DateTime.Now.Subtract(__createdAt).Days*24 + DateTime.Now.Subtract(__createdAt).Hours) + "h"   //计算小时
-                            + DateTime.Now.Subtract(__createdAt).Minutes.ToString() + "min";
+                return restTime = (__createdAt.AddHours(-ACTIVETIME).Subtract(DateTime.Now).Days*24 
+                                    + __createdAt.AddHours(-ACTIVETIME).Subtract(DateTime.Now).Hours) + "h"   //计算小时
+                                    + __createdAt.AddHours(-ACTIVETIME).Subtract(DateTime.Now).Minutes.ToString() + "min";
             }
             set
             {
