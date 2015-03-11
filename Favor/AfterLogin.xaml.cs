@@ -129,6 +129,7 @@ namespace Favor
                 {
                     await FavorUser.instance.UploadUserImage();
                     await FavorUser.instance.AddUserName(InputUserName.Text);
+                    await FavorUser.instance.accountItem.UpdateAsync(FavorUser.instance.account);
                     Frame.Navigate(typeof(MissionsWall));
                 }
                 else
@@ -180,22 +181,10 @@ namespace Favor
                 SuggestedStartLocation = PickerLocationId.PicturesLibrary,
                 FileTypeFilter = { ".jpg", ".jpeg", ".png", ".bmp" }
             };
-            //FavorUser.instance.userImage =await imagePicker.PickSingleFileAsync();
+            
             imagePicker.PickSingleFileAndContinue();
         }
 
-        //private async void UploadButton_Click(object sender, RoutedEventArgs e)
-        //{
-        //    if (FavorUser.instance.userImageStorageFile != null)
-        //    {
-        //        await FavorUser.instance.UploadUserImage();
-        //        Frame.Navigate(typeof(MissionsWall));
-        //    }
-        //    else
-        //    {
-        //        var dialog = new MessageDialog("Please Choose Photo Please");
-        //        await dialog.ShowAsync();
-        //    }
-        //}
+        
     }
 }

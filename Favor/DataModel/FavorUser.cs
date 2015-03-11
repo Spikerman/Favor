@@ -37,12 +37,12 @@ namespace Favor.DataModel
         /// <summary>
         /// 对应Mission表中的一条记录
         /// </summary>
-        private IMobileServiceTable<Mission> missionItem = App.MobileService.GetTable<Mission>();
+        public IMobileServiceTable<Mission> missionItem = App.MobileService.GetTable<Mission>();
 
         /// <summary>
         /// 对应Account表中的 一条记录
         /// </summary>
-        private IMobileServiceTable<Account> accountItem = App.MobileService.GetTable<Account>();
+        public IMobileServiceTable<Account> accountItem = App.MobileService.GetTable<Account>();
 
         /// <summary>
         /// 对应UsersRelation表中的一条记录
@@ -79,8 +79,8 @@ namespace Favor.DataModel
             try
             {
                 missionCollection = await missionItem
-                    .Where(missionTable => missionTable.completed == false 
-                        & missionTable.userId == this.account.Id 
+                    .Where(missionTable => missionTable.completed == false
+                        & missionTable.userId == this.account.Id
                         & missionTable.__createdAt > DateTime.Now.AddHours(Mission.ACTIVETIME))
                     .ToCollectionAsync();//导入自己发布的任务
 
@@ -379,9 +379,13 @@ namespace Favor.DataModel
 
                     try
                     {
-                        searchDuplicatedUserIdList = await usersRelationItem
-                            .Where(usersRelationTable => usersRelationTable.FriendId == friendId || usersRelationTable.UserId == friendId).ToListAsync();
+                        searchDuplicatedUserIdList = await (from userRelationPair in usersRelationItem
+                                                            where (account.Id == userRelationPair.UserId & userRelationPair.FriendId == friendId) || (account.Id == userRelationPair.FriendId & userRelationPair.UserId == friendId)
+                                                            select userRelationPair).ToListAsync();
                     }
+
+
+
                     catch (MobileServiceInvalidOperationException e)
                     {
                         exception = e;
@@ -492,7 +496,7 @@ namespace Favor.DataModel
             try
             {
                 userMissionList = await missionItem
-                    .Where(missionTable => missionTable.completed == false 
+                    .Where(missionTable => missionTable.completed == false
                             & missionTable.userId == userId
                             & missionTable.__createdAt > DateTime.Now.AddHours(Mission.ACTIVETIME))
                     .ToListAsync();
@@ -549,13 +553,13 @@ namespace Favor.DataModel
         {
             MobileServiceInvalidOperationException exception = null;
             string errorString = string.Empty;
-            
+
             if (userImageStorageFile != null)
             {
 
                 // Set blob properties
                 userImage.ContainerName = "userimages";
-                userImage.ResourceName = userImageStorageFile.Name+account.Id;
+                userImage.ResourceName = userImageStorageFile.Name + account.Id;
                 userImage.userId = account.Id;
             }
 
