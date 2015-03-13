@@ -32,8 +32,14 @@ namespace Favor
     /// </summary>
     public sealed partial class App : Application
     {
+        // http://go.microsoft.com/fwlink/?LinkId=290986&clcid=0x804
+       
+        //public static Microsoft.WindowsAzure.MobileServices.MobileServiceClient Favor3Client = new Microsoft.WindowsAzure.MobileServices.MobileServiceClient(
+        //"https://favor3.azure-mobile.cn/",
+        //"JhkGhUGIjXOEqfTsQgIeTVFJvpKtlu78");
+
         private TransitionCollection transitions;
-        //public static MobileServiceClient MobileService = new MobileServiceClient("https://favor2.azure-mobile.cn/","VCqxNhmGtoObtTIClgjNeaVKdoVpIj46");
+       
         public static MobileServiceClient MobileService = new MobileServiceClient("https://favor3.azure-mobile.cn/","JhkGhUGIjXOEqfTsQgIeTVFJvpKtlu78");
         public event Action<IReadOnlyList<StorageFile>> FilesPicked;
         /// <summary>
@@ -52,7 +58,7 @@ namespace Favor
         /// 将使用其他入口点。
         /// </summary>
         /// <param name="e">有关启动请求和过程的详细信息。</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs e)
+        protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
 #if DEBUG
             if (System.Diagnostics.Debugger.IsAttached)
@@ -116,7 +122,10 @@ namespace Favor
             }
 
             // 确保当前窗口处于活动状态
-            Window.Current.Activate();
+           Window.Current.Activate();
+            // http://go.microsoft.com/fwlink/?LinkId=290986&clcid=0x804
+            
+           await Notifications.instance.RefreshChannel();
         }
 
         /// <summary>

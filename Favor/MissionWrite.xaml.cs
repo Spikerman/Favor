@@ -60,5 +60,10 @@ namespace Favor
 
 
         }
+
+        private void PushingButton_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(PushingList));
+        }
     }
 }

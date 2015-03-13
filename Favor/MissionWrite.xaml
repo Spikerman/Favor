@@ -10,15 +10,14 @@
     <Page.BottomAppBar>
         <CommandBar Background="#FFFF8F3D">
             <AppBarButton x:Name="SaveButton" Icon="Accept" Label="appbarbutton" Click="ButtonSave_Click"/>
+            <AppBarButton x:Name="PushingButton" Label="Pushing" Icon="SetTile" Click="PushingButton_Click"></AppBarButton>
             <AppBarButton Icon="Cancel" Label="appbarbutton"/>
+            
         </CommandBar>
     </Page.BottomAppBar>
 
     <Grid Background="#FFF9F0EC">
-        <Grid HorizontalAlignment="Left" Height="85" Margin="0,0,0,495" VerticalAlignment="Bottom" Width="400" Background="#FFFF8F3D">
-            <Image HorizontalAlignment="Left" Height="65" VerticalAlignment="Top" Width="65" Margin="30,10,0,0" Source="Assets/Logo.png"/>
-            <TextBlock HorizontalAlignment="Left" Margin="115,31,0,30" TextWrapping="Wrap" Text="User Name" FontSize="20"/>
-        </Grid>
+        <Grid HorizontalAlignment="Left" Height="85" Margin="0,0,0,495" VerticalAlignment="Bottom" Width="400" Background="#FFFF8F3D"/>
         <TextBox x:Name="TextInput" HorizontalAlignment="Left" Margin="0,85,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="400" Height="495" Background="#FFF9F0EC"/>
 
     </Grid>
