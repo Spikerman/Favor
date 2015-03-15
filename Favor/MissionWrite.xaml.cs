@@ -45,7 +45,7 @@ namespace Favor
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             await FavorUser.instance.RefreshMissionsWall();
-            //ListItems.ItemsSource = FavorUser.instance.missionCollection;
+            //这里有个bug 就是在写任务按取消时返回会出现
             this.SaveButton.IsEnabled = true;
         }
 
@@ -63,7 +63,12 @@ namespace Favor
 
         private void PushingButton_Click(object sender, RoutedEventArgs e)
         {
-            Frame.Navigate(typeof(PushingList));
+            //Frame.Navigate(typeof(PushingList));
+        }
+
+        private void AppBarButton_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(MissionsWall));
         }
     }
 }

@@ -8,7 +8,7 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid x:Name="LayoutRoot">
+    <Grid x:Name="LayoutRoot" Background="#FFFF8F3D">
 
         <Grid.ChildrenTransitions>
             <TransitionCollection>
@@ -22,16 +22,13 @@
         </Grid.RowDefinitions>
 
         <!-- 标题面板 -->
-        <StackPanel Grid.Row="0" Margin="19,0,0,0">
-            <TextBlock Text="Favor" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
-            <TextBlock Text="Adding Friends" Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
-        </StackPanel>
+        <TextBlock Margin="10,10,10,0" TextWrapping="Wrap" Text="Add Friend" 
+                   VerticalAlignment="Top" FontSize="50" Foreground="White"/>
 
         <!--TODO: 应将内容放入以下网格-->
-        <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
-            <TextBox x:Name="SearchInput" HorizontalAlignment="Left" Margin="10,49,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="337" ToolTipService.ToolTip="输入用户账户"/>
-            <Button x:Name="Add_Button" Content="Search and Add!" HorizontalAlignment="Left" Margin="10,123,0,0" VerticalAlignment="Top" Width="337" Click="Add_Button_Click" />
-
-        </Grid>
+        <TextBlock HorizontalAlignment="Left" Margin="10,88,0,0" TextWrapping="Wrap" 
+                   Text="FriendName" VerticalAlignment="Top" FontSize="25" Foreground="White"/>
+        <TextBox x:Name="SearchInput" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Width="337" ToolTipService.ToolTip="输入用户账户" Margin="10,123,0,0"/>
+        <Button x:Name="Add_Button" Content="Search" HorizontalAlignment="Left" Margin="10,8.5,0,0" VerticalAlignment="Top" Width="135" Click="Add_Button_Click" Grid.Row="1" />
     </Grid>
 </Page>

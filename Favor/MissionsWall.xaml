@@ -10,9 +10,15 @@
 
     <Page.BottomAppBar>
         <CommandBar Background="#FFFF8F3D">
+            <!--领取任务-->
             <AppBarButton Icon="Accept" Label="Accept" Click="Accept_AppBarButton_Click"/>
-            <AppBarButton Icon="Cancel" Label="Logout" Click="Cancel_AppBarButton_Click"/>
-            <AppBarButton Icon="Back" Label="Return" Click="Back_AppBarButton_Click"/>
+            <!--添加好友-->
+            <AppBarButton Icon="AddFriend" Label="AddFriend" Click="AddFriend_AppBarButton_Click"/>
+            <!--编写任务-->
+            <AppBarButton Icon="Add" Label="Write" Click="Write_AppBarButton_Click"/>
+            <!--由于空间问题先隐藏返回按钮采用物理键返回<AppBarButton Icon="Back" Label="Return" Click="Back_AppBarButton_Click"/>-->
+            <!--退出登录-->
+            <AppBarButton Icon="Cancel" Label="Out" Click="Cancel_AppBarButton_Click"/>
         </CommandBar>
     </Page.BottomAppBar>
 
@@ -34,11 +40,26 @@
                 <TextBlock Text="{Binding RestTime}" FontSize="15" Margin="20,0,0,0" VerticalAlignment="Center"/>
             </StackPanel>
         </DataTemplate>
-        
+        <DataTemplate x:Key="FriendDataTemplate">
+            <StackPanel Orientation="Horizontal" Width="470" Height="85">
+                <Border Height="40" Width="40" Margin="10,10,0,10" VerticalAlignment="Top">
+                    <Image Source="Assets/SmallLogo.png" Stretch="UniformToFill"/>
+                </Border>
+                <StackPanel Orientation="Vertical" VerticalAlignment="Top" Margin="0,10,0,0">
+                    <TextBlock Text="{Binding UserName}" FontSize="20" FontWeight="Semilight" 
+                       Margin="10,0,0,0" Width="320" Height="26" TextTrimming="WordEllipsis" 
+                       HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    <TextBlock Text="{Binding Email}" 
+                       Margin="10,2,0,0" Width="320" TextTrimming="WordEllipsis" TextWrapping="Wrap" 
+                       HorizontalAlignment="Left"/>
+                </StackPanel>
+                <TextBlock Text=" " FontSize="9" Margin="20,0,0,0" VerticalAlignment="Center"/>
+            </StackPanel>
+        </DataTemplate>
     </Page.Resources>
 
-    <Grid Background="#FFFF8F3D">
-        <Grid HorizontalAlignment="Left" Width="400" Grid.ColumnSpan="2" Background="#FFFF8F3D" Height="60" VerticalAlignment="Top">
+    <Grid Background="#F9F1ED">
+        <!--<Grid HorizontalAlignment="Left" Width="400" Grid.ColumnSpan="2" Background="#FFFF8F3D" Height="60" VerticalAlignment="Top">
             <AppBarButton HorizontalAlignment="Left" Label="" Margin="20,-2,0,-18" VerticalAlignment="Top" Height="80" Icon="Contact" Width="80" Click="AppBarButton_Click"/>
             <AppBarButton x:Name="AddressBookBtn" HorizontalAlignment="Left" Icon="People" Label="" Margin="210,-2,0,-18" VerticalAlignment="Top" Height="80" Click="AddressBookBtn_Click"/>
         </Grid>
@@ -47,6 +68,47 @@
         <ListView x:Name="ListItems" HorizontalAlignment="Left" Height="520" Margin="0,60,0,0" 
                   VerticalAlignment="Top" Width="400" Background="#F2F9F6F6" Foreground="Black" FontSize="20" 
                   ItemTemplate="{StaticResource MessagesDataTemplate}" SelectionMode="Single"  />
+        -->
+        <StackPanel Background="#FFFF8F3D" Margin="0,0,0,517" Height="63" VerticalAlignment="Bottom"></StackPanel>
+        <Pivot x:Uid="Pivot" x:Name="pivot" Margin="0,-11,0,0">
+            <Pivot.HeaderTemplate>
+                <DataTemplate>
+                    <Image Source="{Binding}" Width="110" Height="80" />
+                </DataTemplate>
+            </Pivot.HeaderTemplate>
+            <!--Pivot item one个人中心-->
+            <PivotItem
+                x:Uid="PivotItem1"
+                Margin="5,5,5,5"
+                Header="{Binding Source=Assets/setting.png}">
+                <!--Double line list with text wrapping-->
+            </PivotItem>
+
+            <!--Pivot item two任务墙-->
+            <PivotItem
+                x:Uid="PivotItem2"
+                Margin="5,5,5,5"
+                Header="{Binding Source=Assets/wall.png}">
+                <ListView x:Name="MisssionListItems" HorizontalAlignment="Left" Height="504"  
+                  VerticalAlignment="Top" Width="390" Background="#F9F1ED" Foreground="Black" FontSize="20" 
+                  ItemTemplate="{StaticResource MessagesDataTemplate}" SelectionMode="Single" Margin="0,0,0,0">
+                </ListView>
+            </PivotItem>
+
+            <!--Pivot item three好友列表-->
+            <PivotItem
+                x:Uid="PivotItem3"
+                Margin="5,5,5,5"
+                Header="{Binding Source=Assets/friend.png}">
+                <ListView x:Name="FriendListItems" HorizontalAlignment="Left" Height="504" Margin="0,0,0,0" 
+                          VerticalAlignment="Top" Width="390" Background="#F9F1ED" 
+                          Foreground="Black" FontSize="20" 
+                          ItemTemplate="{StaticResource FriendDataTemplate}"  
+                          IsItemClickEnabled="True"  >
+                </ListView>
+                <!--Double line list no text wrapping-->
+            </PivotItem>
+        </Pivot>
     </Grid>
 </Page>
 

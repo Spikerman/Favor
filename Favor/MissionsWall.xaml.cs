@@ -27,6 +27,23 @@ namespace Favor
         public MissionsWall()
         {
             this.InitializeComponent();
+            //添加物理键返回前一页的响应
+            Windows.Phone.UI.Input.HardwareButtons.BackPressed += (sender, e) =>
+            {
+                //向系统表明我们对物理返回键按钮响应自行处理，必须放在一开始
+                e.Handled = true;
+
+                //有上一页可回退时
+                if (this.Frame.CanGoBack)
+                {
+                    this.Frame.GoBack();
+                }
+                //无上一页弹窗提示关闭APP【与最小化后台运行并不同】 
+                else
+                {
+                    this.Frame.GoBack();
+                }
+            };
         }
 
         /// <summary>
@@ -37,40 +54,41 @@ namespace Favor
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             await FavorUser.instance.RefreshMissionsWall();
-            
-            ListItems.ItemsSource = FavorUser.instance.missionCollection;
+            await FavorUser.instance.RefreshUserAllFriends();
+            MisssionListItems.ItemsSource = FavorUser.instance.missionCollection;
+            FriendListItems.ItemsSource = FavorUser.instance.AllFriendsCollection;
         }
 
         /// <summary>
         /// 同步后台任务数据和前台任务列表
         /// </summary>
-        private async void RefreshListItems()
-        {
-            await FavorUser.instance.RefreshMissionsWall();
-                      
-            ListItems.ItemsSource = FavorUser.instance.missionCollection;
+        /*旧的按钮
+private async void RefreshListItems()
+{
+    await FavorUser.instance.RefreshMissionsWall();
+    MisssionListItems.ItemsSource = FavorUser.instance.missionCollection;
 
-        }
+}
 
-        private void WishBtn_Click(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(MissionWrite));
-        }
+private void WishBtn_Click(object sender, RoutedEventArgs e)
+{
+    this.Frame.Navigate(typeof(MissionWrite));
+}
 
-        private void WallBtn_Click(object sender, RoutedEventArgs e)
-        {
-            RefreshListItems();
-        }
+private void WallBtn_Click(object sender, RoutedEventArgs e)
+{
+    RefreshListItems();
+}
 
-        private void AddressBookBtn_Click(object sender, RoutedEventArgs e)
-        {
-            //暂时转到加好友页面
-            Frame.Navigate(typeof(AddressBook));
-        }
-
+private void AddressBookBtn_Click(object sender, RoutedEventArgs e)
+{
+    //暂时转到加好友页面
+    //Frame.Navigate(typeof(AddressBook));
+}
+*/
         private async void Cancel_AppBarButton_Click(object sender, RoutedEventArgs e)
         {
-            //暂时作为注销按钮
+            //注销按钮
             await FavorUser.instance.LoginOut();
             Frame.Navigate(typeof(MainPage));
 
@@ -85,16 +103,22 @@ namespace Favor
 
         private async void Accept_AppBarButton_Click(object sender, RoutedEventArgs e)
         {
-            Mission x = (Mission)ListItems.SelectedItem;
+            //接收任务
+            //注意SelectionMode="Single"
+            Mission x = (Mission)MisssionListItems.SelectedItem;
             await FavorUser.instance.UpdateChenkedMissionTable(x);
-            
-            //SelectionMode="Single"
-            //ListItems.Focus(Windows.UI.Xaml.FocusState.Unfocused);注释掉这句话才可以
         }
 
-        private void AppBarButton_Click(object sender, RoutedEventArgs e)
+        private void Write_AppBarButton_Click(object sender, RoutedEventArgs e)
         {
-           
+            //发布任务
+            Frame.Navigate(typeof(MissionWrite));
+        }
+
+        private void AddFriend_AppBarButton_Click(object sender, RoutedEventArgs e)
+        {
+            //搜寻好友
+            Frame.Navigate(typeof(AddingFriends));
         }
 
     }
