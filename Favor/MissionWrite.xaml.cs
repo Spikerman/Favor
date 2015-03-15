@@ -63,7 +63,7 @@ namespace Favor
 
         private void PushingButton_Click(object sender, RoutedEventArgs e)
         {
-            //Frame.Navigate(typeof(PushingList));
+           Frame.Navigate(typeof(PushingList));
         }
 
         private void AppBarButton_Click(object sender, RoutedEventArgs e)

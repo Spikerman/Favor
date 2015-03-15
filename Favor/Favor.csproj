@@ -113,6 +113,9 @@
       <DependentUpon>MissionWrite.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PushingList.xaml.cs">
+      <DependentUpon>PushingList.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Services\MobileServices\Favor3\push.register.cs">
       <ConnectedServiceReference>Favor3</ConnectedServiceReference>
     </Compile>
@@ -167,6 +170,10 @@
     <Page Include="MissionWrite.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PushingList.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Signup.xaml">
       <SubType>Designer</SubType>
