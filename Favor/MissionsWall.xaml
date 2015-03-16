@@ -25,7 +25,7 @@
     <Page.Resources>
         <converters:StringToImageConverter x:Key="StringToImageConverter"></converters:StringToImageConverter>
         <DataTemplate x:Key="MessagesDataTemplate">
-            <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Vertical" Background="White" Margin="0,30,0,0">
                 <StackPanel Orientation="Horizontal" Height="83" VerticalAlignment="Top" >
                     <Border Height="40" Width="40" Margin="10,10,0,10" VerticalAlignment="Top">
                         <Image Source="{Binding Path=publisherImageUri, Converter={StaticResource StringToImageConverter}}" Stretch="UniformToFill" Margin="0,0,-22,-18"/>
