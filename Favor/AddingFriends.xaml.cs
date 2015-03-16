@@ -123,5 +123,10 @@ namespace Favor
             }
             Frame.IsEnabled = true;
         }
+
+        private void Back_AppBarButton_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(MissionsWall));
+        }
     }
 }
