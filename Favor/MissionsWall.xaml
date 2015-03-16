@@ -24,6 +24,7 @@
 
     <Page.Resources>
         <converters:StringToImageConverter x:Key="StringToImageConverter"></converters:StringToImageConverter>
+        <!--任务墙数据模板-->
         <DataTemplate x:Key="MessagesDataTemplate">
             <StackPanel Orientation="Horizontal" Width="470" Height="85"  >
                 <Border Height="40" Width="40" Margin="10,10,0,10" VerticalAlignment="Top">
@@ -40,6 +41,7 @@
                 <TextBlock Text="{Binding RestTime}" FontSize="15" Margin="20,0,0,0" VerticalAlignment="Center"/>
             </StackPanel>
         </DataTemplate>
+        <!--好友列表数据模板-->
         <DataTemplate x:Key="FriendDataTemplate">
             <StackPanel Orientation="Horizontal" Width="470" Height="85">
                 <Border Height="40" Width="40" Margin="10,10,0,10" VerticalAlignment="Top">
@@ -70,16 +72,18 @@
                   ItemTemplate="{StaticResource MessagesDataTemplate}" SelectionMode="Single"  />
         -->
         <StackPanel Background="#FFFF8F3D" Margin="0,0,0,517" Height="63" VerticalAlignment="Bottom"></StackPanel>
-        <Pivot x:Uid="Pivot" x:Name="pivot" Margin="0,-11,0,0">
+        <Pivot x:Uid="Pivot" x:Name="pivot" Margin="0,-11,0,0" SelectionChanged="Pivot_SelectionChanged">
             <Pivot.HeaderTemplate>
                 <DataTemplate>
-                    <Image Source="{Binding}" Width="110" Height="80" />
+                    <Image Source="{Binding}" Width="110" Height="80" Opacity="0.2"/>
                 </DataTemplate>
             </Pivot.HeaderTemplate>
+            
             <!--Pivot item one个人中心-->
             <PivotItem
                 x:Uid="PivotItem1"
                 Margin="5,5,5,5"
+                x:Name="HomePivot"
                 Header="{Binding Source=Assets/setting.png}">
                 <!--Double line list with text wrapping-->
             </PivotItem>
@@ -110,7 +114,7 @@
                                                     </VisualState>
                                                     <VisualState x:Name="SelectedUnfocused">
                                                         <Storyboard>
-                                                            <ColorAnimation Duration="0" Storyboard.TargetName="myback" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="#f8e8e0"/>
+                                                            <ColorAnimation Duration="0" Storyboard.TargetName="myback" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="#ffe599"/>
                                                         </Storyboard>
                                                     </VisualState>
                                                 </VisualStateGroup>

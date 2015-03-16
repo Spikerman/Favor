@@ -44,6 +44,9 @@ namespace Favor
                     this.Frame.GoBack();
                 }
             };
+
+            //控制pivot高亮
+
         }
 
         /// <summary>
@@ -57,6 +60,7 @@ namespace Favor
             await FavorUser.instance.RefreshUserAllFriends();
             MisssionListItems.ItemsSource = FavorUser.instance.missionCollection;
             FriendListItems.ItemsSource = FavorUser.instance.AllFriendsCollection;
+
         }
 
         /// <summary>
@@ -86,6 +90,7 @@ private void AddressBookBtn_Click(object sender, RoutedEventArgs e)
     //Frame.Navigate(typeof(AddressBook));
 }
 */
+     
         private async void Cancel_AppBarButton_Click(object sender, RoutedEventArgs e)
         {
             //注销按钮
@@ -119,6 +124,35 @@ private void AddressBookBtn_Click(object sender, RoutedEventArgs e)
         {
             //搜寻好友
             Frame.Navigate(typeof(AddingFriends));
+        }
+
+        private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+             /*if (e.AddedItems.Count > 0)
+             {
+                 PivotItem currentItem = e.AddedItems[0] as PivotItem;
+
+                 if (currentItem != null)
+                 {
+                     (currentItem.Header as Image).Opacity = 1.0;
+                        
+                 }
+             }
+            
+             if (e.RemovedItems.Count > 0)
+             {
+                 PivotItem currentItem = e.RemovedItems[0] as PivotItem;
+
+                 if (currentItem != null)
+                 {
+                     (currentItem.Header as Image).Opacity = 0.2;
+                 }
+             }
+              */
+            PivotItem currentItem = e.AddedItems[0] as PivotItem;
+            (currentItem.Header as Image).Opacity = 1.0;
+            
+
         }
 
     }
