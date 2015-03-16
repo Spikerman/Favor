@@ -219,11 +219,11 @@ namespace Favor.DataModel
                         }
                         else
                         {
-                            //存储用户信息
-                            AccountLocalStorage.instance.SaveAccount(account);
-                            message = "登陆成功!";
-                            var dialog = new MessageDialog(message);
-                            await dialog.ShowAsync();
+                            ////存储用户信息
+                            //AccountLocalStorage.instance.SaveAccount(account);
+                            //message = "登陆成功!";
+                            //var dialog = new MessageDialog(message);
+                            //await dialog.ShowAsync();
                         }
                     }
                 }

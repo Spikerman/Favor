@@ -19,6 +19,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 using Windows.Storage;
+using Windows.UI;
 
 // “空白应用程序”模板在 http://go.microsoft.com/fwlink/?LinkId=391641 上有介绍
 
@@ -42,6 +43,8 @@ namespace Favor
        
         public static MobileServiceClient MobileService = new MobileServiceClient("https://favor3.azure-mobile.cn/","JhkGhUGIjXOEqfTsQgIeTVFJvpKtlu78");
         public event Action<IReadOnlyList<StorageFile>> FilesPicked;
+
+        public static Windows.UI.ViewManagement.StatusBar statusBar; 
         /// <summary>
         /// 初始化单一实例应用程序对象。    这是执行的创作代码的第一行，
         /// 逻辑上等同于 main() 或 WinMain()。
@@ -121,11 +124,23 @@ namespace Favor
                 }
             }
 
+
+            statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
+            statusBar.BackgroundColor = Color.FromArgb(255, 255, 143, 61);
+            statusBar.BackgroundOpacity = 1;
+
+            statusBar.ProgressIndicator.Text = "Loading";
+           // await statusBar.ProgressIndicator.ShowAsync();
+
+          
             // 确保当前窗口处于活动状态
-           Window.Current.Activate();
+           
+            Window.Current.Activate();
             // http://go.microsoft.com/fwlink/?LinkId=290986&clcid=0x804
             
            await Notifications.instance.RefreshChannel();
+
+
         }
 
         /// <summary>
