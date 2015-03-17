@@ -19,6 +19,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Coding4Fun.Toolkit.Controls;
 
 
 // “基本页”项模板在 http://go.microsoft.com/fwlink/?LinkID=390556 上有介绍
@@ -32,32 +33,17 @@ namespace Favor
     {
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
-
+        public ProgressOverlay progressOverlay = new ProgressOverlay();
+        
+        
         public Login()
         {
             this.InitializeComponent();
-
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
 
-            //添加物理键返回前一页的响应
-            Windows.Phone.UI.Input.HardwareButtons.BackPressed += (sender, e) =>
-            {
-                //向系统表明我们对物理返回键按钮响应自行处理，必须放在一开始
-                e.Handled = true;
-
-                //有上一页可回退时
-                if (this.Frame.CanGoBack)
-                {
-                    this.Frame.GoBack();
-                }
-                //无上一页弹窗提示关闭APP【与最小化后台运行并不同】 
-                else
-                {
-                    this.Frame.GoBack();
-                }
-            };
+           
         }
 
         /// <summary>
@@ -135,8 +121,9 @@ namespace Favor
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
 
-           
-            
+            progressOverlay.Content = "loading";
+            progressOverlay.Show();
+
             Account accountItem = new Account { Email = userEmail.Text, Password = userPassword.Password };
 
             Frame.IsEnabled = false;                      //通信期间禁止操作界面
@@ -149,10 +136,12 @@ namespace Favor
             {
                 if (FavorUser.instance.account.UserName == null)//注册后第一次登陆,跳转到填写用户名界面
                 {
+                    progressOverlay.Hide();
                     Frame.Navigate(typeof(AfterLogin));
                 }
                 else
                 {
+                    progressOverlay.Hide();
                     Frame.Navigate(typeof(MissionsWall));
                 }
 
