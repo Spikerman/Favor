@@ -177,12 +177,14 @@ namespace Favor.DataModel
 
                 if (!Regex.IsMatch(LoginAccount.Email, pattern))
                 {
+                    await App.statusBar.ProgressIndicator.HideAsync();
                     message = "请输入正确的邮箱格式";
                     var dialog = new MessageDialog(message);
                     await dialog.ShowAsync();
                 }
                 else if (LoginAccount.Password.Length < 8)
                 {
+                    await App.statusBar.ProgressIndicator.HideAsync();
                     message = "密码长度必须大于8位";
                     var dialog = new MessageDialog(message);
                     await dialog.ShowAsync();
@@ -208,6 +210,7 @@ namespace Favor.DataModel
 
                     if (exception != null)
                     {
+                        await App.statusBar.ProgressIndicator.HideAsync();
                         await new MessageDialog(exception.Message, "登陆状态").ShowAsync();
                     }
                     else
@@ -215,12 +218,13 @@ namespace Favor.DataModel
                         //如果用户不存在
                         if (account == null)
                         {
+                            await App.statusBar.ProgressIndicator.HideAsync();
                             await new MessageDialog("账号或用户名错误").ShowAsync();
                         }
                         else
                         {
-                            ////存储用户信息
-                            //AccountLocalStorage.instance.SaveAccount(account);
+                            //存储用户信息
+                            AccountLocalStorage.instance.SaveAccount(account);
                             //message = "登陆成功!";
                             //var dialog = new MessageDialog(message);
                             //await dialog.ShowAsync();
@@ -248,14 +252,18 @@ namespace Favor.DataModel
             string message;
             string pattern = @"^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$";
 
+            await App.statusBar.ProgressIndicator.ShowAsync();
+
             if (!Regex.IsMatch(SigningUpAccount.Email, pattern))
             {
+                await App.statusBar.ProgressIndicator.HideAsync();
                 message = "请输入正确的邮箱格式";
                 var dialog = new MessageDialog(message);
                 await dialog.ShowAsync();
             }
             else if (SigningUpAccount.Password.Length < 8)
             {
+                await App.statusBar.ProgressIndicator.HideAsync();
                 message = "密码长度必须大于8位";
                 var dialog = new MessageDialog(message);
                 await dialog.ShowAsync();
@@ -278,9 +286,11 @@ namespace Favor.DataModel
                 }
                 else
                 {
+                    await App.statusBar.ProgressIndicator.HideAsync();
                     message = "注册成功!";
                     var dialog = new MessageDialog(message);
                     await dialog.ShowAsync();
+
                 }
             }
         }
@@ -346,6 +356,9 @@ namespace Favor.DataModel
         /// <returns></returns>
         public async Task AddingFriend(string email)
         {
+
+            await App.statusBar.ProgressIndicator.ShowAsync();
+            
             MobileServiceInvalidOperationException exception = null;
             List<Account> searchFriendResultList = new List<Account>();
             try
@@ -393,12 +406,14 @@ namespace Favor.DataModel
 
                     if (exception != null)
                     {
+                        await App.statusBar.ProgressIndicator.HideAsync();
                         await new MessageDialog(exception.Message, "登陆状态").ShowAsync();
                     }
                     else
                     {
                         if (searchDuplicatedUserIdList.Count != 0)//用户关系表中已有记录
                         {
+                            await App.statusBar.ProgressIndicator.HideAsync();
                             var dialog = new MessageDialog("已是好友，无需添加");
                             await dialog.ShowAsync();
                         }
@@ -415,11 +430,13 @@ namespace Favor.DataModel
                             }
                             if (exception != null)
                             {
+                                await App.statusBar.ProgressIndicator.HideAsync();
                                 await new MessageDialog(exception.Message, "登陆状态").ShowAsync();
                             }
                             else
                             {
-                                var dialog = new MessageDialog("成功！密码: " + accountDetail);//若插入成功，则返回密码作为验证
+                                await App.statusBar.ProgressIndicator.HideAsync();
+                                var dialog = new MessageDialog("成功");//若插入成功，则返回密码作为验证
                                 await dialog.ShowAsync();
                             }
                         }

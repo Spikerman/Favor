@@ -122,6 +122,7 @@ namespace Favor
         {
             string messageTest = null;
             var x = ListItems.SelectedItems;
+            
             for(int i=0;i<x.Count;i++)
             {
                 var y = (Account)x.ElementAt(i);
@@ -136,11 +137,7 @@ namespace Favor
             
         }
 
-        //private async void PushingToUserButton_Click(object sender, RoutedEventArgs e)
-        //{
-        //    Notifications.insrance.userIdTags.Add(FavorUser.instance.account.Id);
-        //    await Notifications.insrance.PushToFriends();
-        //}
+        
     }
 }
 
