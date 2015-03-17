@@ -6,10 +6,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:slToolkit ="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
-    xmlns:c4f="clr-namespace:Coding4Fun.Phone.Controls;assembly=Coding4Fun.Phone.Controls"
-    xmlns:Converters="clr-namespace:Coding4Fun.Phone.Controls;assembly=Coding4Fun.Phone.Controls"
     mc:Ignorable="d" Background="Black">
 
+    
     <Grid x:Name="LoginGrid" Background="#FFFF8F3D">
         <TextBlock Margin="10,10,222,0" TextWrapping="Wrap" Text="Log in" 
                    VerticalAlignment="Top" FontSize="50" Foreground="White"/>
@@ -25,7 +24,7 @@
         <PasswordBox x:Name="userPassword" HorizontalAlignment="Left" Margin="10,203,0,0" 
                      VerticalAlignment="Top" Width="380"/>
 
-       
+        
 
     </Grid>
 </Page>
