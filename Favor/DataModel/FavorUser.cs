@@ -29,8 +29,7 @@ namespace Favor.DataModel
 
         public Account account { get; set; }                                              //用户账户信息
 
-        public UserImage userImage = new UserImage();//存储本用户头像
-
+       
         public StorageFile userImageStorageFile;//存储用户头像文件
 
 
@@ -544,6 +543,7 @@ namespace Favor.DataModel
         /// <returns></returns>
         public async Task AddUserName(string userName)
         {
+            
             account.UserName = userName;
             MobileServiceInvalidOperationException exception = null;
             try
@@ -561,14 +561,16 @@ namespace Favor.DataModel
             }
             else
             {
-                var dialog = new MessageDialog("Welcome: " + userName);
-                await dialog.ShowAsync();
+                await App.statusBar.ProgressIndicator.HideAsync();
             }
         }
 
         public async Task UploadUserImage()
         {
+            UserImage userImage = new UserImage();//新建存储用户头像表类
+            
             MobileServiceInvalidOperationException exception = null;
+            
             string errorString = string.Empty;
 
             if (userImageStorageFile != null)

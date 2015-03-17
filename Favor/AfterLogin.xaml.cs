@@ -141,6 +141,7 @@ namespace Favor
         private async void UserNameButton_Click(object sender, RoutedEventArgs e)
         {
 
+            await App.statusBar.ProgressIndicator.ShowAsync();
             if (InputUserName.Text != "")
             {
                 if (FavorUser.instance.userImageStorageFile != null)
@@ -152,12 +153,14 @@ namespace Favor
                 }
                 else
                 {
+                    await App.statusBar.ProgressIndicator.HideAsync();
                     var dialog = new MessageDialog("Please Choose Photo Please");
                     await dialog.ShowAsync();
                 }
             }
             else
             {
+                await App.statusBar.ProgressIndicator.HideAsync();
                 var dialog = new MessageDialog("Please enter the name");
                 await dialog.ShowAsync();
             }
