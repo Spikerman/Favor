@@ -1,5 +1,6 @@
 ﻿using Favor.Common;
 using Favor.DataModel;
+using Favor.Controller;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -148,7 +149,7 @@ namespace Favor
                 {
                     await FavorUser.instance.UploadUserImage();
                     await FavorUser.instance.AddUserName(InputUserName.Text);
-                    await FavorUser.instance.accountItem.UpdateAsync(FavorUser.instance.account);
+                    await MobileServiceTable.instance.accountItem.UpdateAsync(FavorUser.instance.account);
                     Frame.Navigate(typeof(MissionsWall));
                 }
                 else

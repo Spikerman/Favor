@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 using Windows.UI.Popups;
 using System.Text.RegularExpressions;
 using Windows.Storage;
-using Favor.Common;
+using Favor;
 using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Windows.UI.Xaml.Controls;
+using Favor.DataModel;
 
 
-namespace Favor.DataModel
+namespace Favor.Controller
 {
     public class FavorUser
     {
@@ -34,36 +35,13 @@ namespace Favor.DataModel
 
 
         /// <summary>
-        /// 对应Mission表中的一条记录
-        /// </summary>
-        public IMobileServiceTable<Mission> missionItem = App.MobileService.GetTable<Mission>();
-
-        /// <summary>
-        /// 对应Account表中的 一条记录
-        /// </summary>
-        public IMobileServiceTable<Account> accountItem = App.MobileService.GetTable<Account>();
-
-        /// <summary>
-        /// 对应UsersRelation表中的一条记录
-        /// </summary>
-        private IMobileServiceTable<UsersRelation> usersRelationItem = App.MobileService.GetTable<UsersRelation>();
-
-        public IMobileServiceTable<UserImage> userImageItem = App.MobileService.GetTable<UserImage>();
-
-        public IMobileServiceTable<Mission> MissionOperator
-        {
-            get { return missionItem; }
-            set { missionItem = value; }
-        }
-
-        /// <summary>
         /// 将任务插入MissionTable
         /// </summary>
         /// <param name="entryItem">需要插入的任务</param>
         /// <returns></returns>
         public async Task InsertMissionTable(Mission entryItem)
         {
-            await missionItem.InsertAsync(entryItem);
+            await MobileServiceTable.instance.missionItem.InsertAsync(entryItem);
         }
 
         /// <summary>
@@ -77,7 +55,7 @@ namespace Favor.DataModel
             MobileServiceInvalidOperationException exception = null;
             try
             {
-                missionCollection = await missionItem
+                missionCollection = await MobileServiceTable.instance.missionItem
                     .Where(missionTable => missionTable.completed == false
                         & missionTable.userId == this.account.Id
                         & missionTable.__createdAt > DateTime.Now.AddHours(Mission.ACTIVETIME))
@@ -106,7 +84,7 @@ namespace Favor.DataModel
             {
                 try
                 {
-                    await accountItem.UpdateAsync(account);
+                    await MobileServiceTable.instance.accountItem.UpdateAsync(account);
                 }
                 catch (MobileServiceInvalidOperationException e)
                 {
@@ -131,7 +109,7 @@ namespace Favor.DataModel
         public async Task UpdateChenkedMissionTable(Mission checkedMission)
         {
             checkedMission.receiverId = account.Id;
-            await missionItem.UpdateAsync(checkedMission);
+            await MobileServiceTable.instance.missionItem.UpdateAsync(checkedMission);
         }
 
         /// <summary>
@@ -194,9 +172,9 @@ namespace Favor.DataModel
                     MobileServiceInvalidOperationException exception = null;
                     try
                     {
-                        List<Account> accountList = await accountItem.Where(accountTable => accountTable.Email == LoginAccount.Email
-                                                                                 & accountTable.Password == LoginAccount.Password)
-                                                                         .ToListAsync();
+                        List<Account> accountList = await MobileServiceTable.instance.accountItem.Where(accountTable => accountTable.Email == LoginAccount.Email
+                                                                                                         & accountTable.Password == LoginAccount.Password)
+                                                                                                     .ToListAsync();
                         if (accountList.Count != 0)
                         {
                             this.account = accountList.First();
@@ -272,7 +250,7 @@ namespace Favor.DataModel
                 MobileServiceInvalidOperationException exception = null;
                 try
                 {
-                    await accountItem.InsertAsync(SigningUpAccount);
+                    await MobileServiceTable.instance.accountItem.InsertAsync(SigningUpAccount);
                 }
                 catch (MobileServiceInvalidOperationException e)
                 {
@@ -305,7 +283,7 @@ namespace Favor.DataModel
             List<Account> searchFriendResultList = new List<Account>();
             try
             {
-                searchFriendResultList = await accountItem
+                searchFriendResultList = await MobileServiceTable.instance.accountItem
                         .Where(accountTable => accountTable.Email == email).ToListAsync();
             }
 
@@ -362,7 +340,7 @@ namespace Favor.DataModel
             List<Account> searchFriendResultList = new List<Account>();
             try
             {
-                searchFriendResultList = await accountItem
+                searchFriendResultList = await MobileServiceTable.instance.accountItem
                         .Where(accountTable => accountTable.Email == email).ToListAsync();
             }
 
@@ -391,7 +369,7 @@ namespace Favor.DataModel
 
                     try
                     {
-                        searchDuplicatedUserIdList = await (from userRelationPair in usersRelationItem
+                        searchDuplicatedUserIdList = await (from userRelationPair in MobileServiceTable.instance.usersRelationItem
                                                             where (account.Id == userRelationPair.UserId & userRelationPair.FriendId == friendId) || (account.Id == userRelationPair.FriendId & userRelationPair.UserId == friendId)
                                                             select userRelationPair).ToListAsync();
                     }
@@ -421,7 +399,7 @@ namespace Favor.DataModel
                             UsersRelation userRelation = new UsersRelation { UserId = account.Id, FriendId = friendId };
                             try
                             {
-                                await usersRelationItem.InsertAsync(userRelation);//若为新好友，则向用户关系表中插入数据
+                                await MobileServiceTable.instance.usersRelationItem.InsertAsync(userRelation);//若为新好友，则向用户关系表中插入数据
                             }
                             catch (MobileServiceInvalidOperationException e)
                             {
@@ -459,7 +437,7 @@ namespace Favor.DataModel
             {
                 //查询所有和该用户有关的关系记录
                 MobileServiceCollection<UsersRelation, UsersRelation> userAllFriendsRelationItem
-                    = await (from relation in usersRelationItem
+                    = await (from relation in MobileServiceTable.instance.usersRelationItem
                              where relation.UserId == this.account.Id || relation.FriendId == this.account.Id
                              select relation).ToCollectionAsync();
 
@@ -469,7 +447,7 @@ namespace Favor.DataModel
                 {
                     if (this.AllFriendsCollection != null)
                     {
-                        List<Account> friend = await (from account in accountItem
+                        List<Account> friend = await (from account in MobileServiceTable.instance.accountItem
                                                       where account.Id == FriendRelation.UserId || account.Id == FriendRelation.FriendId
                                                       where account.Id != this.account.Id
                                                       select account).ToListAsync();
@@ -477,7 +455,7 @@ namespace Favor.DataModel
                     }
                     else
                     {
-                        MobileServiceCollection<Account, Account> friend = await (from account in accountItem
+                        MobileServiceCollection<Account, Account> friend = await (from account in MobileServiceTable.instance.accountItem
                                                                                   where account.Id == FriendRelation.UserId || account.Id == FriendRelation.FriendId
                                                                                   where account.Id != this.account.Id
                                                                                   select account).ToCollectionAsync();
@@ -511,7 +489,7 @@ namespace Favor.DataModel
             List<Mission> userMissionList = new List<Mission>();
             try
             {
-                userMissionList = await missionItem
+                userMissionList = await MobileServiceTable.instance.missionItem
                     .Where(missionTable => missionTable.completed == false
                             & missionTable.userId == userId
                             & missionTable.__createdAt > DateTime.Now.AddHours(Mission.ACTIVETIME))
@@ -548,7 +526,7 @@ namespace Favor.DataModel
             MobileServiceInvalidOperationException exception = null;
             try
             {
-                await accountItem.UpdateAsync(account);
+                await MobileServiceTable.instance.accountItem.UpdateAsync(account);
             }
             catch (MobileServiceInvalidOperationException e)
             {
@@ -586,7 +564,7 @@ namespace Favor.DataModel
             // generates an SAS in the response.
             try
             {
-                await userImageItem.InsertAsync(userImage);
+                await MobileServiceTable.instance.userImageItem.InsertAsync(userImage);
             }
             catch (MobileServiceInvalidOperationException e)
             {
