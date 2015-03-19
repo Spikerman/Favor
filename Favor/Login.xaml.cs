@@ -35,13 +35,15 @@ namespace Favor
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
         public ProgressOverlay progressOverlay = new ProgressOverlay();
 
-        
+
         public Login()
         {
             this.InitializeComponent();
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
+           
+
         }
 
         /// <summary>
@@ -119,15 +121,15 @@ namespace Favor
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
 
-            progressOverlay.Content = "loading";
-            progressOverlay.Show();
+            await App.statusBar.ProgressIndicator.ShowAsync();
             
+
             Account accountItem = new Account { Email = userEmail.Text, Password = userPassword.Password };
 
-            Frame.IsEnabled = false;                      //通信期间禁止操作界面
-            
+           Frame.IsEnabled = false;                      //通信期间禁止操作界面
+
             await FavorUser.instance.Login(accountItem);
-            
+
             Frame.IsEnabled = true;                       //解除禁止操作界面
 
             if (FavorUser.instance.account != null)
@@ -136,15 +138,22 @@ namespace Favor
                 {
                     progressOverlay.Hide();
                     Frame.Navigate(typeof(AfterLogin));
+                    await App.statusBar.ProgressIndicator.HideAsync();
                 }
                 else
                 {
                     progressOverlay.Hide();
                     Frame.Navigate(typeof(MissionsWall));
+                    await App.statusBar.ProgressIndicator.HideAsync();
                 }
 
             }
 
+        }
+
+        private static void SetProgressIndicator(bool isVisible)
+        {
+            
         }
 
     }
