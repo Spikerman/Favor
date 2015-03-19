@@ -1,5 +1,6 @@
-﻿using Favor.Common;
-using Favor.DataModel;
+﻿using Favor.DataModel;
+using Favor.Common;
+using Favor.Controller;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -25,18 +26,19 @@ namespace Favor
     /// <summary>
     /// 可独立使用或用于导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class PushingList : Page
+    public sealed partial class AddingFriends : Page
     {
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
 
-        public PushingList()
+        public AddingFriends()
         {
             this.InitializeComponent();
 
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
+
             //添加物理键返回前一页的响应
             Windows.Phone.UI.Input.HardwareButtons.BackPressed += (sender, e) =>
             {
@@ -55,14 +57,6 @@ namespace Favor
                 }
             };
         }
-
-        protected override async void OnNavigatedTo(NavigationEventArgs e)
-        {
-            await FavorUser.instance.RefreshUserAllFriends();
-            ListItems.ItemsSource = FavorUser.instance.AllFriendsCollection;
-        }
-
-
 
         /// <summary>
         /// 获取与此 <see cref="Page"/> 关联的 <see cref="NavigationHelper"/>。
@@ -123,10 +117,10 @@ namespace Favor
         /// </summary>
         /// <param name="e">提供导航方法数据和
         /// 无法取消导航请求的事件处理程序。</param>
-        //protected override void OnNavigatedTo(NavigationEventArgs e)
-        //{
-        //    this.navigationHelper.OnNavigatedTo(e);
-        //}
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            this.navigationHelper.OnNavigatedTo(e);
+        }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
@@ -135,31 +129,23 @@ namespace Favor
 
         #endregion
 
-        private async void AppBarButton_Click(object sender, RoutedEventArgs e)
+        private async void Add_Button_Click(object sender, RoutedEventArgs e)
         {
-            string messageTest = null;
-            var x = ListItems.SelectedItems;
-
-            for (int i = 0; i < x.Count; i++)
+            Frame.IsEnabled = false;
+            if (SearchInput.Text == "")
             {
-                var y = (Account)x.ElementAt(i);
-                messageTest += (" " + y.UserName);
-                Notifications.instance.userIdTags.Add(y.Id);
+                var dialog = new MessageDialog("请输入账号");
             }
-            if (messageTest != null)
+            else
             {
-                var dialog = new MessageDialog(messageTest);
-
-                await dialog.ShowAsync();
+                await FavorUser.instance.AddingFriend(SearchInput.Text);
             }
-            //Notifications.instance.userIdTags.Add(FavorUser.instance.account.Id);
-            await Notifications.instance.PushToFriends(FavorUser.instance.account);
-
+            Frame.IsEnabled = true;
         }
 
-
+        private void Back_AppBarButton_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(MissionsWall));
+        }
     }
 }
-
-
-

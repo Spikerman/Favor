@@ -1,6 +1,6 @@
-﻿using Favor.DataModel;
-using Favor.Common;
-using Microsoft.WindowsAzure.MobileServices;
+﻿using Favor.Common;
+using Favor.DataModel;
+using Favor.Controller;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,7 +9,6 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
-using Windows.Storage;
 using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -19,8 +18,6 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using Coding4Fun.Toolkit.Controls;
-
 
 // “基本页”项模板在 http://go.microsoft.com/fwlink/?LinkID=390556 上有介绍
 
@@ -29,22 +26,44 @@ namespace Favor
     /// <summary>
     /// 可独立使用或用于导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class Login : Page
+    public sealed partial class PushingList : Page
     {
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
-        public ProgressOverlay progressOverlay = new ProgressOverlay();
 
-
-        public Login()
+        public PushingList()
         {
             this.InitializeComponent();
+
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
-           
+            //添加物理键返回前一页的响应
+            Windows.Phone.UI.Input.HardwareButtons.BackPressed += (sender, e) =>
+            {
+                //向系统表明我们对物理返回键按钮响应自行处理，必须放在一开始
+                e.Handled = true;
 
+                //有上一页可回退时
+                if (this.Frame.CanGoBack)
+                {
+                    this.Frame.GoBack();
+                }
+                //无上一页弹窗提示关闭APP【与最小化后台运行并不同】 
+                else
+                {
+                    this.Frame.GoBack();
+                }
+            };
         }
+
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        {
+            await FavorUser.instance.RefreshUserAllFriends();
+            ListItems.ItemsSource = FavorUser.instance.AllFriendsCollection;
+        }
+
+
 
         /// <summary>
         /// 获取与此 <see cref="Page"/> 关联的 <see cref="NavigationHelper"/>。
@@ -105,10 +124,10 @@ namespace Favor
         /// </summary>
         /// <param name="e">提供导航方法数据和
         /// 无法取消导航请求的事件处理程序。</param>
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            this.navigationHelper.OnNavigatedTo(e);
-        }
+        //protected override void OnNavigatedTo(NavigationEventArgs e)
+        //{
+        //    this.navigationHelper.OnNavigatedTo(e);
+        //}
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
@@ -117,44 +136,31 @@ namespace Favor
 
         #endregion
 
-
-        private async void LoginButton_Click(object sender, RoutedEventArgs e)
+        private async void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
-
-            await App.statusBar.ProgressIndicator.ShowAsync();
+            string messageTest = null;
+            var x = ListItems.SelectedItems;
             
-
-            Account accountItem = new Account { Email = userEmail.Text, Password = userPassword.Password };
-
-           Frame.IsEnabled = false;                      //通信期间禁止操作界面
-
-            await FavorUser.instance.Login(accountItem);
-
-            Frame.IsEnabled = true;                       //解除禁止操作界面
-
-            if (FavorUser.instance.account != null)
+            for (int i = 0; i < x.Count; i++)
             {
-                if (FavorUser.instance.account.UserName == null)//注册后第一次登陆,跳转到填写用户名界面
-                {
-                    progressOverlay.Hide();
-                    Frame.Navigate(typeof(AfterLogin));
-                    await App.statusBar.ProgressIndicator.HideAsync();
-                }
-                else
-                {
-                    progressOverlay.Hide();
-                    Frame.Navigate(typeof(MissionsWall));
-                    await App.statusBar.ProgressIndicator.HideAsync();
-                }
-
+                var y = (Account)x.ElementAt(i);
+                messageTest += (" " + y.UserName);
+                Notifications.instance.userIdTags.Add(y.Id);
             }
-
-        }
-
-        private static void SetProgressIndicator(bool isVisible)
-        {
+            if (messageTest != null)
+            {
+                var dialog = new MessageDialog(messageTest);
+            
+            await dialog.ShowAsync();
+            }
+            //Notifications.instance.userIdTags.Add(FavorUser.instance.account.Id);
+            await Notifications.instance.PushToFriends(FavorUser.instance.account);
             
         }
 
+        
     }
 }
+
+
+

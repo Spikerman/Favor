@@ -1,5 +1,6 @@
-﻿using Favor.DataModel;
-using Favor.Common;
+﻿using Favor.Common;
+using Favor.DataModel;
+using Favor.Controller;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,6 +9,8 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
+using Windows.Storage;
+using Windows.Storage.Pickers;
 using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -16,6 +19,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
 // “基本页”项模板在 http://go.microsoft.com/fwlink/?LinkID=390556 上有介绍
@@ -25,18 +29,25 @@ namespace Favor
     /// <summary>
     /// 可独立使用或用于导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class AddingFriends : Page
+    public sealed partial class AfterLogin : Page
     {
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
-
-        public AddingFriends()
+        private static readonly IEnumerable<string> SupportedImageFileTypes = new List<string> { ".jpeg", ".jpg", ".png", ".bmp" };
+        public AfterLogin()
         {
             this.InitializeComponent();
 
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
+
+            // Attach event which will return the picked files
+            var app = Application.Current as App;
+            if (app != null)
+            {
+                app.FilesPicked += OnFilesPicked;
+            }
 
             //添加物理键返回前一页的响应
             Windows.Phone.UI.Input.HardwareButtons.BackPressed += (sender, e) =>
@@ -128,23 +139,74 @@ namespace Favor
 
         #endregion
 
-        private async void Add_Button_Click(object sender, RoutedEventArgs e)
+        private async void UserNameButton_Click(object sender, RoutedEventArgs e)
         {
-            Frame.IsEnabled = false;
-            if (SearchInput.Text == "")
+
+            await App.statusBar.ProgressIndicator.ShowAsync();
+            if (InputUserName.Text != "")
             {
-                var dialog = new MessageDialog("请输入账号");
+                if (FavorUser.instance.userImageStorageFile != null)
+                {
+                    await FavorUser.instance.UploadUserImage();
+                    await FavorUser.instance.AddUserName(InputUserName.Text);
+                    await MobileServiceTable.instance.accountItem.UpdateAsync(FavorUser.instance.account);
+                    Frame.Navigate(typeof(MissionsWall));
+                }
+                else
+                {
+                    await App.statusBar.ProgressIndicator.HideAsync();
+                    var dialog = new MessageDialog("Please Choose Photo Please");
+                    await dialog.ShowAsync();
+                }
             }
             else
             {
-                await FavorUser.instance.AddingFriend(SearchInput.Text);
+                await App.statusBar.ProgressIndicator.HideAsync();
+                var dialog = new MessageDialog("Please enter the name");
+                await dialog.ShowAsync();
             }
-            Frame.IsEnabled = true;
         }
 
-        private void Back_AppBarButton_Click(object sender, RoutedEventArgs e)
+
+
+
+
+        private async void OnFilesPicked(IReadOnlyList<StorageFile> files)
         {
-            Frame.Navigate(typeof(MissionsWall));
+            Image.Source = null;
+            if (files.Count > 0)
+            {
+                var imageFile = files.FirstOrDefault(f => SupportedImageFileTypes.Contains(f.FileType.ToLower()));
+                FavorUser.instance.userImageStorageFile = imageFile;
+                if (imageFile != null)
+                {
+                    var bitmapImage = new BitmapImage();
+                    await bitmapImage.SetSourceAsync(await imageFile.OpenReadAsync());
+                    Image.Source = bitmapImage;
+                }
+            }
         }
+
+        private void InputUserName_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextBox textbox = (TextBox)sender;
+
+            if (textbox.Text != "")
+                InputUserName.IsEnabled = true;
+        }
+
+        private void ChoosePhotoButton_Click(object sender, RoutedEventArgs e)
+        {
+            FileOpenPicker imagePicker = new FileOpenPicker
+            {
+                ViewMode = PickerViewMode.Thumbnail,
+                SuggestedStartLocation = PickerLocationId.PicturesLibrary,
+                FileTypeFilter = { ".jpg", ".jpeg", ".png", ".bmp" }
+            };
+            
+            imagePicker.PickSingleFileAndContinue();
+        }
+
+        
     }
 }

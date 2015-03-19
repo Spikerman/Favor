@@ -7,7 +7,7 @@ using Windows.Storage;
 using Windows.UI.Popups;
 using Favor.DataModel;
 
-namespace Favor.Common
+namespace Favor.Controller
 {
     public class AccountLocalStorage
     {

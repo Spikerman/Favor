@@ -90,7 +90,7 @@
             <PivotItem
                 x:Uid="PivotItem1"
                 Margin="5,5,5,5"
-                Header="{Binding Source=Assets/setting.png}">
+                Header="{Binding Source=../Assets/setting.png}">
                 <!--Double line list with text wrapping-->
             </PivotItem>
 
@@ -98,7 +98,7 @@
             <PivotItem
                 x:Uid="PivotItem2"
                 Margin="5,5,5,5"
-                Header="{Binding Source=Assets/wall.png}">
+                Header="{Binding Source=../Assets/wall.png}">
                 <ListView x:Name="MisssionListItems" HorizontalAlignment="Left" Height="504"  
                   VerticalAlignment="Top" Width="390" Background="#F9F1ED" Foreground="Black" FontSize="20" 
                   ItemTemplate="{StaticResource MessagesDataTemplate}" SelectionMode="Single" Margin="0,0,0,0">
@@ -109,7 +109,7 @@
             <PivotItem
                 x:Uid="PivotItem3"
                 Margin="5,5,5,5"
-                Header="{Binding Source=Assets/friend.png}">
+                Header="{Binding Source=../Assets/friend.png}">
                 <ListView x:Name="FriendListItems" HorizontalAlignment="Left" Height="504" Margin="0,0,0,0" 
                           VerticalAlignment="Top" Width="390" Background="#F9F1ED" 
                           Foreground="Black" FontSize="20" 

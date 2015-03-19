@@ -1,5 +1,6 @@
 ﻿using Favor.DataModel;
 using Favor.Common;
+using Favor.Controller;
 using Microsoft.WindowsAzure.MobileServices;
 using System;
 using System.Collections.Generic;

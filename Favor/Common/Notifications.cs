@@ -10,6 +10,7 @@ using System.Net.Http;
 using Windows.Foundation;
 using Windows.Networking.PushNotifications;
 using Favor.DataModel;
+using Favor.Controller;
 
 namespace Favor.Common
 {

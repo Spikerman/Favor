@@ -1,5 +1,7 @@
-﻿using Favor.Common;
-using Favor.DataModel;
+﻿using Favor.DataModel;
+using Favor.Common;
+using Favor.Controller;
+using Microsoft.WindowsAzure.MobileServices;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,7 +11,6 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
 using Windows.Storage;
-using Windows.Storage.Pickers;
 using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -18,8 +19,9 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
+using Coding4Fun.Toolkit.Controls;
+
 
 // “基本页”项模板在 http://go.microsoft.com/fwlink/?LinkID=390556 上有介绍
 
@@ -28,43 +30,21 @@ namespace Favor
     /// <summary>
     /// 可独立使用或用于导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class AfterLogin : Page
+    public sealed partial class Login : Page
     {
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
-        private static readonly IEnumerable<string> SupportedImageFileTypes = new List<string> { ".jpeg", ".jpg", ".png", ".bmp" };
-        public AfterLogin()
+        public ProgressOverlay progressOverlay = new ProgressOverlay();
+
+
+        public Login()
         {
             this.InitializeComponent();
-
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
+           
 
-            // Attach event which will return the picked files
-            var app = Application.Current as App;
-            if (app != null)
-            {
-                app.FilesPicked += OnFilesPicked;
-            }
-
-            //添加物理键返回前一页的响应
-            Windows.Phone.UI.Input.HardwareButtons.BackPressed += (sender, e) =>
-            {
-                //向系统表明我们对物理返回键按钮响应自行处理，必须放在一开始
-                e.Handled = true;
-
-                //有上一页可回退时
-                if (this.Frame.CanGoBack)
-                {
-                    this.Frame.GoBack();
-                }
-                //无上一页弹窗提示关闭APP【与最小化后台运行并不同】 
-                else
-                {
-                    this.Frame.GoBack();
-                }
-            };
         }
 
         /// <summary>
@@ -138,74 +118,44 @@ namespace Favor
 
         #endregion
 
-        private async void UserNameButton_Click(object sender, RoutedEventArgs e)
+
+        private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
 
             await App.statusBar.ProgressIndicator.ShowAsync();
-            if (InputUserName.Text != "")
+            
+
+            Account accountItem = new Account { Email = userEmail.Text, Password = userPassword.Password };
+
+           Frame.IsEnabled = false;                      //通信期间禁止操作界面
+
+            await FavorUser.instance.Login(accountItem);
+
+            Frame.IsEnabled = true;                       //解除禁止操作界面
+
+            if (FavorUser.instance.account != null)
             {
-                if (FavorUser.instance.userImageStorageFile != null)
+                if (FavorUser.instance.account.UserName == null)//注册后第一次登陆,跳转到填写用户名界面
                 {
-                    await FavorUser.instance.UploadUserImage();
-                    await FavorUser.instance.AddUserName(InputUserName.Text);
-                    await FavorUser.instance.accountItem.UpdateAsync(FavorUser.instance.account);
-                    Frame.Navigate(typeof(MissionsWall));
+                    progressOverlay.Hide();
+                    Frame.Navigate(typeof(AfterLogin));
+                    await App.statusBar.ProgressIndicator.HideAsync();
                 }
                 else
                 {
+                    progressOverlay.Hide();
+                    Frame.Navigate(typeof(MissionsWall));
                     await App.statusBar.ProgressIndicator.HideAsync();
-                    var dialog = new MessageDialog("Please Choose Photo Please");
-                    await dialog.ShowAsync();
                 }
+
             }
-            else
-            {
-                await App.statusBar.ProgressIndicator.HideAsync();
-                var dialog = new MessageDialog("Please enter the name");
-                await dialog.ShowAsync();
-            }
+
         }
 
-
-
-
-
-        private async void OnFilesPicked(IReadOnlyList<StorageFile> files)
+        private static void SetProgressIndicator(bool isVisible)
         {
-            Image.Source = null;
-            if (files.Count > 0)
-            {
-                var imageFile = files.FirstOrDefault(f => SupportedImageFileTypes.Contains(f.FileType.ToLower()));
-                FavorUser.instance.userImageStorageFile = imageFile;
-                if (imageFile != null)
-                {
-                    var bitmapImage = new BitmapImage();
-                    await bitmapImage.SetSourceAsync(await imageFile.OpenReadAsync());
-                    Image.Source = bitmapImage;
-                }
-            }
-        }
-
-        private void InputUserName_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            TextBox textbox = (TextBox)sender;
-
-            if (textbox.Text != "")
-                InputUserName.IsEnabled = true;
-        }
-
-        private void ChoosePhotoButton_Click(object sender, RoutedEventArgs e)
-        {
-            FileOpenPicker imagePicker = new FileOpenPicker
-            {
-                ViewMode = PickerViewMode.Thumbnail,
-                SuggestedStartLocation = PickerLocationId.PicturesLibrary,
-                FileTypeFilter = { ".jpg", ".jpeg", ".png", ".bmp" }
-            };
             
-            imagePicker.PickSingleFileAndContinue();
         }
 
-        
     }
 }

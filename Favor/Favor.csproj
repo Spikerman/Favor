@@ -79,47 +79,49 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AddingFriends.xaml.cs">
+    <Compile Include="DataModel\MobileServiceTable.cs" />
+    <Compile Include="View\AddingFriends.xaml.cs">
       <DependentUpon>AddingFriends.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AfterLogin.xaml.cs">
+    <Compile Include="View\AfterLogin.xaml.cs">
       <DependentUpon>AfterLogin.xaml</DependentUpon>
     </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Common\AccountLocalStorage.cs" />
+    <Compile Include="Controller\AccountLocalStorage.cs" />
     <Compile Include="Common\Notifications.cs" />
     <Compile Include="Common\StringToImageConverter.cs" />
     <Compile Include="DataModel\Account.cs" />
+    <Compile Include="DataModel\Repost.cs" />
     <Compile Include="DataModel\UserImage.cs" />
     <Compile Include="DataModel\Mission.cs" />
     <Compile Include="Common\NavigationHelper.cs" />
     <Compile Include="Common\ObservableDictionary.cs" />
     <Compile Include="Common\RelayCommand.cs" />
     <Compile Include="Common\SuspensionManager.cs" />
-    <Compile Include="DataModel\FavorUser.cs" />
+    <Compile Include="Controller\FavorUser.cs" />
     <Compile Include="DataModel\UsersRelation.cs" />
-    <Compile Include="Login.xaml.cs">
+    <Compile Include="View\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MainPage.xaml.cs">
+    <Compile Include="View\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MissionsWall.xaml.cs">
+    <Compile Include="View\MissionsWall.xaml.cs">
       <DependentUpon>MissionsWall.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MissionWrite.xaml.cs">
+    <Compile Include="View\MissionWrite.xaml.cs">
       <DependentUpon>MissionWrite.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PushingList.xaml.cs">
+    <Compile Include="View\PushingList.xaml.cs">
       <DependentUpon>PushingList.xaml</DependentUpon>
     </Compile>
     <Compile Include="Services\MobileServices\Favor3\push.register.cs">
       <ConnectedServiceReference>Favor3</ConnectedServiceReference>
     </Compile>
-    <Compile Include="Signup.xaml.cs">
+    <Compile Include="View\Signup.xaml.cs">
       <DependentUpon>Signup.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
@@ -148,35 +150,35 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="AddingFriends.xaml">
+    <Page Include="View\AddingFriends.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="AfterLogin.xaml">
+    <Page Include="View\AfterLogin.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Login.xaml">
+    <Page Include="View\Login.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainPage.xaml">
+    <Page Include="View\MainPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MissionsWall.xaml">
+    <Page Include="View\MissionsWall.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="MissionWrite.xaml">
+    <Page Include="View\MissionWrite.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PushingList.xaml">
+    <Page Include="View\PushingList.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Signup.xaml">
+    <Page Include="View\Signup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
