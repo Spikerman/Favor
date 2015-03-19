@@ -150,7 +150,8 @@ private void AddressBookBtn_Click(object sender, RoutedEventArgs e)
              }
               */
             PivotItem currentItem = e.AddedItems[0] as PivotItem;
-            (currentItem.Header as Image).Opacity = 1.0;
+            ((Image)(currentItem.Header)).Opacity = 1.0;
+
             
 
         }
