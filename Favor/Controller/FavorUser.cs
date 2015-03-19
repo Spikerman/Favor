@@ -7,13 +7,15 @@ using System.Threading.Tasks;
 using Windows.UI.Popups;
 using System.Text.RegularExpressions;
 using Windows.Storage;
-using Favor.Common;
+using Favor;
 using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Windows.UI.Xaml.Controls;
+using Favor.DataModel;
+using Favor.Common;
 
 
-namespace Favor.DataModel
+namespace Favor.Controller
 {
     public class FavorUser
     {
@@ -29,33 +31,9 @@ namespace Favor.DataModel
 
         public Account account { get; set; }                                              //用户账户信息
 
-        public UserImage userImage = new UserImage();//存储本用户头像
 
         public StorageFile userImageStorageFile;//存储用户头像文件
 
-
-        /// <summary>
-        /// 对应Mission表中的一条记录
-        /// </summary>
-        public IMobileServiceTable<Mission> missionItem = App.MobileService.GetTable<Mission>();
-
-        /// <summary>
-        /// 对应Account表中的 一条记录
-        /// </summary>
-        public IMobileServiceTable<Account> accountItem = App.MobileService.GetTable<Account>();
-
-        /// <summary>
-        /// 对应UsersRelation表中的一条记录
-        /// </summary>
-        private IMobileServiceTable<UsersRelation> usersRelationItem = App.MobileService.GetTable<UsersRelation>();
-
-        public IMobileServiceTable<UserImage> userImageItem = App.MobileService.GetTable<UserImage>();
-
-        public IMobileServiceTable<Mission> MissionOperator
-        {
-            get { return missionItem; }
-            set { missionItem = value; }
-        }
 
         /// <summary>
         /// 将任务插入MissionTable
@@ -64,7 +42,7 @@ namespace Favor.DataModel
         /// <returns></returns>
         public async Task InsertMissionTable(Mission entryItem)
         {
-            await missionItem.InsertAsync(entryItem);
+            await MobileServiceTable.instance.missionItem.InsertAsync(entryItem);
         }
 
         /// <summary>
@@ -78,7 +56,7 @@ namespace Favor.DataModel
             MobileServiceInvalidOperationException exception = null;
             try
             {
-                missionCollection = await missionItem
+                missionCollection = await MobileServiceTable.instance.missionItem
                     .Where(missionTable => missionTable.completed == false
                         & missionTable.userId == this.account.Id
                         & missionTable.__createdAt > DateTime.Now.AddHours(Mission.ACTIVETIME))
@@ -107,7 +85,7 @@ namespace Favor.DataModel
             {
                 try
                 {
-                    await accountItem.UpdateAsync(account);
+                    await MobileServiceTable.instance.accountItem.UpdateAsync(account);
                 }
                 catch (MobileServiceInvalidOperationException e)
                 {
@@ -132,7 +110,7 @@ namespace Favor.DataModel
         public async Task UpdateChenkedMissionTable(Mission checkedMission)
         {
             checkedMission.receiverId = account.Id;
-            await missionItem.UpdateAsync(checkedMission);
+            await MobileServiceTable.instance.missionItem.UpdateAsync(checkedMission);
         }
 
         /// <summary>
@@ -156,6 +134,8 @@ namespace Favor.DataModel
                 catch (InvalidOperationException)
                 {
                     //message = "You must log in. Login Required";
+                    //var dialog = new MessageDialog(message);
+
                 }
 
             }
@@ -177,12 +157,14 @@ namespace Favor.DataModel
 
                 if (!Regex.IsMatch(LoginAccount.Email, pattern))
                 {
+                    await App.statusBar.ProgressIndicator.HideAsync();
                     message = "请输入正确的邮箱格式";
                     var dialog = new MessageDialog(message);
                     await dialog.ShowAsync();
                 }
                 else if (LoginAccount.Password.Length < 8)
                 {
+                    await App.statusBar.ProgressIndicator.HideAsync();
                     message = "密码长度必须大于8位";
                     var dialog = new MessageDialog(message);
                     await dialog.ShowAsync();
@@ -193,7 +175,7 @@ namespace Favor.DataModel
                     MobileServiceInvalidOperationException exception = null;
                     try
                     {
-                        List<Account> accountList = await accountItem.Where(accountTable => accountTable.Email == LoginAccount.Email
+                        List<Account> accountList = await MobileServiceTable.instance.accountItem.Where(accountTable => accountTable.Email == LoginAccount.Email
                                                                                  & accountTable.Password == LoginAccount.Password)
                                                                          .ToListAsync();
                         if (accountList.Count != 0)
@@ -208,6 +190,7 @@ namespace Favor.DataModel
 
                     if (exception != null)
                     {
+                        await App.statusBar.ProgressIndicator.HideAsync();
                         await new MessageDialog(exception.Message, "登陆状态").ShowAsync();
                     }
                     else
@@ -215,12 +198,13 @@ namespace Favor.DataModel
                         //如果用户不存在
                         if (account == null)
                         {
+                            await App.statusBar.ProgressIndicator.HideAsync();
                             await new MessageDialog("账号或用户名错误").ShowAsync();
                         }
                         else
                         {
-                            ////存储用户信息
-                            //AccountLocalStorage.instance.SaveAccount(account);
+                            //存储用户信息
+                            AccountLocalStorage.instance.SaveAccount(account);
                             //message = "登陆成功!";
                             //var dialog = new MessageDialog(message);
                             //await dialog.ShowAsync();
@@ -245,17 +229,24 @@ namespace Favor.DataModel
         public async Task SignUp(Account SigningUpAccount)
         {
             //EventHandler OnSuccess;
+            await Notifications.instance.RefreshChannel();//为该用户分配信道值
+            SigningUpAccount.ChannelUri = Notifications.instance.channel.Uri;
+
             string message;
             string pattern = @"^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$";
 
+            await App.statusBar.ProgressIndicator.ShowAsync();
+
             if (!Regex.IsMatch(SigningUpAccount.Email, pattern))
             {
+                await App.statusBar.ProgressIndicator.HideAsync();
                 message = "请输入正确的邮箱格式";
                 var dialog = new MessageDialog(message);
                 await dialog.ShowAsync();
             }
             else if (SigningUpAccount.Password.Length < 8)
             {
+                await App.statusBar.ProgressIndicator.HideAsync();
                 message = "密码长度必须大于8位";
                 var dialog = new MessageDialog(message);
                 await dialog.ShowAsync();
@@ -265,7 +256,7 @@ namespace Favor.DataModel
                 MobileServiceInvalidOperationException exception = null;
                 try
                 {
-                    await accountItem.InsertAsync(SigningUpAccount);
+                    await MobileServiceTable.instance.accountItem.InsertAsync(SigningUpAccount);
                 }
                 catch (MobileServiceInvalidOperationException e)
                 {
@@ -278,9 +269,11 @@ namespace Favor.DataModel
                 }
                 else
                 {
+                    await App.statusBar.ProgressIndicator.HideAsync();
                     message = "注册成功!";
                     var dialog = new MessageDialog(message);
                     await dialog.ShowAsync();
+
                 }
             }
         }
@@ -296,7 +289,7 @@ namespace Favor.DataModel
             List<Account> searchFriendResultList = new List<Account>();
             try
             {
-                searchFriendResultList = await accountItem
+                searchFriendResultList = await MobileServiceTable.instance.accountItem
                         .Where(accountTable => accountTable.Email == email).ToListAsync();
             }
 
@@ -346,11 +339,14 @@ namespace Favor.DataModel
         /// <returns></returns>
         public async Task AddingFriend(string email)
         {
+
+            await App.statusBar.ProgressIndicator.ShowAsync();
+
             MobileServiceInvalidOperationException exception = null;
             List<Account> searchFriendResultList = new List<Account>();
             try
             {
-                searchFriendResultList = await accountItem
+                searchFriendResultList = await MobileServiceTable.instance.accountItem
                         .Where(accountTable => accountTable.Email == email).ToListAsync();
             }
 
@@ -379,7 +375,7 @@ namespace Favor.DataModel
 
                     try
                     {
-                        searchDuplicatedUserIdList = await (from userRelationPair in usersRelationItem
+                        searchDuplicatedUserIdList = await (from userRelationPair in MobileServiceTable.instance.usersRelationItem
                                                             where (account.Id == userRelationPair.UserId & userRelationPair.FriendId == friendId) || (account.Id == userRelationPair.FriendId & userRelationPair.UserId == friendId)
                                                             select userRelationPair).ToListAsync();
                     }
@@ -393,12 +389,14 @@ namespace Favor.DataModel
 
                     if (exception != null)
                     {
+                        await App.statusBar.ProgressIndicator.HideAsync();
                         await new MessageDialog(exception.Message, "登陆状态").ShowAsync();
                     }
                     else
                     {
                         if (searchDuplicatedUserIdList.Count != 0)//用户关系表中已有记录
                         {
+                            await App.statusBar.ProgressIndicator.HideAsync();
                             var dialog = new MessageDialog("已是好友，无需添加");
                             await dialog.ShowAsync();
                         }
@@ -407,7 +405,7 @@ namespace Favor.DataModel
                             UsersRelation userRelation = new UsersRelation { UserId = account.Id, FriendId = friendId };
                             try
                             {
-                                await usersRelationItem.InsertAsync(userRelation);//若为新好友，则向用户关系表中插入数据
+                                await MobileServiceTable.instance.usersRelationItem.InsertAsync(userRelation);//若为新好友，则向用户关系表中插入数据
                             }
                             catch (MobileServiceInvalidOperationException e)
                             {
@@ -415,11 +413,13 @@ namespace Favor.DataModel
                             }
                             if (exception != null)
                             {
+                                await App.statusBar.ProgressIndicator.HideAsync();
                                 await new MessageDialog(exception.Message, "登陆状态").ShowAsync();
                             }
                             else
                             {
-                                var dialog = new MessageDialog("成功！密码: " + accountDetail);//若插入成功，则返回密码作为验证
+                                await App.statusBar.ProgressIndicator.HideAsync();
+                                var dialog = new MessageDialog("成功");//若插入成功，则返回密码作为验证
                                 await dialog.ShowAsync();
                             }
                         }
@@ -443,7 +443,7 @@ namespace Favor.DataModel
             {
                 //查询所有和该用户有关的关系记录
                 MobileServiceCollection<UsersRelation, UsersRelation> userAllFriendsRelationItem
-                    = await (from relation in usersRelationItem
+                    = await (from relation in MobileServiceTable.instance.usersRelationItem
                              where relation.UserId == this.account.Id || relation.FriendId == this.account.Id
                              select relation).ToCollectionAsync();
 
@@ -453,7 +453,7 @@ namespace Favor.DataModel
                 {
                     if (this.AllFriendsCollection != null)
                     {
-                        List<Account> friend = await (from account in accountItem
+                        List<Account> friend = await (from account in MobileServiceTable.instance.accountItem
                                                       where account.Id == FriendRelation.UserId || account.Id == FriendRelation.FriendId
                                                       where account.Id != this.account.Id
                                                       select account).ToListAsync();
@@ -461,7 +461,7 @@ namespace Favor.DataModel
                     }
                     else
                     {
-                        MobileServiceCollection<Account, Account> friend = await (from account in accountItem
+                        MobileServiceCollection<Account, Account> friend = await (from account in MobileServiceTable.instance.accountItem
                                                                                   where account.Id == FriendRelation.UserId || account.Id == FriendRelation.FriendId
                                                                                   where account.Id != this.account.Id
                                                                                   select account).ToCollectionAsync();
@@ -495,7 +495,7 @@ namespace Favor.DataModel
             List<Mission> userMissionList = new List<Mission>();
             try
             {
-                userMissionList = await missionItem
+                userMissionList = await MobileServiceTable.instance.missionItem
                     .Where(missionTable => missionTable.completed == false
                             & missionTable.userId == userId
                             & missionTable.__createdAt > DateTime.Now.AddHours(Mission.ACTIVETIME))
@@ -527,11 +527,12 @@ namespace Favor.DataModel
         /// <returns></returns>
         public async Task AddUserName(string userName)
         {
+
             account.UserName = userName;
             MobileServiceInvalidOperationException exception = null;
             try
             {
-                await accountItem.UpdateAsync(account);
+                await MobileServiceTable.instance.accountItem.UpdateAsync(account);
             }
             catch (MobileServiceInvalidOperationException e)
             {
@@ -544,14 +545,16 @@ namespace Favor.DataModel
             }
             else
             {
-                var dialog = new MessageDialog("Welcome: " + userName);
-                await dialog.ShowAsync();
+                await App.statusBar.ProgressIndicator.HideAsync();
             }
         }
 
         public async Task UploadUserImage()
         {
+            UserImage userImage = new UserImage();//新建存储用户头像表类
+
             MobileServiceInvalidOperationException exception = null;
+
             string errorString = string.Empty;
 
             if (userImageStorageFile != null)
@@ -567,7 +570,7 @@ namespace Favor.DataModel
             // generates an SAS in the response.
             try
             {
-                await userImageItem.InsertAsync(userImage);
+                await MobileServiceTable.instance.userImageItem.InsertAsync(userImage);
             }
             catch (MobileServiceInvalidOperationException e)
             {

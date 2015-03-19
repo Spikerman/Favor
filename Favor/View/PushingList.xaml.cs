@@ -1,5 +1,6 @@
 ﻿using Favor.Common;
 using Favor.DataModel;
+using Favor.Controller;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -139,25 +140,25 @@ namespace Favor
         {
             string messageTest = null;
             var x = ListItems.SelectedItems;
-            for(int i=0;i<x.Count;i++)
+            
+            for (int i = 0; i < x.Count; i++)
             {
                 var y = (Account)x.ElementAt(i);
                 messageTest += (" " + y.UserName);
                 Notifications.instance.userIdTags.Add(y.Id);
             }
+            if (messageTest != null)
+            {
+                var dialog = new MessageDialog(messageTest);
             
-            var dialog = new MessageDialog(messageTest);
             await dialog.ShowAsync();
+            }
             //Notifications.instance.userIdTags.Add(FavorUser.instance.account.Id);
-            await  Notifications.instance.PushToFriends();
+            await Notifications.instance.PushToFriends(FavorUser.instance.account);
             
         }
 
-        //private async void PushingToUserButton_Click(object sender, RoutedEventArgs e)
-        //{
-        //    Notifications.insrance.userIdTags.Add(FavorUser.instance.account.Id);
-        //    await Notifications.insrance.PushToFriends();
-        //}
+        
     }
 }
 

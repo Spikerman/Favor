@@ -1,5 +1,6 @@
 ﻿using Favor.Common;
 using Favor.DataModel;
+using Favor.Controller;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -141,23 +142,26 @@ namespace Favor
         private async void UserNameButton_Click(object sender, RoutedEventArgs e)
         {
 
+            await App.statusBar.ProgressIndicator.ShowAsync();
             if (InputUserName.Text != "")
             {
                 if (FavorUser.instance.userImageStorageFile != null)
                 {
                     await FavorUser.instance.UploadUserImage();
                     await FavorUser.instance.AddUserName(InputUserName.Text);
-                    await FavorUser.instance.accountItem.UpdateAsync(FavorUser.instance.account);
+                    await MobileServiceTable.instance.accountItem.UpdateAsync(FavorUser.instance.account);
                     Frame.Navigate(typeof(MissionsWall));
                 }
                 else
                 {
+                    await App.statusBar.ProgressIndicator.HideAsync();
                     var dialog = new MessageDialog("Please Choose Photo Please");
                     await dialog.ShowAsync();
                 }
             }
             else
             {
+                await App.statusBar.ProgressIndicator.HideAsync();
                 var dialog = new MessageDialog("Please enter the name");
                 await dialog.ShowAsync();
             }

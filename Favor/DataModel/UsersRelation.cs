@@ -15,9 +15,9 @@ namespace Favor.DataModel
         public string Id;
 
         [JsonProperty(PropertyName = "userId")]
-        public string UserId;
+        public string UserId{ get; set; }
 
         [JsonProperty(PropertyName = "friendId")]
-        public string FriendId;
+        public string FriendId{ get; set; }
     }
 }

@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Core;
 using Favor.DataModel;
+using Favor.Controller;
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=391641 上有介绍
 
 namespace Favor

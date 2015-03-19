@@ -1,5 +1,6 @@
 ﻿using Favor.DataModel;
 using Favor.Common;
+using Favor.Controller;
 using Microsoft.WindowsAzure.MobileServices;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,7 @@ using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 using Windows.Storage;
 using Windows.UI;
+using Favor.View;
 
 // “空白应用程序”模板在 http://go.microsoft.com/fwlink/?LinkId=391641 上有介绍
 
@@ -34,17 +36,14 @@ namespace Favor
     public sealed partial class App : Application
     {
         // http://go.microsoft.com/fwlink/?LinkId=290986&clcid=0x804
-       
-        //public static Microsoft.WindowsAzure.MobileServices.MobileServiceClient Favor3Client = new Microsoft.WindowsAzure.MobileServices.MobileServiceClient(
-        //"https://favor3.azure-mobile.cn/",
-        //"JhkGhUGIjXOEqfTsQgIeTVFJvpKtlu78");
 
+      
         private TransitionCollection transitions;
-       
-        public static MobileServiceClient MobileService = new MobileServiceClient("https://favor3.azure-mobile.cn/","JhkGhUGIjXOEqfTsQgIeTVFJvpKtlu78");
+
+        public static MobileServiceClient MobileService = new MobileServiceClient("https://favor3.azure-mobile.cn/", "JhkGhUGIjXOEqfTsQgIeTVFJvpKtlu78");
         public event Action<IReadOnlyList<StorageFile>> FilesPicked;
 
-        public static Windows.UI.ViewManagement.StatusBar statusBar; 
+        public static Windows.UI.ViewManagement.StatusBar statusBar;
         /// <summary>
         /// 初始化单一实例应用程序对象。    这是执行的创作代码的第一行，
         /// 逻辑上等同于 main() 或 WinMain()。
@@ -61,7 +60,7 @@ namespace Favor
         /// 将使用其他入口点。
         /// </summary>
         /// <param name="e">有关启动请求和过程的详细信息。</param>
-        protected override async void OnLaunched(LaunchActivatedEventArgs e)
+        protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
 #if DEBUG
             if (System.Diagnostics.Debugger.IsAttached)
@@ -109,16 +108,16 @@ namespace Favor
                 // 当导航堆栈尚未还原时，导航到第一页，
                 // 并通过将所需信息作为导航参数传入来配置
                 // 新页面
-                if (AccountLocalStorage.instance.isvaild())
-                {
-                    FavorUser.instance.account = new Account();
-                    AccountLocalStorage.instance.LoadAccount(FavorUser.instance.account);
-                    if (!rootFrame.Navigate(typeof(MissionsWall), e.Arguments))
-                    {
-                        throw new Exception("Failed to create initial page");
-                    }
-                }
-                else if (!rootFrame.Navigate(typeof(MainPage), e.Arguments))
+                //if (AccountLocalStorage.instance.isvaild())
+                //{
+                //    FavorUser.instance.account = new Account();
+                //    AccountLocalStorage.instance.LoadAccount(FavorUser.instance.account);
+                //    if (!rootFrame.Navigate(typeof(MissionsWall), e.Arguments))
+                //    {
+                //        throw new Exception("Failed to create initial page");
+                //    }
+                //}
+                if (!rootFrame.Navigate(typeof(Starting), e.Arguments))
                 {
                     throw new Exception("Failed to create initial page");
                 }
@@ -130,15 +129,15 @@ namespace Favor
             statusBar.BackgroundOpacity = 1;
 
             statusBar.ProgressIndicator.Text = "Loading";
-           // await statusBar.ProgressIndicator.ShowAsync();
+            // await statusBar.ProgressIndicator.ShowAsync();
 
-          
+
             // 确保当前窗口处于活动状态
-           
+
             Window.Current.Activate();
             // http://go.microsoft.com/fwlink/?LinkId=290986&clcid=0x804
-            
-           await Notifications.instance.RefreshChannel();
+
+            //await Notifications.instance.RefreshChannel();
 
 
         }

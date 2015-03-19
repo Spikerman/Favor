@@ -7,7 +7,7 @@ using Windows.Storage;
 using Windows.UI.Popups;
 using Favor.DataModel;
 
-namespace Favor.Common
+namespace Favor.Controller
 {
     public class AccountLocalStorage
     {
@@ -27,7 +27,9 @@ namespace Favor.Common
                      && ApplicationData.Current.LocalSettings.Values["Email"] != null
                      && ApplicationData.Current.LocalSettings.Values["Password"] != null
                 && ApplicationData.Current.LocalSettings.Values["UserImageUri"] != null
-                && ApplicationData.Current.LocalSettings.Values["UserName"] != null)
+                && ApplicationData.Current.LocalSettings.Values["UserName"] != null
+                )
+
             {
                 return true;
             }
@@ -44,7 +46,7 @@ namespace Favor.Common
             ApplicationData.Current.LocalSettings.Values["Password"] = account.Password;
             ApplicationData.Current.LocalSettings.Values["UserImageUri"] = account.UserImageUri;
             ApplicationData.Current.LocalSettings.Values["UserName"] = account.UserName;
-
+            
         }
 
         public void LoadAccount(Account account)
@@ -54,6 +56,7 @@ namespace Favor.Common
             account.Password = (string)ApplicationData.Current.LocalSettings.Values["Password"];
             account.UserImageUri = (string)ApplicationData.Current.LocalSettings.Values["UserImageUri"];
             account.UserName = (string)ApplicationData.Current.LocalSettings.Values["UserName"];
+            
         }
 
         public void ClearStorage()
@@ -63,6 +66,7 @@ namespace Favor.Common
             ApplicationData.Current.LocalSettings.Values.Remove("Password");
             ApplicationData.Current.LocalSettings.Values.Remove("UserImageUri");
             ApplicationData.Current.LocalSettings.Values.Remove("UserName");
+            
         }
     }
 }

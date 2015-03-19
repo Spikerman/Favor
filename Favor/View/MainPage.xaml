@@ -9,7 +9,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-        <Image HorizontalAlignment="Left" Height="640" VerticalAlignment="Top" Width="400" Source="Assets/Images/space.png" Stretch="Fill"/>
+        <Image HorizontalAlignment="Left" Height="640" VerticalAlignment="Top" Width="400" Source="../Assets/Images/space.png" Stretch="Fill"/>
         <TextBlock Margin="135,67,111,0" TextWrapping="Wrap" Text="Favor" VerticalAlignment="Top" FontSize="60"/>
         <Button x:Name="ToSignupBtn" Content="Sign up" HorizontalAlignment="Stretch" Margin="25,555,210,12" VerticalAlignment="Stretch" BorderBrush="{x:Null}" Background="#E5FF813E" FontSize="22" Click="ToSignupBtn_Click"/>
         <Button x:Name="ToLoginBtn" Content="Log in" HorizontalAlignment="Stretch" Margin="210,554,25,12" VerticalAlignment="Stretch" BorderBrush="{x:Null}" Background="#E5FF813E" FontSize="22" Click="ToLoginBtn_Click" />

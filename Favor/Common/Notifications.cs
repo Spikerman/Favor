@@ -10,6 +10,7 @@ using System.Net.Http;
 using Windows.Foundation;
 using Windows.Networking.PushNotifications;
 using Favor.DataModel;
+using Favor.Controller;
 
 namespace Favor.Common
 {
@@ -29,14 +30,14 @@ namespace Favor.Common
             channel=await Windows.Networking.PushNotifications.PushNotificationChannelManager.CreatePushNotificationChannelForApplicationAsync();
         }
 
-        public async Task PushToFriends()
+        public async Task PushToFriends(Account user)
         {
             try
             {
                 string message = FavorUser.instance.account.UserName+" need you help";
-                var channel = await Windows.Networking.PushNotifications.PushNotificationChannelManager.CreatePushNotificationChannelForApplicationAsync();
+                //var channel = await Windows.Networking.PushNotifications.PushNotificationChannelManager.CreatePushNotificationChannelForApplicationAsync();
 
-                await App.MobileService.GetPush().RegisterNativeAsync(channel.Uri,userIdTags);
+                await App.MobileService.GetPush().RegisterNativeAsync(user.ChannelUri);
                 await App.MobileService.InvokeApiAsync("notifyAllUsers", new JObject(new JProperty("toast", message)));
                 userIdTags.Clear();
 
