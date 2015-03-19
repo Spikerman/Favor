@@ -12,6 +12,7 @@ using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Windows.UI.Xaml.Controls;
 using Favor.DataModel;
+using Favor.Common;
 
 
 namespace Favor.Controller
@@ -30,7 +31,7 @@ namespace Favor.Controller
 
         public Account account { get; set; }                                              //用户账户信息
 
-       
+
         public StorageFile userImageStorageFile;//存储用户头像文件
 
 
@@ -133,6 +134,8 @@ namespace Favor.Controller
                 catch (InvalidOperationException)
                 {
                     //message = "You must log in. Login Required";
+                    //var dialog = new MessageDialog(message);
+
                 }
 
             }
@@ -228,7 +231,7 @@ namespace Favor.Controller
             //EventHandler OnSuccess;
             await Notifications.instance.RefreshChannel();//为该用户分配信道值
             SigningUpAccount.ChannelUri = Notifications.instance.channel.Uri;
-            
+
             string message;
             string pattern = @"^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$";
 
@@ -338,7 +341,7 @@ namespace Favor.Controller
         {
 
             await App.statusBar.ProgressIndicator.ShowAsync();
-            
+
             MobileServiceInvalidOperationException exception = null;
             List<Account> searchFriendResultList = new List<Account>();
             try
@@ -524,7 +527,7 @@ namespace Favor.Controller
         /// <returns></returns>
         public async Task AddUserName(string userName)
         {
-            
+
             account.UserName = userName;
             MobileServiceInvalidOperationException exception = null;
             try
@@ -549,9 +552,9 @@ namespace Favor.Controller
         public async Task UploadUserImage()
         {
             UserImage userImage = new UserImage();//新建存储用户头像表类
-            
+
             MobileServiceInvalidOperationException exception = null;
-            
+
             string errorString = string.Empty;
 
             if (userImageStorageFile != null)

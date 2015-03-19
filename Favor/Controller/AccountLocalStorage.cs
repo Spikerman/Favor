@@ -28,7 +28,7 @@ namespace Favor.Controller
                      && ApplicationData.Current.LocalSettings.Values["Password"] != null
                 && ApplicationData.Current.LocalSettings.Values["UserImageUri"] != null
                 && ApplicationData.Current.LocalSettings.Values["UserName"] != null
-                && ApplicationData.Current.LocalSettings.Values["ChannelUri"] != null)
+                )
 
             {
                 return true;
@@ -46,7 +46,7 @@ namespace Favor.Controller
             ApplicationData.Current.LocalSettings.Values["Password"] = account.Password;
             ApplicationData.Current.LocalSettings.Values["UserImageUri"] = account.UserImageUri;
             ApplicationData.Current.LocalSettings.Values["UserName"] = account.UserName;
-            ApplicationData.Current.LocalSettings.Values["ChannelUri"] = account.ChannelUri;
+            
         }
 
         public void LoadAccount(Account account)
@@ -56,7 +56,7 @@ namespace Favor.Controller
             account.Password = (string)ApplicationData.Current.LocalSettings.Values["Password"];
             account.UserImageUri = (string)ApplicationData.Current.LocalSettings.Values["UserImageUri"];
             account.UserName = (string)ApplicationData.Current.LocalSettings.Values["UserName"];
-            account.ChannelUri = (string)ApplicationData.Current.LocalSettings.Values["ChannelUri"];
+            
         }
 
         public void ClearStorage()
@@ -66,7 +66,7 @@ namespace Favor.Controller
             ApplicationData.Current.LocalSettings.Values.Remove("Password");
             ApplicationData.Current.LocalSettings.Values.Remove("UserImageUri");
             ApplicationData.Current.LocalSettings.Values.Remove("UserName");
-            ApplicationData.Current.LocalSettings.Values.Remove("ChannelUri");
+            
         }
     }
 }
