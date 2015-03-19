@@ -23,5 +23,8 @@ namespace Favor.DataModel
 
         [JsonProperty(PropertyName = "userimageuri")]
         public string UserImageUri { get; set; }
+
+        [JsonProperty(PropertyName = "channeluri")]
+        public string ChannelUri { get; set; }
     }
 }

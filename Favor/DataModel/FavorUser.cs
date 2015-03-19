@@ -248,6 +248,9 @@ namespace Favor.DataModel
         public async Task SignUp(Account SigningUpAccount)
         {
             //EventHandler OnSuccess;
+            await Notifications.instance.RefreshChannel();//为该用户分配信道值
+            SigningUpAccount.ChannelUri = Notifications.instance.channel.Uri;
+            
             string message;
             string pattern = @"^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$";
 

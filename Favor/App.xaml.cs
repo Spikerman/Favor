@@ -138,7 +138,7 @@ namespace Favor
             Window.Current.Activate();
             // http://go.microsoft.com/fwlink/?LinkId=290986&clcid=0x804
             
-           await Notifications.instance.RefreshChannel();
+           //await Notifications.instance.RefreshChannel();
 
 
         }
