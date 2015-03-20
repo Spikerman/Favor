@@ -9,7 +9,9 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-        <Button x:Name="Starting_Button" Content="Do me a favor" HorizontalAlignment="Left" Margin="129,495,100,0" VerticalAlignment="Top" Click="Starting_Button_Click"/>
+        <Image HorizontalAlignment="Left" Height="640" VerticalAlignment="Top" Width="400" Source="../Assets/Images/space.png" Stretch="Fill"/>
+         
+        <Button x:Name="Starting_Button" Content="Do me a favor" HorizontalAlignment="Stretch" Margin="120,528,115,38" VerticalAlignment="Stretch" BorderBrush="{x:Null}" Background="#E5FF813E" FontSize="22" Click="Starting_Button_Click"/>
 
     </Grid>
 </Page>

@@ -60,7 +60,7 @@ namespace Favor
         /// 将使用其他入口点。
         /// </summary>
         /// <param name="e">有关启动请求和过程的详细信息。</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs e)
+        protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
 #if DEBUG
             if (System.Diagnostics.Debugger.IsAttached)
@@ -137,7 +137,7 @@ namespace Favor
             Window.Current.Activate();
             // http://go.microsoft.com/fwlink/?LinkId=290986&clcid=0x804
 
-            //await Notifications.instance.RefreshChannel();
+            await Notifications.instance.RefreshChannel();
 
 
         }

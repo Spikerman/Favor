@@ -54,10 +54,8 @@
                     <TextBlock Text="{Binding UserName}" FontSize="20" FontWeight="Semilight" 
                        Margin="10,0,0,0" Width="169" Height="28" TextTrimming="WordEllipsis" 
                        HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                    <TextBlock Text="{Binding Email}"
-                       Margin="10,2,0,0" Width="169" TextTrimming="WordEllipsis" TextWrapping="Wrap" 
-                       HorizontalAlignment="Left" Height="18"/>
                 </StackPanel>
+                   
 
                 <ToggleSwitch Header="" VerticalAlignment="Center" Width="112" OffContent="" OnContent="" FontSize="8" HorizontalAlignment="Center" Margin="0,20,0,19" IsOn="False">
                     <ToggleSwitch.Foreground>

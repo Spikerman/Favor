@@ -23,13 +23,10 @@ namespace Favor.Controller
         /// </returns>
         public bool isvaild()
         {
-            if (ApplicationData.Current.LocalSettings.Values["Id"] != null
-                     && ApplicationData.Current.LocalSettings.Values["Email"] != null
-                     && ApplicationData.Current.LocalSettings.Values["Password"] != null
-                && ApplicationData.Current.LocalSettings.Values["UserImageUri"] != null
+            if (ApplicationData.Current.LocalSettings.Values["Phone"] != null&&
+                ApplicationData.Current.LocalSettings.Values["UserImageUri"] != null
                 && ApplicationData.Current.LocalSettings.Values["UserName"] != null
                 )
-
             {
                 return true;
             }
@@ -37,23 +34,23 @@ namespace Favor.Controller
             {
                 return false;
             }
+                     
+
         }
 
         public void SaveAccount(Account account)
         {
-            ApplicationData.Current.LocalSettings.Values["Id"] = account.Id;
-            ApplicationData.Current.LocalSettings.Values["Email"] = account.Email;
-            ApplicationData.Current.LocalSettings.Values["Password"] = account.Password;
+            ApplicationData.Current.LocalSettings.Values["Phone"] = account.Phone;
             ApplicationData.Current.LocalSettings.Values["UserImageUri"] = account.UserImageUri;
             ApplicationData.Current.LocalSettings.Values["UserName"] = account.UserName;
+            
             
         }
 
         public void LoadAccount(Account account)
         {
-            account.Id = (string)ApplicationData.Current.LocalSettings.Values["Id"];
-            account.Email = (string)ApplicationData.Current.LocalSettings.Values["Email"];
-            account.Password = (string)ApplicationData.Current.LocalSettings.Values["Password"];
+            account.Phone = (string)ApplicationData.Current.LocalSettings.Values["Phone"];
+            
             account.UserImageUri = (string)ApplicationData.Current.LocalSettings.Values["UserImageUri"];
             account.UserName = (string)ApplicationData.Current.LocalSettings.Values["UserName"];
             
@@ -61,9 +58,8 @@ namespace Favor.Controller
 
         public void ClearStorage()
         {
-            ApplicationData.Current.LocalSettings.Values.Remove("Id");
-            ApplicationData.Current.LocalSettings.Values.Remove("Email");
-            ApplicationData.Current.LocalSettings.Values.Remove("Password");
+            ApplicationData.Current.LocalSettings.Values.Remove("Phone");
+           
             ApplicationData.Current.LocalSettings.Values.Remove("UserImageUri");
             ApplicationData.Current.LocalSettings.Values.Remove("UserName");
             

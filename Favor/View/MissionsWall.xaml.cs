@@ -18,6 +18,7 @@ using Windows.UI.Xaml.Navigation;
 using Windows.UI.Core;
 using Favor.DataModel;
 using Favor.Controller;
+using Favor.View;
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=391641 上有介绍
 
 namespace Favor
@@ -96,7 +97,7 @@ private void AddressBookBtn_Click(object sender, RoutedEventArgs e)
         {
             //注销按钮
             await FavorUser.instance.LoginOut();
-            Frame.Navigate(typeof(MainPage));
+            Frame.Navigate(typeof(Starting));
 
         }
 
@@ -129,31 +130,10 @@ private void AddressBookBtn_Click(object sender, RoutedEventArgs e)
 
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-             /*if (e.AddedItems.Count > 0)
-             {
-                 PivotItem currentItem = e.AddedItems[0] as PivotItem;
-
-                 if (currentItem != null)
-                 {
-                     (currentItem.Header as Image).Opacity = 1.0;
-                        
-                 }
-             }
-            
-             if (e.RemovedItems.Count > 0)
-             {
-                 PivotItem currentItem = e.RemovedItems[0] as PivotItem;
-
-                 if (currentItem != null)
-                 {
-                     (currentItem.Header as Image).Opacity = 0.2;
-                 }
-             }
-              */
+             
             PivotItem currentItem = e.AddedItems[0] as PivotItem;
             (currentItem.Header as Image).Opacity = 1.0;
             
-
         }
 
     }

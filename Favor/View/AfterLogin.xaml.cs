@@ -21,6 +21,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
+using Microsoft.WindowsAzure.MobileServices;
 
 // “基本页”项模板在 http://go.microsoft.com/fwlink/?LinkID=390556 上有介绍
 
@@ -141,16 +142,40 @@ namespace Favor
 
         private async void UserNameButton_Click(object sender, RoutedEventArgs e)
         {
+            MobileServiceInvalidOperationException exception = null;
 
             await App.statusBar.ProgressIndicator.ShowAsync();
-            if (InputUserName.Text != "")
+
+            if (InputUserName.Text != "" && InputUserPhone.Text != "")
             {
                 if (FavorUser.instance.userImageStorageFile != null)
                 {
-                    await FavorUser.instance.UploadUserImage();
-                    await FavorUser.instance.AddUserName(InputUserName.Text);
-                    await MobileServiceTable.instance.accountItem.UpdateAsync(FavorUser.instance.account);
-                    Frame.Navigate(typeof(MissionsWall));
+
+                    await FavorUser.instance.UploadUserImage();//handle photo
+                    // await FavorUser.instance.AddUserName(InputUserName.Text);
+                    FavorUser.instance.account.UserName = InputUserName.Text;
+                    // await MobileServiceTable.instance.accountItem.UpdateAsync(FavorUser.instance.account);
+                    FavorUser.instance.account.Phone = InputUserPhone.Text;
+
+                    try
+                    {
+                        await MobileServiceTable.instance.accountItem.InsertAsync(FavorUser.instance.account);
+                    }
+                    catch (MobileServiceInvalidOperationException ee)
+                    {
+                        exception = ee;
+                    }
+                    if (exception != null)
+                    {
+
+                        await new MessageDialog(exception.Message, "登陆状态").ShowAsync();
+                    }
+                    else
+                    {
+                        AccountLocalStorage.instance.SaveAccount(FavorUser.instance.account);
+                        Frame.Navigate(typeof(MissionsWall));
+                    }
+
                 }
                 else
                 {
@@ -162,7 +187,7 @@ namespace Favor
             else
             {
                 await App.statusBar.ProgressIndicator.HideAsync();
-                var dialog = new MessageDialog("Please enter the name");
+                var dialog = new MessageDialog("Please enter the name and phone");
                 await dialog.ShowAsync();
             }
         }
@@ -203,10 +228,10 @@ namespace Favor
                 SuggestedStartLocation = PickerLocationId.PicturesLibrary,
                 FileTypeFilter = { ".jpg", ".jpeg", ".png", ".bmp" }
             };
-            
+
             imagePicker.PickSingleFileAndContinue();
         }
 
-        
+
     }
 }

@@ -86,7 +86,7 @@
     <Compile Include="View\AfterLogin.xaml.cs">
       <DependentUpon>AfterLogin.xaml</DependentUpon>
     </Compile>
-    <Compile Include="App.xaml.cs">
+    <Compile Include="View\App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controller\AccountLocalStorage.cs" />
@@ -149,7 +149,7 @@
     <Content Include="StoreManifest.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
+    <ApplicationDefinition Include="View\App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>

@@ -70,7 +70,7 @@ namespace Favor
         private async void ButtonSave_Click(object sender, RoutedEventArgs e)
         {
             Frame.IsEnabled = false;
-            var missionItem = new Mission { information = TextInput.Text, userId = FavorUser.instance.account.Id,publisher=FavorUser.instance.account.UserName,publisherImageUri=FavorUser.instance.account.UserImageUri };
+            var missionItem = new Mission { information = TextInput.Text, userId = FavorUser.instance.account.AuthenId,publisher=FavorUser.instance.account.UserName,publisherImageUri=FavorUser.instance.account.UserImageUri };
             await FavorUser.instance.InsertMissionTable(missionItem);
             //RefreshListItems();
             Frame.IsEnabled = true;

@@ -127,7 +127,7 @@ namespace Favor
 
             Account accountItem = new Account { Email = userEmail.Text, Password = userPassword.Password };
 
-           Frame.IsEnabled = false;                      //通信期间禁止操作界面
+            Frame.IsEnabled = false;                      //通信期间禁止操作界面
 
             await FavorUser.instance.Login(accountItem);
 
