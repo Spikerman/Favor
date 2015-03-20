@@ -58,10 +58,11 @@ namespace Favor.Controller
 
         public void ClearStorage()
         {
+            
             ApplicationData.Current.LocalSettings.Values.Remove("Phone");
-           
             ApplicationData.Current.LocalSettings.Values.Remove("UserImageUri");
             ApplicationData.Current.LocalSettings.Values.Remove("UserName");
+           
             
         }
     }

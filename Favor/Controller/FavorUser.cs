@@ -392,6 +392,7 @@ namespace Favor.Controller
         {
             this.account = null;
             AccountLocalStorage.instance.ClearStorage();
+            mobileServiceUser = null;
             await new MessageDialog("注销成功").ShowAsync();
 
         }
