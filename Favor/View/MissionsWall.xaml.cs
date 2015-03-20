@@ -130,10 +130,16 @@ private void AddressBookBtn_Click(object sender, RoutedEventArgs e)
 
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-             
+
             PivotItem currentItem = e.AddedItems[0] as PivotItem;
             (currentItem.Header as Image).Opacity = 1.0;
-            
+
+        }
+
+        private async void Repost_Button_Click(object sender, RoutedEventArgs e)
+        {
+            Mission x = new Mission();
+            await FavorUser.instance.RepostMission(x);
         }
 
     }

@@ -681,6 +681,14 @@ namespace Favor.Controller
             }
 
         }
+
+        public async Task RepostMission(Mission mission)
+        {
+            Repost repost = new Repost();
+            repost.MissionId = mission.id;
+            repost.ReposterId = FavorUser.instance.account.AuthenId;
+            await MobileServiceTable.instance.RepostItem.InsertAsync(repost);
+        }
     }
 }
 
