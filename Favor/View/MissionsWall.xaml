@@ -78,10 +78,10 @@
                   ItemTemplate="{StaticResource MessagesDataTemplate}" SelectionMode="Single"  />
         -->
         <StackPanel Background="#FFFF8F3D" Margin="0,0,0,517" Height="63" VerticalAlignment="Bottom"></StackPanel>
-        <Pivot x:Uid="Pivot" x:Name="pivot" Margin="0,-11,0,0" SelectionChanged="Pivot_SelectionChanged">
+        <Pivot x:Uid="Pivot" x:Name="pivot" Margin="0,10,0,0" SelectionChanged="Pivot_SelectionChanged">
             <Pivot.HeaderTemplate>
                 <DataTemplate>
-                    <Image Source="{Binding}" Width="110" Height="80" />
+                    <Image Source="{Binding}" Width="110" Height="35"/>
                 </DataTemplate>
             </Pivot.HeaderTemplate>
             <!--Pivot item one个人中心-->
