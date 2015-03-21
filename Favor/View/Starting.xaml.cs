@@ -37,7 +37,6 @@ namespace Favor.View
         /// 此参数通常用于配置页。</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            // await FavorUser.instance.Authenticate();
         }
 
         private async void Starting_Button_Click(object sender, RoutedEventArgs e)

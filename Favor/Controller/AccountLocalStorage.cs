@@ -49,8 +49,7 @@ namespace Favor.Controller
 
         public void LoadAccount(Account account)
         {
-            account.Phone = (string)ApplicationData.Current.LocalSettings.Values["Phone"];
-            
+            account.Phone = (string)ApplicationData.Current.LocalSettings.Values["Phone"];  
             account.UserImageUri = (string)ApplicationData.Current.LocalSettings.Values["UserImageUri"];
             account.UserName = (string)ApplicationData.Current.LocalSettings.Values["UserName"];
             

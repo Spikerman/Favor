@@ -62,7 +62,6 @@ namespace Favor.Controller
                         & missionTable.__createdAt > DateTime.Now.AddHours(Mission.ACTIVETIME))
                     .ToCollectionAsync();//导入自己发布的任务
 
-
                 //导入朋友所发任务
                 await RefreshUserAllFriends();
                 if (AllFriendsCollection != null)
@@ -71,6 +70,41 @@ namespace Favor.Controller
                     {
                         await ExtractUserMissions(friendAccount.AuthenId);
                     }
+                }
+
+                //导入自己和朋友转发的任务
+
+                //读取所有和用户有关的转发记录
+                List<Repost> repostList= await MobileServiceTable.instance.RepostItem
+                                                .Where(repostTable => repostTable.ReposterId == this.account.AuthenId)
+                                                .ToListAsync();
+                if (AllFriendsCollection != null)
+                {
+                    foreach (Account friendAccount in AllFriendsCollection)
+                    {
+                        List<Repost> tempRepost =await MobileServiceTable.instance.RepostItem
+                                                        .Where(repostTable => repostTable.ReposterId == friendAccount.AuthenId)
+                                                        .ToListAsync();
+                        foreach(Repost repost in tempRepost)
+                        {
+                            repostList.Add(repost);
+                        }
+                    }
+                }
+
+                //根据转发记录获得动态
+                foreach (Repost repost in repostList)
+                {
+                    Mission mission = new Mission();
+                    List<Mission> tempMission = await MobileServiceTable.instance.missionItem
+                                                        .Where(missonTable => missonTable.id == repost.MissionId)
+                                                        .ToListAsync();
+                    mission = tempMission.First();
+                    List<Account> tempAccount = await MobileServiceTable.instance.accountItem
+                                                        .Where(accountTable => accountTable.AuthenId == repost.ReposterId)
+                                                        .ToListAsync();
+                    mission.Reposter = tempAccount.First().UserName;
+                    missionCollection.Add(mission);
                 }
             }
             catch (MobileServiceInvalidOperationException e)
@@ -110,6 +144,7 @@ namespace Favor.Controller
         public async Task UpdateChenkedMissionTable(Mission checkedMission)
         {
             checkedMission.receiverId = account.AuthenId;
+            checkedMission.received = true;
             await MobileServiceTable.instance.missionItem.UpdateAsync(checkedMission);
         }
 
@@ -686,12 +721,18 @@ namespace Favor.Controller
 
         }
 
+        /// <summary>
+        /// 转发动态函数
+        /// </summary>
+        /// <param name="mission">用户需要转发的动态</param>
+        /// <returns></returns>
         public async Task RepostMission(Mission mission)
         {
             Repost repost = new Repost();
             repost.MissionId = mission.id;
             repost.ReposterId = FavorUser.instance.account.AuthenId;
             await MobileServiceTable.instance.RepostItem.InsertAsync(repost);
+            await new MessageDialog("Repost successful!").ShowAsync();
         }
     }
 }

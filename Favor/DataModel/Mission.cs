@@ -51,5 +51,22 @@ namespace Favor.DataModel
                 restTime = value;
             }
         }
+
+        private string reposter = "";
+        public string Reposter
+        {
+            get
+            {
+                if (reposter == "" || reposter == null)
+                    return reposter;
+                else
+                    return "Reposted by "+reposter;
+            }
+            set
+            {
+                reposter = value;
+            }
+        }
+
     }
 }
