@@ -152,9 +152,48 @@ private void AddressBookBtn_Click(object sender, RoutedEventArgs e)
             await FavorUser.instance.RepostMission(x);
         }
 
-        private void ToggledHappen(object sender, RoutedEventArgs e)
+        private async void ToggledHappen(object sender, RoutedEventArgs e)
         {
+            ToggleSwitch toggle = (ToggleSwitch)sender;
+            UsersRelation x=(UsersRelation)toggle.DataContext;
+            if (toggle.IsOn)
+            {
+                x.IsFocusingFriend = true;
+            }
+            else
+            {
+                x.IsFocusingFriend = false;
+            }
 
+            MobileServiceInvalidOperationException exception = null;
+            try
+            {
+                await MobileServiceTable.instance.usersRelationItem.UpdateAsync(x);
+
+                List<UsersRelation> friend = await (from userRelationPair in MobileServiceTable.instance.usersRelationItem
+                                                    where (x.FriendId == userRelationPair.UserId)
+                                                    select userRelationPair).ToListAsync();
+
+                if (toggle.IsOn)
+                {
+                    friend.First().IsFocused = true;
+                }
+                else
+                {
+                    friend.First().IsFocused = false;
+                }
+
+                await MobileServiceTable.instance.usersRelationItem.UpdateAsync(
+                   friend.First());
+            }
+            catch (MobileServiceInvalidOperationException ee)
+            {
+                exception = ee;
+            }
+            if (exception != null)
+            {
+                await new MessageDialog(exception.Message, "Error loding, please check the Internet ").ShowAsync();
+            }
         }
 
     }

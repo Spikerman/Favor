@@ -55,9 +55,10 @@
                        Margin="10,0,0,0" Width="169" Height="28" TextTrimming="WordEllipsis" 
                        HorizontalAlignment="Left" VerticalAlignment="Top"/>
                 </StackPanel>
-                   
 
-                <ToggleSwitch x:Name="taggleSwitch" Header="" VerticalAlignment="Center" Width="112" OffContent="" OnContent="" FontSize="8" HorizontalAlignment="Center" Margin="0,20,0,19" IsOn="False" Toggled="ToggledHappen">
+
+               
+                <ToggleSwitch x:Name="taggleSwitch" Header="" VerticalAlignment="Center" Width="112" OffContent="" OnContent="" FontSize="8" HorizontalAlignment="Center" Margin="0,20,0,19" IsOn="{Binding IsFocusingFriend}" Toggled="ToggledHappen">
                     <ToggleSwitch.Foreground>
                         <ImageBrush Stretch="Fill"/>
                     </ToggleSwitch.Foreground>
