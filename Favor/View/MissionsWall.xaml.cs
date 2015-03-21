@@ -58,41 +58,28 @@ namespace Favor
         /// 此参数通常用于配置页。</param>
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
+            
+            if (MobileServiceTable.instance.usersRelationItem != null)
+            {
+                FavorUser.instance.AllUserFriendCollection = await (from userRelationPair in MobileServiceTable.instance.usersRelationItem
+                                                                    where (FavorUser.instance.account.AuthenId == userRelationPair.UserId)
+                                                                    select userRelationPair).ToCollectionAsync();
+              
+             
+
+            }
             await FavorUser.instance.RefreshMissionsWall();
             await FavorUser.instance.RefreshUserAllFriends();
             MisssionListItems.ItemsSource = FavorUser.instance.missionCollection;
-            FriendListItems.ItemsSource = FavorUser.instance.AllFriendsCollection;
+            FriendListItems.ItemsSource = FavorUser.instance.AllUserFriendCollection;
 
         }
 
         /// <summary>
         /// 同步后台任务数据和前台任务列表
         /// </summary>
-        /*旧的按钮
-private async void RefreshListItems()
-{
-    await FavorUser.instance.RefreshMissionsWall();
-    MisssionListItems.ItemsSource = FavorUser.instance.missionCollection;
 
-}
 
-private void WishBtn_Click(object sender, RoutedEventArgs e)
-{
-    this.Frame.Navigate(typeof(MissionWrite));
-}
-
-private void WallBtn_Click(object sender, RoutedEventArgs e)
-{
-    RefreshListItems();
-}
-
-private void AddressBookBtn_Click(object sender, RoutedEventArgs e)
-{
-    //暂时转到加好友页面
-    //Frame.Navigate(typeof(AddressBook));
-}
-*/
-     
         private async void Cancel_AppBarButton_Click(object sender, RoutedEventArgs e)
         {
             //注销按钮
@@ -134,9 +121,39 @@ private void AddressBookBtn_Click(object sender, RoutedEventArgs e)
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
-            PivotItem currentItem = e.AddedItems[0] as PivotItem;
-            (currentItem.Header as Image).Opacity = 1.0;
+            /*PivotItem currentItem = e.AddedItems[0] as PivotItem;
+            (currentItem.Header as Image).Opacity = 1.0;*/
+            //pivotitem.header的循环和高亮无法解决
+            //已经解决APPbar的button轮流显示
+            if (pivot.SelectedIndex == 0)
+            {
+                //个人中心：注销
+                comBar.PrimaryCommands.Remove(AddFriend);
+                comBar.PrimaryCommands.Remove(WriteMission);
+                comBar.PrimaryCommands.Remove(LogOut);
 
+                comBar.PrimaryCommands.Add(LogOut);
+            }
+            else if (pivot.SelectedIndex == 1)
+            {
+                //墙：写任务 
+                comBar.PrimaryCommands.Remove(AddFriend);
+                comBar.PrimaryCommands.Remove(WriteMission);
+                comBar.PrimaryCommands.Remove(LogOut);
+
+                comBar.PrimaryCommands.Add(WriteMission);
+
+        }
+            else if (pivot.SelectedIndex == 2)
+            {
+                //好友列表：加好友
+                comBar.PrimaryCommands.Remove(AddFriend);
+                comBar.PrimaryCommands.Remove(WriteMission);
+                comBar.PrimaryCommands.Remove(LogOut);
+
+                comBar.PrimaryCommands.Add(AddFriend);
+            }
+            
         }
 
         private async void Repost_Button_Click(object sender, RoutedEventArgs e)
@@ -147,6 +164,50 @@ private void AddressBookBtn_Click(object sender, RoutedEventArgs e)
             await FavorUser.instance.RefreshMissionsWall();
             MisssionListItems.ItemsSource = FavorUser.instance.missionCollection;
 
+        }
+
+        private async void ToggledHappen(object sender, RoutedEventArgs e)
+        {
+            ToggleSwitch toggle = (ToggleSwitch)sender;
+            UsersRelation x=(UsersRelation)toggle.DataContext;
+            if (toggle.IsOn)
+            {
+                x.IsFocusingFriend = true;
+            }
+            else
+            {
+                x.IsFocusingFriend = false;
+            }
+
+            MobileServiceInvalidOperationException exception = null;
+            try
+            {
+                await MobileServiceTable.instance.usersRelationItem.UpdateAsync(x);
+
+                List<UsersRelation> friend = await (from userRelationPair in MobileServiceTable.instance.usersRelationItem
+                                                    where (x.FriendId == userRelationPair.UserId)
+                                                    select userRelationPair).ToListAsync();
+
+                if (toggle.IsOn)
+                {
+                    friend.First().IsFocused = true;
+                }
+                else
+        {
+                    friend.First().IsFocused = false;
+                }
+
+                await MobileServiceTable.instance.usersRelationItem.UpdateAsync(
+                   friend.First());
+            }
+            catch (MobileServiceInvalidOperationException ee)
+            {
+                exception = ee;
+            }
+            if (exception != null)
+            {
+                await new MessageDialog(exception.Message, "Error loding, please check the Internet ").ShowAsync();
+            }
         }
 
     }
