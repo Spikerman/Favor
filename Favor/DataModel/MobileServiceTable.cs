@@ -34,5 +34,7 @@ namespace Favor.DataModel
             get { return missionItem; }
             set { missionItem = value; }
         }
+
+        public IMobileServiceTable<Repost> RepostItem = App.MobileService.GetTable<Repost>();
     }
 }

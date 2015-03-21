@@ -440,7 +440,7 @@ namespace Favor.Controller
                     string accountDetail = searchFriendResultList[0].Password;//此处访问取回用户密码信息作为查询验证<之后需要修改>
                     string imageUri = searchFriendResultList[0].UserImageUri;
                     string friendName = searchFriendResultList[0].UserName;
-                   
+
                     List<UsersRelation> searchDuplicatedUserIdList = new List<UsersRelation>();//用户搜索好友关系表中是否已经存在该好友，避免重复添加
 
                     try
@@ -689,6 +689,14 @@ namespace Favor.Controller
                 }
             }
 
+        }
+
+        public async Task RepostMission(Mission mission)
+        {
+            Repost repost = new Repost();
+            repost.MissionId = mission.id;
+            repost.ReposterId = FavorUser.instance.account.AuthenId;
+            await MobileServiceTable.instance.RepostItem.InsertAsync(repost);
         }
     }
 }
