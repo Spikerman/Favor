@@ -58,10 +58,20 @@ namespace Favor
         /// 此参数通常用于配置页。</param>
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
+            
+            if (MobileServiceTable.instance.usersRelationItem != null)
+            {
+                FavorUser.instance.AllUserFriendCollection = await (from userRelationPair in MobileServiceTable.instance.usersRelationItem
+                                                                    where (FavorUser.instance.account.AuthenId == userRelationPair.UserId)
+                                                                    select userRelationPair).ToCollectionAsync();
+              
+             
+
+            }
             await FavorUser.instance.RefreshMissionsWall();
             await FavorUser.instance.RefreshUserAllFriends();
             MisssionListItems.ItemsSource = FavorUser.instance.missionCollection;
-            FriendListItems.ItemsSource = FavorUser.instance.AllFriendsCollection;
+            FriendListItems.ItemsSource = FavorUser.instance.AllUserFriendCollection;
 
         }
 
@@ -131,24 +141,20 @@ private void AddressBookBtn_Click(object sender, RoutedEventArgs e)
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
              
-            //PivotItem currentItem = e.AddedItems[0] as PivotItem;
-            //(currentItem.Header as Image).Opacity = 1.0;
-
-            if (pivot.SelectedIndex == 0)
-            {
-                // Do your action here
-                PivotItem currentItem = e.AddedItems[0] as PivotItem;
-                //((Image)currentItem.Header).Opacity = 0.1;
-                //currentItem.Opacity = 0;
-                currentItem.Width = 0;
-
-            }
-            else if (pivot.SelectedIndex == 1)
-            {
-                // Do your action here
-                
-            }
+            PivotItem currentItem = e.AddedItems[0] as PivotItem;
+            (currentItem.Header as Image).Opacity = 1.0;
             
+        }
+
+        private async void Repost_Button_Click(object sender, RoutedEventArgs e)
+        {
+            Mission x = new Mission();
+            await FavorUser.instance.RepostMission(x);
+        }
+
+        private void ToggledHappen(object sender, RoutedEventArgs e)
+        {
+
         }
 
     }
