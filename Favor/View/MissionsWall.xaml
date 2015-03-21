@@ -9,16 +9,16 @@
     mc:Ignorable="d" Background="Black">
 
     <Page.BottomAppBar>
-        <CommandBar Background="#FFFF8F3D">
+        <CommandBar x:Name="comBar" Background="#FFFF8F3D">
             <!--领取任务-->
-            <AppBarButton Icon="Accept" Label="Accept" Click="Accept_AppBarButton_Click"/>
+            <AppBarButton x:Name="AcceptMission" Icon="Accept" Label="Accept" Click="Accept_AppBarButton_Click"/>
             <!--添加好友-->
-            <AppBarButton Icon="AddFriend" Label="AddFriend" Click="AddFriend_AppBarButton_Click"/>
+            <AppBarButton x:Name="AddFriend" Icon="AddFriend" Label="AddFriend" Click="AddFriend_AppBarButton_Click"/>
             <!--编写任务-->
-            <AppBarButton Icon="Add" Label="Write" Click="Write_AppBarButton_Click"/>
+            <AppBarButton x:Name="WriteMission" Icon="Edit" Label="Write" Click="Write_AppBarButton_Click"/>
             <!--由于空间问题先隐藏返回按钮采用物理键返回<AppBarButton Icon="Back" Label="Return" Click="Back_AppBarButton_Click"/>-->
             <!--退出登录-->
-            <AppBarButton Icon="Cancel" Label="Out" Click="Cancel_AppBarButton_Click"/>
+            <AppBarButton x:Name="LogOut" Icon="Cancel" Label="Out" Click="Cancel_AppBarButton_Click"/>
         </CommandBar>
     </Page.BottomAppBar>
 
@@ -78,7 +78,7 @@
                   ItemTemplate="{StaticResource MessagesDataTemplate}" SelectionMode="Single"  />
         -->
         <StackPanel Background="#FFFF8F3D" Margin="0,0,0,517" Height="63" VerticalAlignment="Bottom"></StackPanel>
-        <Pivot x:Uid="Pivot" x:Name="pivot" Margin="0,-11,0,0">
+        <Pivot x:Uid="Pivot" x:Name="pivot" Margin="0,-11,0,0" SelectionChanged="Pivot_SelectionChanged">
             <Pivot.HeaderTemplate>
                 <DataTemplate>
                     <Image Source="{Binding}" Width="110" Height="80" />
@@ -86,6 +86,7 @@
             </Pivot.HeaderTemplate>
             <!--Pivot item one个人中心-->
             <PivotItem
+                TabIndex="0"
                 x:Uid="PivotItem1"
                 Margin="5,5,5,5"
                 Header="{Binding Source=../Assets/setting.png}">
@@ -94,6 +95,7 @@
 
             <!--Pivot item two任务墙-->
             <PivotItem
+                TabIndex="1"
                 x:Uid="PivotItem2"
                 Margin="5,5,5,5"
                 Header="{Binding Source=../Assets/wall.png}">
@@ -105,6 +107,7 @@
 
             <!--Pivot item three好友列表-->
             <PivotItem
+                TabIndex="3"
                 x:Uid="PivotItem3"
                 Margin="5,5,5,5"
                 Header="{Binding Source=../Assets/friend.png}">
