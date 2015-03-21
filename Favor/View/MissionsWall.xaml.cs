@@ -58,10 +58,20 @@ namespace Favor
         /// 此参数通常用于配置页。</param>
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
+            
+            if (MobileServiceTable.instance.usersRelationItem != null)
+            {
+                FavorUser.instance.AllUserFriendCollection = await (from userRelationPair in MobileServiceTable.instance.usersRelationItem
+                                                                    where (FavorUser.instance.account.AuthenId == userRelationPair.UserId)
+                                                                    select userRelationPair).ToCollectionAsync();
+              
+             
+
+            }
             await FavorUser.instance.RefreshMissionsWall();
             await FavorUser.instance.RefreshUserAllFriends();
             MisssionListItems.ItemsSource = FavorUser.instance.missionCollection;
-            FriendListItems.ItemsSource = FavorUser.instance.AllFriendsCollection;
+            FriendListItems.ItemsSource = FavorUser.instance.AllUserFriendCollection;
 
         }
 
@@ -92,7 +102,7 @@ private void AddressBookBtn_Click(object sender, RoutedEventArgs e)
     //Frame.Navigate(typeof(AddressBook));
 }
 */
-     
+
         private async void Cancel_AppBarButton_Click(object sender, RoutedEventArgs e)
         {
             //注销按钮
@@ -130,10 +140,15 @@ private void AddressBookBtn_Click(object sender, RoutedEventArgs e)
 
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-             
+
             PivotItem currentItem = e.AddedItems[0] as PivotItem;
             (currentItem.Header as Image).Opacity = 1.0;
-            
+
+        }
+
+        private void ToggledHappen(object sender, RoutedEventArgs e)
+        {
+
         }
 
     }

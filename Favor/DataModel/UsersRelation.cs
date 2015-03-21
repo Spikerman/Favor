@@ -19,5 +19,21 @@ namespace Favor.DataModel
 
         [JsonProperty(PropertyName = "friendId")]
         public string FriendId{ get; set; }
+
+        [JsonProperty(PropertyName="friendname")]
+        public string FriendName { get; set; }
+
+
+        [JsonProperty(PropertyName = "friendimageuri")]
+        public string FriendImageUri { get; set; }
+
+        [JsonProperty(PropertyName="isfocused")]
+        public bool IsFocused { get; set; }
+
+        [JsonProperty(PropertyName="isfocusingfriend")]
+        public bool IsFocusingFriend { get; set; }
+
+
+        
     }
 }

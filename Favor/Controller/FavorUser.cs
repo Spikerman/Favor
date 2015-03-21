@@ -29,12 +29,15 @@ namespace Favor.Controller
 
         public MobileServiceCollection<Account, Account> AllFriendsCollection { get; set; }         //用户的所有好友
 
+        public MobileServiceCollection<UsersRelation, UsersRelation> AllUserFriendCollection { get; set; }
+        
         public Account account { get; set; }                                              //用户账户信息
 
 
         public StorageFile userImageStorageFile;//存储用户头像文件
 
 
+        
         /// <summary>
         /// 将任务插入MissionTable
         /// </summary>
@@ -435,7 +438,9 @@ namespace Favor.Controller
                 {
                     string friendId = searchFriendResultList[0].AuthenId;//获取希望添加为好友的用户id
                     string accountDetail = searchFriendResultList[0].Password;//此处访问取回用户密码信息作为查询验证<之后需要修改>
-
+                    string imageUri = searchFriendResultList[0].UserImageUri;
+                    string friendName = searchFriendResultList[0].UserName;
+                   
                     List<UsersRelation> searchDuplicatedUserIdList = new List<UsersRelation>();//用户搜索好友关系表中是否已经存在该好友，避免重复添加
 
                     try
@@ -467,8 +472,8 @@ namespace Favor.Controller
                         }
                         else
                         {
-                            UsersRelation userRelation = new UsersRelation { UserId = account.AuthenId, FriendId = friendId };
-                            UsersRelation userRelationX = new UsersRelation { UserId = friendId, FriendId = account.AuthenId };
+                            UsersRelation userRelation = new UsersRelation { UserId = account.AuthenId, FriendId = friendId,FriendImageUri=imageUri,FriendName=friendName};
+                            UsersRelation userRelationX = new UsersRelation { UserId = friendId, FriendId = account.AuthenId, FriendImageUri=account.UserImageUri,FriendName=account.UserName };
                             try
                             {
                                 await MobileServiceTable.instance.usersRelationItem.InsertAsync(userRelation);//若为新好友，则向用户关系表中插入数据
