@@ -78,31 +78,8 @@ namespace Favor
         /// <summary>
         /// 同步后台任务数据和前台任务列表
         /// </summary>
-        /*旧的按钮
-private async void RefreshListItems()
-{
-    await FavorUser.instance.RefreshMissionsWall();
-    MisssionListItems.ItemsSource = FavorUser.instance.missionCollection;
 
-}
 
-private void WishBtn_Click(object sender, RoutedEventArgs e)
-{
-    this.Frame.Navigate(typeof(MissionWrite));
-}
-
-private void WallBtn_Click(object sender, RoutedEventArgs e)
-{
-    RefreshListItems();
-}
-
-private void AddressBookBtn_Click(object sender, RoutedEventArgs e)
-{
-    //暂时转到加好友页面
-    //Frame.Navigate(typeof(AddressBook));
-}
-*/
-     
         private async void Cancel_AppBarButton_Click(object sender, RoutedEventArgs e)
         {
             //注销按钮
@@ -118,13 +95,13 @@ private void AddressBookBtn_Click(object sender, RoutedEventArgs e)
 
         }
 
-        private async void Accept_AppBarButton_Click(object sender, RoutedEventArgs e)
+        /*private async void Accept_AppBarButton_Click(object sender, RoutedEventArgs e)
         {
             //接收任务
             //注意SelectionMode="Single"
             Mission x = (Mission)MisssionListItems.SelectedItem;
             await FavorUser.instance.UpdateChenkedMissionTable(x);
-        }
+        }*/
 
         private void Write_AppBarButton_Click(object sender, RoutedEventArgs e)
         {
@@ -141,8 +118,38 @@ private void AddressBookBtn_Click(object sender, RoutedEventArgs e)
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
              
-            PivotItem currentItem = e.AddedItems[0] as PivotItem;
-            (currentItem.Header as Image).Opacity = 1.0;
+            /*PivotItem currentItem = e.AddedItems[0] as PivotItem;
+            (currentItem.Header as Image).Opacity = 1.0;*/
+            //pivotitem.header的循环和高亮无法解决
+            //已经解决APPbar的button轮流显示
+            if (pivot.SelectedIndex == 0)
+            {
+                //个人中心：注销
+                comBar.PrimaryCommands.Remove(AddFriend);
+                comBar.PrimaryCommands.Remove(WriteMission);
+                comBar.PrimaryCommands.Remove(LogOut);
+
+                comBar.PrimaryCommands.Add(LogOut);
+            }
+            else if (pivot.SelectedIndex == 1)
+            {
+                //墙：写任务 
+                comBar.PrimaryCommands.Remove(AddFriend);
+                comBar.PrimaryCommands.Remove(WriteMission);
+                comBar.PrimaryCommands.Remove(LogOut);
+
+                comBar.PrimaryCommands.Add(WriteMission);
+                
+            }
+            else if (pivot.SelectedIndex == 2)
+            {
+                //好友列表：加好友
+                comBar.PrimaryCommands.Remove(AddFriend);
+                comBar.PrimaryCommands.Remove(WriteMission);
+                comBar.PrimaryCommands.Remove(LogOut);
+
+                comBar.PrimaryCommands.Add(AddFriend);
+            }
             
         }
 
@@ -179,7 +186,7 @@ private void AddressBookBtn_Click(object sender, RoutedEventArgs e)
                     friend.First().IsFocused = true;
                 }
                 else
-                {
+        {
                     friend.First().IsFocused = false;
                 }
 
