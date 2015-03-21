@@ -153,7 +153,7 @@ namespace Favor
             
             await dialog.ShowAsync();
             }
-            //Notifications.instance.userIdTags.Add(FavorUser.instance.account.Id);
+            
             await Notifications.instance.PushToFriends();
             
         }

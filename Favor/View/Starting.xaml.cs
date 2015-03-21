@@ -46,22 +46,22 @@ namespace Favor.View
             await FavorUser.instance.Authenticate();
 
             FavorUser.instance.account = new Account();
-            
-            FavorUser.instance.account.AuthenId =FavorUser.instance.mobileServiceUser.UserId;
+
+            FavorUser.instance.account.AuthenId = FavorUser.instance.mobileServiceUser.UserId;
 
 
             if (AccountLocalStorage.instance.isvaild())
             {
-            //    FavorUser.instance.account = new Account();
+                //    FavorUser.instance.account = new Account();
                 AccountLocalStorage.instance.LoadAccount(FavorUser.instance.account);
-                Frame.Navigate(typeof(MissionsWall));    
+                Frame.Navigate(typeof(MissionsWall));
             }
 
             else
             {
-                await FavorUser.instance.Login() ;
-                
-                if(FavorUser.instance.account.UserName==null)
+                await FavorUser.instance.Login();
+
+                if (FavorUser.instance.account.UserName == null)
                 {
                     Frame.Navigate(typeof(AfterLogin));
                 }
