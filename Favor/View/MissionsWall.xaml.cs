@@ -147,24 +147,35 @@ private void AddressBookBtn_Click(object sender, RoutedEventArgs e)
             //已经解决APPbar的button轮流显示
             if (pivot.SelectedIndex == 0)
             {
+                //个人中心：注销
                 comBar.PrimaryCommands.Remove(AcceptMission);
-            }
-            else if (pivot.SelectedIndex == 1)
-            {
-                /*comBar.PrimaryCommands.Remove(AcceptMission);
                 comBar.PrimaryCommands.Remove(AddFriend);
                 comBar.PrimaryCommands.Remove(WriteMission);
                 comBar.PrimaryCommands.Remove(LogOut);
-                comBar.PrimaryCommands.Add(AcceptMission);
-                comBar.PrimaryCommands.Add(AddFriend);
-                comBar.PrimaryCommands.Add(WriteMission);
+
                 comBar.PrimaryCommands.Add(LogOut);
-                 * */
+            }
+            else if (pivot.SelectedIndex == 1)
+            {
+                //墙：领取任务 写任务 
+                comBar.PrimaryCommands.Remove(AcceptMission);
+                comBar.PrimaryCommands.Remove(AddFriend);
+                comBar.PrimaryCommands.Remove(WriteMission);
+                comBar.PrimaryCommands.Remove(LogOut);
+
                 comBar.PrimaryCommands.Add(AcceptMission);
+                comBar.PrimaryCommands.Add(WriteMission);
+                
             }
             else if (pivot.SelectedIndex == 2)
             {
+                //好友列表：加好友
                 comBar.PrimaryCommands.Remove(AcceptMission);
+                comBar.PrimaryCommands.Remove(AddFriend);
+                comBar.PrimaryCommands.Remove(WriteMission);
+                comBar.PrimaryCommands.Remove(LogOut);
+
+                comBar.PrimaryCommands.Add(AddFriend);
             }
             
         }
