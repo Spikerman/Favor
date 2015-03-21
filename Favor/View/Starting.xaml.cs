@@ -37,25 +37,40 @@ namespace Favor.View
         /// 此参数通常用于配置页。</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-           // await FavorUser.instance.Authenticate();
+            // await FavorUser.instance.Authenticate();
         }
 
         private async void Starting_Button_Click(object sender, RoutedEventArgs e)
         {
-            
+
             await FavorUser.instance.Authenticate();
-            
+
+            FavorUser.instance.account = new Account();
+
+            FavorUser.instance.account.AuthenId = FavorUser.instance.mobileServiceUser.UserId;
+
+
             if (AccountLocalStorage.instance.isvaild())
             {
-                FavorUser.instance.account = new Account();
+                //    FavorUser.instance.account = new Account();
                 AccountLocalStorage.instance.LoadAccount(FavorUser.instance.account);
                 Frame.Navigate(typeof(MissionsWall));
             }
+
             else
             {
-                Frame.Navigate(typeof(MainPage));
+                await FavorUser.instance.Login();
+
+                if (FavorUser.instance.account.UserName == null)
+                {
+                    Frame.Navigate(typeof(AfterLogin));
+                }
+                else
+                {
+                    Frame.Navigate(typeof(MissionsWall));
+                }
             }
-            
+
         }
     }
 }

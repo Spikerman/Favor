@@ -145,7 +145,7 @@ namespace Favor
             {
                 var y = (Account)x.ElementAt(i);
                 messageTest += (" " + y.UserName);
-                Notifications.instance.userIdTags.Add(y.Id);
+                Notifications.instance.userIdTags.Add(y.AuthenId);
             }
             if (messageTest != null)
             {
@@ -153,8 +153,8 @@ namespace Favor
             
             await dialog.ShowAsync();
             }
-            //Notifications.instance.userIdTags.Add(FavorUser.instance.account.Id);
-            await Notifications.instance.PushToFriends(FavorUser.instance.account);
+            
+            await Notifications.instance.PushToFriends();
             
         }
 

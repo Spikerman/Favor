@@ -134,7 +134,7 @@ namespace Favor
             Frame.IsEnabled = false;
             if (SearchInput.Text == "")
             {
-                var dialog = new MessageDialog("请输入账号");
+                var dialog = new MessageDialog("请输入用户名");
             }
             else
             {

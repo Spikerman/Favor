@@ -17,35 +17,44 @@ namespace Favor.Common
     public class Notifications
     {
 
-       
+
         private Notifications() { }
         public static readonly Notifications instance = new Notifications();
         //以用户的ID作为Tag标签
         public List<string> userIdTags = new List<string>();
 
-        public PushNotificationChannel channel ;
-        
+       
+
+        public PushNotificationChannel channel;
+
         public async Task RefreshChannel()
         {
-            channel=await Windows.Networking.PushNotifications.PushNotificationChannelManager.CreatePushNotificationChannelForApplicationAsync();
+            channel = await Windows.Networking.PushNotifications.PushNotificationChannelManager.CreatePushNotificationChannelForApplicationAsync();
         }
 
-        public async Task PushToFriends(Account user)
+        public async Task PushToFriends()
         {
-            try
+            JObject x=new JObject();
+            string message = FavorUser.instance.account.UserName + " need you help";
+            x.Add("toast", message);
+            for (int i = 0; i < userIdTags.Count; i++)
             {
-                string message = FavorUser.instance.account.UserName+" need you help";
-                //var channel = await Windows.Networking.PushNotifications.PushNotificationChannelManager.CreatePushNotificationChannelForApplicationAsync();
+                try
+                {
+                    x.Add("usertag", userIdTags[i]);
+                    await App.MobileService.GetPush().RegisterNativeAsync(channel.Uri);
+                    await App.MobileService.InvokeApiAsync("notifyAllUsers", x);
+                    userIdTags.Clear();
 
-                await App.MobileService.GetPush().RegisterNativeAsync(user.ChannelUri);
-                await App.MobileService.InvokeApiAsync("notifyAllUsers", new JObject(new JProperty("toast", message)));
-                userIdTags.Clear();
 
+
+                }
+                catch (Exception exception)
+                {
+                    HandleRegisterException(exception);
+                }
             }
-            catch (Exception exception)
-            {
-                HandleRegisterException(exception);
-            }
+
         }
         private static void HandleRegisterException(Exception exception)
         {

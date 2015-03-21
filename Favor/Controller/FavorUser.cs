@@ -58,7 +58,7 @@ namespace Favor.Controller
             {
                 missionCollection = await MobileServiceTable.instance.missionItem
                     .Where(missionTable => missionTable.completed == false
-                        & missionTable.userId == this.account.Id
+                        & missionTable.userId == this.account.AuthenId
                         & missionTable.__createdAt > DateTime.Now.AddHours(Mission.ACTIVETIME))
                     .ToCollectionAsync();//导入自己发布的任务
 
@@ -69,7 +69,7 @@ namespace Favor.Controller
                 {
                     foreach (Account friendAccount in AllFriendsCollection)
                     {
-                        await ExtractUserMissions(friendAccount.Id);
+                        await ExtractUserMissions(friendAccount.AuthenId);
                     }
                 }
             }
@@ -83,18 +83,18 @@ namespace Favor.Controller
             }
             else
             {
-                try
-                {
-                    await MobileServiceTable.instance.accountItem.UpdateAsync(account);
-                }
-                catch (MobileServiceInvalidOperationException e)
-                {
-                    exception = e;
-                }
-                if (exception != null)
-                {
-                    await new MessageDialog(exception.Message, "Error loding").ShowAsync();
-                }
+                //try
+                //{
+                //    await MobileServiceTable.instance.accountItem.UpdateAsync(account);
+                //}
+                //catch (MobileServiceInvalidOperationException e)
+                //{
+                //    exception = e;
+                //}
+                //if (exception != null)
+                //{
+                //    await new MessageDialog(exception.Message, "Error loding").ShowAsync();
+                //}
             }
         }
 
@@ -109,7 +109,7 @@ namespace Favor.Controller
         /// <returns></returns>
         public async Task UpdateChenkedMissionTable(Mission checkedMission)
         {
-            checkedMission.receiverId = account.Id;
+            checkedMission.receiverId = account.AuthenId;
             await MobileServiceTable.instance.missionItem.UpdateAsync(checkedMission);
         }
 
@@ -119,23 +119,46 @@ namespace Favor.Controller
         /// <returns></returns>
         public async Task Authenticate()
         {
+            MobileServiceInvalidOperationException exceptionS = null;
+            InvalidOperationException exception = null;
             while (mobileServiceUser == null)
             {
                 string message;
                 try
                 {
-                    mobileServiceUser = await App.MobileService
-                        .LoginAsync(MobileServiceAuthenticationProvider.WindowsAzureActiveDirectory);
-                    message =
-                        string.Format("You are now logged in - {0}", mobileServiceUser.UserId);
-                    var dialog = new MessageDialog(message, "Login Status");
-                    await dialog.ShowAsync();
-                }
-                catch (InvalidOperationException)
-                {
-                    //message = "You must log in. Login Required";
-                    //var dialog = new MessageDialog(message);
+                    try
+                    {
+                        mobileServiceUser = await App.MobileService
+                            .LoginAsync(MobileServiceAuthenticationProvider.WindowsAzureActiveDirectory);
+                    }
 
+                    catch (MobileServiceInvalidOperationException e)
+                    {
+                        exceptionS = e;
+                    }
+
+                    if (exceptionS != null)
+                    {
+                        await App.statusBar.ProgressIndicator.HideAsync();
+                        await new MessageDialog(exception.Message, "登陆状态").ShowAsync();
+                    }
+                    else
+                    {
+                        message = string.Format("You are now logged in");
+                        var dialog = new MessageDialog(message, "Login Status");
+                        await dialog.ShowAsync();
+
+                    }
+                }
+                catch (InvalidOperationException e)
+                {
+                    exception = e;
+
+                }
+                if (exception != null)
+                {
+                    var dialog = new MessageDialog("You Must Login");
+                    await dialog.ShowAsync();
                 }
 
             }
@@ -221,6 +244,48 @@ namespace Favor.Controller
 
         }
 
+        public async Task Login()
+        {
+            MobileServiceInvalidOperationException exception = null;
+
+            try
+            {
+                List<Account> accountList = await MobileServiceTable.instance.accountItem.Where(accountTable => accountTable.AuthenId == mobileServiceUser.UserId).ToListAsync();
+
+                if (accountList.Count != 0)
+                {
+                    this.account = accountList.First();
+                }
+            }
+            catch (MobileServiceInvalidOperationException e)
+            {
+                exception = e;
+            }
+            if (exception != null)
+            {
+                await App.statusBar.ProgressIndicator.HideAsync();
+                await new MessageDialog(exception.Message, "登陆状态").ShowAsync();
+            }
+            else
+            {
+                //如果用户不存在->插入该用户
+                if (account.UserName != null)
+                {
+                    AccountLocalStorage.instance.SaveAccount(account);
+                }
+               
+            }
+        }
+
+
+
+
+
+
+
+
+
+
         /// <summary>
         /// 用户注册账户
         /// </summary>
@@ -229,8 +294,7 @@ namespace Favor.Controller
         public async Task SignUp(Account SigningUpAccount)
         {
             //EventHandler OnSuccess;
-            await Notifications.instance.RefreshChannel();//为该用户分配信道值
-            SigningUpAccount.ChannelUri = Notifications.instance.channel.Uri;
+
 
             string message;
             string pattern = @"^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$";
@@ -328,6 +392,7 @@ namespace Favor.Controller
         {
             this.account = null;
             AccountLocalStorage.instance.ClearStorage();
+            mobileServiceUser = null;
             await new MessageDialog("注销成功").ShowAsync();
 
         }
@@ -335,9 +400,9 @@ namespace Favor.Controller
         /// <summary>
         /// 通过查找用户账号增加朋友
         /// </summary>
-        /// <param name="email"></param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        public async Task AddingFriend(string email)
+        public async Task AddingFriend(string name)
         {
 
             await App.statusBar.ProgressIndicator.ShowAsync();
@@ -347,7 +412,7 @@ namespace Favor.Controller
             try
             {
                 searchFriendResultList = await MobileServiceTable.instance.accountItem
-                        .Where(accountTable => accountTable.Email == email).ToListAsync();
+                        .Where(accountTable => accountTable.UserName == name).ToListAsync();
             }
 
             catch (MobileServiceInvalidOperationException e)
@@ -368,7 +433,7 @@ namespace Favor.Controller
                 }
                 else
                 {
-                    string friendId = searchFriendResultList[0].Id;//获取希望添加为好友的用户id
+                    string friendId = searchFriendResultList[0].AuthenId;//获取希望添加为好友的用户id
                     string accountDetail = searchFriendResultList[0].Password;//此处访问取回用户密码信息作为查询验证<之后需要修改>
 
                     List<UsersRelation> searchDuplicatedUserIdList = new List<UsersRelation>();//用户搜索好友关系表中是否已经存在该好友，避免重复添加
@@ -376,7 +441,7 @@ namespace Favor.Controller
                     try
                     {
                         searchDuplicatedUserIdList = await (from userRelationPair in MobileServiceTable.instance.usersRelationItem
-                                                            where (account.Id == userRelationPair.UserId & userRelationPair.FriendId == friendId) || (account.Id == userRelationPair.FriendId & userRelationPair.UserId == friendId)
+                                                            where (account.AuthenId == userRelationPair.UserId & userRelationPair.FriendId == friendId) 
                                                             select userRelationPair).ToListAsync();
                     }
 
@@ -402,10 +467,12 @@ namespace Favor.Controller
                         }
                         else
                         {
-                            UsersRelation userRelation = new UsersRelation { UserId = account.Id, FriendId = friendId };
+                            UsersRelation userRelation = new UsersRelation { UserId = account.AuthenId, FriendId = friendId };
+                            UsersRelation userRelationX = new UsersRelation { UserId = friendId, FriendId = account.AuthenId };
                             try
                             {
                                 await MobileServiceTable.instance.usersRelationItem.InsertAsync(userRelation);//若为新好友，则向用户关系表中插入数据
+                                await MobileServiceTable.instance.usersRelationItem.InsertAsync(userRelationX);
                             }
                             catch (MobileServiceInvalidOperationException e)
                             {
@@ -444,26 +511,27 @@ namespace Favor.Controller
                 //查询所有和该用户有关的关系记录
                 MobileServiceCollection<UsersRelation, UsersRelation> userAllFriendsRelationItem
                     = await (from relation in MobileServiceTable.instance.usersRelationItem
-                             where relation.UserId == this.account.Id || relation.FriendId == this.account.Id
+                             where relation.UserId == this.account.AuthenId 
                              select relation).ToCollectionAsync();
 
                 //根据所有记录查找用户的信息
                 this.AllFriendsCollection = null;                        //清空好友列表
+                
                 foreach (UsersRelation FriendRelation in userAllFriendsRelationItem)
                 {
                     if (this.AllFriendsCollection != null)
                     {
                         List<Account> friend = await (from account in MobileServiceTable.instance.accountItem
-                                                      where account.Id == FriendRelation.UserId || account.Id == FriendRelation.FriendId
-                                                      where account.Id != this.account.Id
+                                                      where account.AuthenId == FriendRelation.FriendId
+                                                      where account.AuthenId != this.account.AuthenId
                                                       select account).ToListAsync();
                         AllFriendsCollection.Add(friend.First());
                     }
                     else
                     {
                         MobileServiceCollection<Account, Account> friend = await (from account in MobileServiceTable.instance.accountItem
-                                                                                  where account.Id == FriendRelation.UserId || account.Id == FriendRelation.FriendId
-                                                                                  where account.Id != this.account.Id
+                                                                                  where account.AuthenId == FriendRelation.FriendId
+                                                                                  where account.AuthenId != this.account.AuthenId
                                                                                   select account).ToCollectionAsync();
                         AllFriendsCollection = friend;
                     }
@@ -562,8 +630,8 @@ namespace Favor.Controller
 
                 // Set blob properties
                 userImage.ContainerName = "userimages";
-                userImage.ResourceName = userImageStorageFile.Name + account.Id;
-                userImage.userId = account.Id;
+                userImage.ResourceName = userImageStorageFile.Name;
+                userImage.userId = account.AuthenId;
             }
 
             // Send the item to be inserted. When blob properties are set this
