@@ -10,8 +10,8 @@
 
     <Page.BottomAppBar>
         <CommandBar x:Name="comBar" Background="#FFFF8F3D">
-            <!--领取任务-->
-            <AppBarButton x:Name="AcceptMission" Icon="Accept" Label="Accept" Click="Accept_AppBarButton_Click"/>
+            <!--领取任务 改到单条实现
+            <AppBarButton x:Name="AcceptMission" Icon="Accept" Label="Accept" Click="Accept_AppBarButton_Click"/> -->
             <!--添加好友-->
             <AppBarButton x:Name="AddFriend" Icon="AddFriend" Label="AddFriend" Click="AddFriend_AppBarButton_Click"/>
             <!--编写任务-->
