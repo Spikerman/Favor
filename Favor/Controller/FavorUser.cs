@@ -441,7 +441,7 @@ namespace Favor.Controller
                     try
                     {
                         searchDuplicatedUserIdList = await (from userRelationPair in MobileServiceTable.instance.usersRelationItem
-                                                            where (account.AuthenId == userRelationPair.UserId & userRelationPair.FriendId == friendId) || (account.AuthenId == userRelationPair.FriendId & userRelationPair.UserId == friendId)
+                                                            where (account.AuthenId == userRelationPair.UserId & userRelationPair.FriendId == friendId) 
                                                             select userRelationPair).ToListAsync();
                     }
 
@@ -468,9 +468,11 @@ namespace Favor.Controller
                         else
                         {
                             UsersRelation userRelation = new UsersRelation { UserId = account.AuthenId, FriendId = friendId };
+                            UsersRelation userRelationX = new UsersRelation { UserId = friendId, FriendId = account.AuthenId };
                             try
                             {
                                 await MobileServiceTable.instance.usersRelationItem.InsertAsync(userRelation);//若为新好友，则向用户关系表中插入数据
+                                await MobileServiceTable.instance.usersRelationItem.InsertAsync(userRelationX);
                             }
                             catch (MobileServiceInvalidOperationException e)
                             {
@@ -509,17 +511,18 @@ namespace Favor.Controller
                 //查询所有和该用户有关的关系记录
                 MobileServiceCollection<UsersRelation, UsersRelation> userAllFriendsRelationItem
                     = await (from relation in MobileServiceTable.instance.usersRelationItem
-                             where relation.UserId == this.account.AuthenId || relation.FriendId == this.account.AuthenId
+                             where relation.UserId == this.account.AuthenId 
                              select relation).ToCollectionAsync();
 
                 //根据所有记录查找用户的信息
                 this.AllFriendsCollection = null;                        //清空好友列表
+                
                 foreach (UsersRelation FriendRelation in userAllFriendsRelationItem)
                 {
                     if (this.AllFriendsCollection != null)
                     {
                         List<Account> friend = await (from account in MobileServiceTable.instance.accountItem
-                                                      where account.AuthenId == FriendRelation.UserId || account.AuthenId == FriendRelation.FriendId
+                                                      where account.AuthenId == FriendRelation.FriendId
                                                       where account.AuthenId != this.account.AuthenId
                                                       select account).ToListAsync();
                         AllFriendsCollection.Add(friend.First());
@@ -527,7 +530,7 @@ namespace Favor.Controller
                     else
                     {
                         MobileServiceCollection<Account, Account> friend = await (from account in MobileServiceTable.instance.accountItem
-                                                                                  where account.AuthenId == FriendRelation.UserId || account.AuthenId == FriendRelation.FriendId
+                                                                                  where account.AuthenId == FriendRelation.FriendId
                                                                                   where account.AuthenId != this.account.AuthenId
                                                                                   select account).ToCollectionAsync();
                         AllFriendsCollection = friend;
