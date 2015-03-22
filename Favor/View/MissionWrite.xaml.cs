@@ -18,6 +18,7 @@ using Windows.UI.Xaml.Navigation;
 using Windows.UI.Core;
 using Favor.DataModel;
 using Favor.Controller;
+using Favor.Common;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
 
@@ -31,6 +32,7 @@ namespace Favor
         public MissionWrite()
         {
             this.InitializeComponent();
+            this.NavigationCacheMode=NavigationCacheMode.Enabled;//设置页面缓存
             //添加物理键返回前一页的响应
             Windows.Phone.UI.Input.HardwareButtons.BackPressed += (sender, e) =>
             {
@@ -65,15 +67,27 @@ namespace Favor
 
         private async void ButtonSave_Click(object sender, RoutedEventArgs e)
         {
+            await App.statusBar.ProgressIndicator.ShowAsync();
+            if (TextInput.Text.Length <= 6)
+            {
+                var dialog = new MessageDialog("请输入足够的信息（大于6个字）");
+                await dialog.ShowAsync();
+                await App.statusBar.ProgressIndicator.HideAsync();
+            }
+            else
+            {
             Frame.IsEnabled = false;
-            var missionItem = new Mission { information = TextInput.Text, userId = FavorUser.instance.account.AuthenId,publisher=FavorUser.instance.account.UserName,publisherImageUri=FavorUser.instance.account.UserImageUri };
+                var missionItem = new Mission { information = TextInput.Text, userId = FavorUser.instance.account.AuthenId, publisher = FavorUser.instance.account.UserName, publisherImageUri = FavorUser.instance.account.UserImageUri };
             await FavorUser.instance.InsertMissionTable(missionItem);
-            //RefreshListItems();
+                await Notifications.instance.PushToFriends();
             Frame.IsEnabled = true;
             this.Frame.Navigate(typeof(MissionsWall));
-
+                await App.statusBar.ProgressIndicator.HideAsync();
+            }
 
         }
+
+
 
         private void PushingButton_Click(object sender, RoutedEventArgs e)
         {
@@ -83,6 +97,11 @@ namespace Favor
         private void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
             Frame.Navigate(typeof(MissionsWall));
+        }
+
+        private void PushingFriendButton_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(PushingList));
         }
     }
 }
