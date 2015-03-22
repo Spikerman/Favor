@@ -7,14 +7,14 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+   
     <Page.BottomAppBar>
         <CommandBar Background="#FFFF8F3D">
-            <AppBarButton x:Name="SaveButton" Icon="Accept" Label="appbarbutton" Click="ButtonSave_Click"/>
-            <AppBarButton x:Name="PushingButton" Label="Pushing" Icon="SetTile" Click="PushingButton_Click"></AppBarButton>
-            <AppBarButton Icon="Cancel" Label="appbarbutton" Click="AppBarButton_Click"/>
-            
+            <AppBarButton x:Name="SaveButton" Icon="Accept" Label="Submit" Click="ButtonSave_Click"/>
+            <AppBarButton Icon="Cancel" Label="Cancel" Click="AppBarButton_Click"/>
         </CommandBar>
     </Page.BottomAppBar>
+            
 
     <Grid Background="#FFFF8F3D">
         <Grid HorizontalAlignment="Left" Height="85" Margin="0,0,0,495" VerticalAlignment="Bottom" Width="400" Background="#FFFF8F3D"/>

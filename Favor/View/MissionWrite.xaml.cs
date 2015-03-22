@@ -32,7 +32,7 @@ namespace Favor
         public MissionWrite()
         {
             this.InitializeComponent();
-            this.NavigationCacheMode=NavigationCacheMode.Enabled;//设置页面缓存
+            this.NavigationCacheMode = NavigationCacheMode.Enabled;//设置页面缓存
             //添加物理键返回前一页的响应
             Windows.Phone.UI.Input.HardwareButtons.BackPressed += (sender, e) =>
             {
@@ -44,7 +44,7 @@ namespace Favor
                 {
                     this.Frame.GoBack();
                 }
-              
+
             };
         }
 
@@ -76,12 +76,29 @@ namespace Favor
             }
             else
             {
-            Frame.IsEnabled = false;
+                Frame.IsEnabled = false;
                 var missionItem = new Mission { information = TextInput.Text, userId = FavorUser.instance.account.AuthenId, publisher = FavorUser.instance.account.UserName, publisherImageUri = FavorUser.instance.account.UserImageUri };
-            await FavorUser.instance.InsertMissionTable(missionItem);
+
+                await FavorUser.instance.InsertMissionTable(missionItem);
+
+                List<UsersRelation> followers = await MobileServiceTable.instance.usersRelationItem
+                    .Where(relationTable => relationTable.IsFocusingFriend == true
+                        && relationTable.FriendId == FavorUser.instance.account.AuthenId
+                    ).ToListAsync();
+
+                if (followers != null)
+                {
+
+                   foreach(UsersRelation follower in followers)
+                   {
+                       Notifications.instance.userIdTags.Add(follower.UserId);
+                   }
+
+                }
                 await Notifications.instance.PushToFriends();
-            Frame.IsEnabled = true;
-            this.Frame.Navigate(typeof(MissionsWall));
+
+                Frame.IsEnabled = true;
+                this.Frame.Navigate(typeof(MissionsWall));
                 await App.statusBar.ProgressIndicator.HideAsync();
             }
 
@@ -91,7 +108,7 @@ namespace Favor
 
         private void PushingButton_Click(object sender, RoutedEventArgs e)
         {
-           Frame.Navigate(typeof(PushingList));
+            Frame.Navigate(typeof(PushingList));
         }
 
         private void AppBarButton_Click(object sender, RoutedEventArgs e)

@@ -45,10 +45,10 @@ namespace Favor.Common
                     await App.MobileService.GetPush().RegisterNativeAsync(channel.Uri);
                     await App.MobileService.InvokeApiAsync("notifyAllUsers", x);
                     userIdTags.Clear();
-
-
-
                 }
+
+
+
                 catch (Exception exception)
                 {
                     HandleRegisterException(exception);
@@ -58,7 +58,7 @@ namespace Favor.Common
         }
         private static void HandleRegisterException(Exception exception)
         {
-
+            Notifications.instance.userIdTags.Clear();
         }
 
     }
