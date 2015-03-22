@@ -90,6 +90,7 @@
             <PivotItem
                 TabIndex="0"
                 x:Uid="PivotItem1"
+                x:Name="PivotItemOne"
                 Margin="5,5,5,5"
                 Header="{Binding Source=../Assets/setting.png}">
                 <!--Double line list with text wrapping-->
@@ -99,6 +100,7 @@
             <PivotItem
                 TabIndex="1"
                 x:Uid="PivotItem2"
+                x:Name="PivotItemTwo"
                 Margin="5,5,5,5"
                 Header="{Binding Source=../Assets/wall.png}">
                 <ListView x:Name="MisssionListItems" HorizontalAlignment="Left" Height="504"  
@@ -111,6 +113,7 @@
             <PivotItem
                 TabIndex="3"
                 x:Uid="PivotItem3"
+                x:Name="PivotItemThree"
                 Margin="5,5,5,5"
                 Header="{Binding Source=../Assets/friend.png}">
                 <ListView x:Name="FriendListItems" HorizontalAlignment="Left" Height="504" Margin="0,0,0,0" 
