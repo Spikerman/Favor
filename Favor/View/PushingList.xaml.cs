@@ -50,11 +50,7 @@ namespace Favor
                 {
                     this.Frame.GoBack();
                 }
-                //无上一页弹窗提示关闭APP【与最小化后台运行并不同】 
-                else
-                {
-                    this.Frame.GoBack();
-                }
+                
             };
         }
 
@@ -151,7 +147,7 @@ namespace Favor
         {
             string messageTest = null;
             var x = ListItems.SelectedItems;
-
+            
             for (int i = 0; i < x.Count; i++)
             {
                 var y = (Account)x.ElementAt(i);
@@ -162,13 +158,13 @@ namespace Favor
             {
                 var dialog = new MessageDialog(messageTest);
                 await dialog.ShowAsync();
-
+            
             }
             Frame.Navigate(typeof(MissionWrite));
-
+            
         }
 
-
+        
     }
 }
 

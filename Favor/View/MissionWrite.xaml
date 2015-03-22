@@ -12,7 +12,7 @@
             <AppBarButton x:Name="SaveButton" Icon="Accept" Label="appbarbutton" Click="ButtonSave_Click"/>
             <AppBarButton x:Name="PushingButton" Label="Pushing" Icon="SetTile" Click="PushingButton_Click"></AppBarButton>
             <AppBarButton Icon="Cancel" Label="appbarbutton" Click="AppBarButton_Click"/>
-
+            
         </CommandBar>
     </Page.BottomAppBar>
 

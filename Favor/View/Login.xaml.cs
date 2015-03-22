@@ -43,6 +43,25 @@ namespace Favor
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
+
+            //添加物理键返回前一页的响应
+            Windows.Phone.UI.Input.HardwareButtons.BackPressed += (sender, e) =>
+            {
+                //向系统表明我们对物理返回键按钮响应自行处理，必须放在一开始
+                e.Handled = true;
+
+                //有上一页可回退时
+                if (this.Frame.CanGoBack)
+                {
+                    this.Frame.GoBack();
+                }
+                //无上一页弹窗提示关闭APP【与最小化后台运行并不同】 
+                /*else
+                {
+                    Application.Current.Exit();
+                }
+                 * */
+            };
            
 
         }

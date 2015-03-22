@@ -44,11 +44,7 @@ namespace Favor
                 {
                     this.Frame.GoBack();
                 }
-                //无上一页弹窗提示关闭APP【与最小化后台运行并不同】 
-                else
-                {
-                    this.Frame.GoBack();
-                }
+              
             };
         }
 
@@ -80,12 +76,12 @@ namespace Favor
             }
             else
             {
-                Frame.IsEnabled = false;
+            Frame.IsEnabled = false;
                 var missionItem = new Mission { information = TextInput.Text, userId = FavorUser.instance.account.AuthenId, publisher = FavorUser.instance.account.UserName, publisherImageUri = FavorUser.instance.account.UserImageUri };
-                await FavorUser.instance.InsertMissionTable(missionItem);
+            await FavorUser.instance.InsertMissionTable(missionItem);
                 await Notifications.instance.PushToFriends();
-                Frame.IsEnabled = true;
-                this.Frame.Navigate(typeof(MissionsWall));
+            Frame.IsEnabled = true;
+            this.Frame.Navigate(typeof(MissionsWall));
                 await App.statusBar.ProgressIndicator.HideAsync();
             }
 
