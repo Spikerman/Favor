@@ -40,9 +40,9 @@
                     <TextBlock TextWrapping="Wrap" Text="{Binding information}" FontSize="18.667" Margin="10,0"/>
                 </StackPanel>
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Height="71" Margin="0,25,0,0" VerticalAlignment="Top" Width="400">
-                    <Button Content="Accept" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="#FFFF8F3D" Margin="10,0,0,0.833" Width="110" Height="55" Click="Accept_Button_Click"/>
+                    <Button Content="Accept" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{Binding FrontColor}" Margin="10,0,0,0.833" Width="110" Height="55" Click="Accept_Button_Click"/>
                     <Button Content="Call" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="145,-58,145,0" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="#FFFF8F3D" Height="55" Width="110"/>
-                    <Button Content="Repost" HorizontalAlignment="Right" VerticalAlignment="Stretch" Margin="0,-59,10,0" BorderBrush="{x:Null}" Foreground="#FFFF8F3D" Width="110" Height="55" Click="Repost_Button_Click"/>
+                    <Button Content="Repost" HorizontalAlignment="Right" VerticalAlignment="Stretch" Margin="0,-59,10,0" BorderBrush="{x:Null}" Foreground="{Binding FrontColor}" Width="110" Height="55" Click="Repost_Button_Click"/>
                 </StackPanel>
             </StackPanel>
         </DataTemplate>

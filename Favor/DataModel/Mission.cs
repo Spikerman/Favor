@@ -68,5 +68,18 @@ namespace Favor.DataModel
             }
         }
 
+        private string frontColor;        //状态下面按钮的颜色
+
+        public string FrontColor
+        {
+            get
+            {
+                if (received == false)
+                    return "#FFFF8F3D";
+                else
+                    return "#FFA9AEB6";
+            }
+        }
+
     }
 }

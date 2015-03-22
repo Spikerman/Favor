@@ -96,15 +96,32 @@ namespace Favor
 
         }
 
+        private async void Repost_Button_Click(object sender, RoutedEventArgs e)
+        {
+            Button clicked = (Button)sender;
+            Mission x = (Mission)clicked.DataContext;
+            if (x.received == false)
+            {
+                await FavorUser.instance.RepostMission(x);
+                await FavorUser.instance.RefreshMissionsWall();
+                MisssionListItems.ItemsSource = FavorUser.instance.missionCollection;
+            }
+
+        }
+
         private async void Accept_Button_Click(object sender, RoutedEventArgs e)
         {
             //接收任务
             //注意SelectionMode="Single"
-           Button clicked = (Button)sender;
+            Button clicked = (Button)sender;
             Mission x = (Mission)clicked.DataContext;
-            await FavorUser.instance.UpdateChenkedMissionTable(x);
-            await FavorUser.instance.RefreshMissionsWall();
-            MisssionListItems.ItemsSource = FavorUser.instance.missionCollection;
+            if (x.received == false)
+            {
+                await FavorUser.instance.UpdateChenkedMissionTable(x);
+                await FavorUser.instance.RefreshMissionsWall();
+                MisssionListItems.ItemsSource = FavorUser.instance.missionCollection;
+            }
+           
         }
 
         private void Write_AppBarButton_Click(object sender, RoutedEventArgs e)
@@ -155,16 +172,6 @@ namespace Favor
                 comBar.PrimaryCommands.Add(AddFriend);
             }
             
-        }
-
-        private async void Repost_Button_Click(object sender, RoutedEventArgs e)
-        {
-            Button clicked = (Button)sender;
-            Mission x = (Mission)clicked.DataContext;
-            await FavorUser.instance.RepostMission(x);
-            await FavorUser.instance.RefreshMissionsWall();
-            MisssionListItems.ItemsSource = FavorUser.instance.missionCollection;
-
         }
 
         private async void ToggledHappen(object sender, RoutedEventArgs e)
