@@ -109,6 +109,7 @@ namespace Favor.Controller
                     mission.Reposter = tempAccount.First().UserName;
                     missionCollection.Add(mission);
                 }
+                
             }
             catch (MobileServiceInvalidOperationException e)
             {

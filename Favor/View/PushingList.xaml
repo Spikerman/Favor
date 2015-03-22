@@ -10,6 +10,7 @@
     <Page.BottomAppBar>
         <CommandBar Background="#FFFF8F3D">
             <AppBarButton Name="PushingToAll" Icon="Up" VerticalAlignment="Top" Click="AppBarButton_Click"/>
+            <AppBarButton Icon="Accept" Label="finish" Click="AppBarButton_Click_1"/>
         </CommandBar>
     </Page.BottomAppBar>
 

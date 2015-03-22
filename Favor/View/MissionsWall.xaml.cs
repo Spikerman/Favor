@@ -28,6 +28,7 @@ namespace Favor
     {
         public MissionsWall()
         {
+            
             this.InitializeComponent();
             //添加物理键返回前一页的响应
             Windows.Phone.UI.Input.HardwareButtons.BackPressed += (sender, e) =>
@@ -58,6 +59,8 @@ namespace Favor
         /// 此参数通常用于配置页。</param>
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
+            App.statusBar.ProgressIndicator.Text = "Loading information...";
+            await App.statusBar.ProgressIndicator.ShowAsync();
             
             if (MobileServiceTable.instance.usersRelationItem != null)
             {
@@ -70,6 +73,8 @@ namespace Favor
             }
             await FavorUser.instance.RefreshMissionsWall();
             await FavorUser.instance.RefreshUserAllFriends();
+            await App.statusBar.ProgressIndicator.HideAsync();
+            App.statusBar.ProgressIndicator.Text = "Loading";
             MisssionListItems.ItemsSource = FavorUser.instance.missionCollection;
             FriendListItems.ItemsSource = FavorUser.instance.AllUserFriendCollection;
 

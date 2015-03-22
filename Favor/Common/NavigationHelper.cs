@@ -364,7 +364,8 @@ namespace Favor.Common
             {
                 this.SaveState(this, new SaveStateEventArgs(pageState));
             }
-            frameState[_pageKey] = pageState;
+            if (_pageKey != null)
+                frameState[_pageKey] = pageState;
         }
 
         #endregion

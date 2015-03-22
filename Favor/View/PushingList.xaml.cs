@@ -38,6 +38,7 @@ namespace Favor
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
+            
             //添加物理键返回前一页的响应
             Windows.Phone.UI.Input.HardwareButtons.BackPressed += (sender, e) =>
             {
@@ -107,6 +108,8 @@ namespace Favor
         ///的事件数据。</param>
         private void NavigationHelper_SaveState(object sender, SaveStateEventArgs e)
         {
+            
+        
         }
 
         #region NavigationHelper 注册
@@ -138,9 +141,17 @@ namespace Favor
 
         private async void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
+
+
+            await Notifications.instance.PushToFriends();
+
+        }
+
+        private async void AppBarButton_Click_1(object sender, RoutedEventArgs e)
+        {
             string messageTest = null;
             var x = ListItems.SelectedItems;
-            
+
             for (int i = 0; i < x.Count; i++)
             {
                 var y = (Account)x.ElementAt(i);
@@ -150,15 +161,14 @@ namespace Favor
             if (messageTest != null)
             {
                 var dialog = new MessageDialog(messageTest);
-            
-            await dialog.ShowAsync();
+                await dialog.ShowAsync();
+
             }
-            
-            await Notifications.instance.PushToFriends();
-            
+            Frame.Navigate(typeof(MissionWrite));
+
         }
 
-        
+
     }
 }
 
