@@ -52,7 +52,7 @@ namespace Favor
                 //无上一页弹窗提示关闭APP【与最小化后台运行并不同】 
                 else
                 {
-                    this.Frame.GoBack();
+                    Application.Current.Exit();
                 }
             };
         }
