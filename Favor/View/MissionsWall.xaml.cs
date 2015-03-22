@@ -28,7 +28,7 @@ namespace Favor
     {
         public MissionsWall()
         {
-            
+
             this.InitializeComponent();
             //添加物理键返回前一页的响应
             Windows.Phone.UI.Input.HardwareButtons.BackPressed += (sender, e) =>
@@ -41,7 +41,7 @@ namespace Favor
                 {
                     this.Frame.GoBack();
                 }
-                
+
             };
 
             //控制pivot高亮
@@ -57,14 +57,14 @@ namespace Favor
         {
             App.statusBar.ProgressIndicator.Text = "Loading information...";
             await App.statusBar.ProgressIndicator.ShowAsync();
-            
+
             if (MobileServiceTable.instance.usersRelationItem != null)
             {
                 FavorUser.instance.AllUserFriendCollection = await (from userRelationPair in MobileServiceTable.instance.usersRelationItem
                                                                     where (FavorUser.instance.account.AuthenId == userRelationPair.UserId)
                                                                     select userRelationPair).ToCollectionAsync();
-              
-             
+
+
 
             }
             await FavorUser.instance.RefreshMissionsWall();
@@ -113,15 +113,36 @@ namespace Favor
         {
             //接收任务
             //注意SelectionMode="Single"
+            Frame.IsEnabled = false;
+            App.statusBar.ProgressIndicator.Text = "Acceptiong...";
+            await App.statusBar.ProgressIndicator.ShowAsync();
             Button clicked = (Button)sender;
             Mission x = (Mission)clicked.DataContext;
             if (x.received == false)
             {
-                await FavorUser.instance.UpdateChenkedMissionTable(x);
-                await FavorUser.instance.RefreshMissionsWall();
-                MisssionListItems.ItemsSource = FavorUser.instance.missionCollection;
+                MobileServiceInvalidOperationException exception = null;
+                try
+                {
+                    await FavorUser.instance.UpdateChenkedMissionTable(x);
+                    await FavorUser.instance.RefreshMissionsWall();
+                    MisssionListItems.ItemsSource = FavorUser.instance.missionCollection;
+                }
+                catch (MobileServiceInvalidOperationException ee)
+                {
+                    exception = ee;
+                }
+                if (exception != null)
+                {
+                    await new MessageDialog(exception.Message, "Error loding, please check the Internet ").ShowAsync();
+                }
+                else
+                {
+                    await new MessageDialog("Accepting success!").ShowAsync();
+                }
             }
-           
+            await App.statusBar.ProgressIndicator.HideAsync();
+            Frame.IsEnabled = true;
+
         }
 
         private void Write_AppBarButton_Click(object sender, RoutedEventArgs e)
@@ -161,7 +182,7 @@ namespace Favor
 
                 comBar.PrimaryCommands.Add(WriteMission);
 
-        }
+            }
             else if (pivot.SelectedIndex == 2)
             {
                 //好友列表：加好友
@@ -171,13 +192,13 @@ namespace Favor
 
                 comBar.PrimaryCommands.Add(AddFriend);
             }
-            
+
         }
 
         private async void ToggledHappen(object sender, RoutedEventArgs e)
         {
             ToggleSwitch toggle = (ToggleSwitch)sender;
-            UsersRelation x=(UsersRelation)toggle.DataContext;
+            UsersRelation x = (UsersRelation)toggle.DataContext;
             if (toggle.IsOn)
             {
                 x.IsFocusingFriend = true;
@@ -201,7 +222,7 @@ namespace Favor
                     friend.First().IsFocused = true;
                 }
                 else
-        {
+                {
                     friend.First().IsFocused = false;
                 }
 
