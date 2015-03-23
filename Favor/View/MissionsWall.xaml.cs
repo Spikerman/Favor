@@ -70,7 +70,7 @@ namespace Favor
             await FavorUser.instance.RefreshMissionsWall();
             await FavorUser.instance.RefreshUserAllFriends();
             await App.statusBar.ProgressIndicator.HideAsync();
-            App.statusBar.ProgressIndicator.Text = "Loading";
+            App.statusBar.ProgressIndicator.Text = "Loading...";
             MisssionListItems.ItemsSource = FavorUser.instance.missionCollection;
             FriendListItems.ItemsSource = FavorUser.instance.AllUserFriendCollection;
 
@@ -98,6 +98,8 @@ namespace Favor
 
         private async void Repost_Button_Click(object sender, RoutedEventArgs e)
         {
+            Frame.IsEnabled = false;
+            await App.statusBar.ProgressIndicator.ShowAsync();
             Button clicked = (Button)sender;
             Mission x = (Mission)clicked.DataContext;
             if (x.received == false)
@@ -107,6 +109,10 @@ namespace Favor
                 MisssionListItems.ItemsSource = FavorUser.instance.missionCollection;
             }
 
+            await App.statusBar.ProgressIndicator.HideAsync();
+            Frame.IsEnabled = true;
+
+
         }
 
         private async void Accept_Button_Click(object sender, RoutedEventArgs e)
@@ -114,7 +120,7 @@ namespace Favor
             //接收任务
             //注意SelectionMode="Single"
             Frame.IsEnabled = false;
-            App.statusBar.ProgressIndicator.Text = "Acceptiong...";
+            App.statusBar.ProgressIndicator.Text = "Accepting...";
             await App.statusBar.ProgressIndicator.ShowAsync();
             Button clicked = (Button)sender;
             Mission x = (Mission)clicked.DataContext;
@@ -148,7 +154,8 @@ namespace Favor
         private void Write_AppBarButton_Click(object sender, RoutedEventArgs e)
         {
             //发布任务
-            Frame.Navigate(typeof(MissionWrite));
+            string na = "";
+            Frame.Navigate(typeof(MissionWrite),na);
         }
 
         private void AddFriend_AppBarButton_Click(object sender, RoutedEventArgs e)
