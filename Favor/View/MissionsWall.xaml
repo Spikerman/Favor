@@ -9,7 +9,8 @@
     mc:Ignorable="d" Background="Black">
 
     <Page.BottomAppBar>
-        <CommandBar x:Name="comBar" Background="#FFFF8F3D">
+        <CommandBar x:Name="comBar" Background="#FFFF8F3D" Height="75" >
+            <!--Opacity="0.93"透明不好看-->
             <!--领取任务 改到单条实现
             <AppBarButton x:Name="AcceptMission" Icon="Accept" Label="Accept" Click="Accept_AppBarButton_Click"/> -->
             <!--添加好友-->
@@ -40,9 +41,9 @@
                     <TextBlock TextWrapping="Wrap" Text="{Binding information}" FontSize="18.667" Margin="10,0"/>
                 </StackPanel>
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Height="71" Margin="0,25,0,0" VerticalAlignment="Top" Width="400">
-                    <Button Content="Accept" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{Binding FrontColor}" Margin="10,0,0,0.833" Width="110" Height="55" Click="Accept_Button_Click" BorderThickness="0,0,1,0"/>
+                    <Button Content="Accept" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{x:Null}"  Foreground="{Binding FrontColor}" Margin="10,0,0,0.833" Width="110" Height="55" Click="Accept_Button_Click" BorderThickness="0,0,0.5,0" BorderBrush="#FFA9AEB6"/>
                     <Button Content="Call" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="145,-58,145,0" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="#FFFF8F3D" Height="55" Width="110" />
-                    <Button Content="Repost" HorizontalAlignment="Right" VerticalAlignment="Stretch" Margin="0,-59,10,0" BorderBrush="{x:Null}" Foreground="{Binding FrontColor}" Width="110" Height="55" Click="Repost_Button_Click" BorderThickness="1,0,0,0"/>
+                    <Button Content="Repost" HorizontalAlignment="Right" VerticalAlignment="Stretch" Margin="0,-59,10,0"  Foreground="{Binding FrontColor}" Width="110" Height="55" Click="Repost_Button_Click" BorderThickness="0.5,0,0,0" BorderBrush="#FFA9AEB6"/>
                 </StackPanel>
             </StackPanel>
         </DataTemplate>
@@ -79,11 +80,11 @@
                   VerticalAlignment="Top" Width="400" Background="#F2F9F6F6" Foreground="Black" FontSize="20" 
                   ItemTemplate="{StaticResource MessagesDataTemplate}" SelectionMode="Single"  />
         -->
-        <StackPanel Background="#FFFF8F3D" Margin="0,0,0,517" Height="63" VerticalAlignment="Bottom"></StackPanel>
+        <StackPanel Background="#FFFF8F3D" Margin="0,0,0,522" Height="58" VerticalAlignment="Bottom"></StackPanel>
         <Pivot x:Uid="Pivot" x:Name="pivot" Margin="0,10,0,0" SelectionChanged="Pivot_SelectionChanged">
             <Pivot.HeaderTemplate>
                 <DataTemplate>
-                    <Image Source="{Binding}" Width="110" Height="35"/>
+                    <Image Source="{Binding}" Width="110" Height="35" RenderTransformOrigin="0.492,0.81"/>
                 </DataTemplate>
             </Pivot.HeaderTemplate>
             <!--Pivot item one个人中心-->
