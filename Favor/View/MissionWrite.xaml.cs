@@ -60,6 +60,7 @@ namespace Favor
         /// This parameter is typically used to configure the page.</param>
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
+            TextInput.Text = e.Parameter.ToString();
             await FavorUser.instance.RefreshMissionsWall();
             //这里有个bug 就是在写任务按取消时返回会出现
             this.SaveButton.IsEnabled = true;
@@ -76,6 +77,8 @@ namespace Favor
             }
             else
             {
+                App.statusBar.ProgressIndicator.Text = "Sending...";
+                await App.statusBar.ProgressIndicator.ShowAsync();
                 Frame.IsEnabled = false;
                 var missionItem = new Mission { information = TextInput.Text, userId = FavorUser.instance.account.AuthenId, publisher = FavorUser.instance.account.UserName, publisherImageUri = FavorUser.instance.account.UserImageUri };
 
@@ -96,8 +99,10 @@ namespace Favor
 
                 }
                 await Notifications.instance.PushToFriends();
-
+                App.statusBar.ProgressIndicator.Text = "Loading...";
                 Frame.IsEnabled = true;
+                await App.statusBar.ProgressIndicator.HideAsync();
+                
                 this.Frame.Navigate(typeof(MissionsWall));
                 await App.statusBar.ProgressIndicator.HideAsync();
             }
