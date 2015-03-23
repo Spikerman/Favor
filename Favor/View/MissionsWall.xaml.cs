@@ -118,7 +118,7 @@ namespace Favor
             await App.statusBar.ProgressIndicator.ShowAsync();
             Button clicked = (Button)sender;
             Mission x = (Mission)clicked.DataContext;
-            if (x.received == false)
+            if (x.FrontColor == "#FFFF8F3D")     //如果按钮为橙色
             {
                 MobileServiceInvalidOperationException exception = null;
                 try
