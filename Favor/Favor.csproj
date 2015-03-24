@@ -143,6 +143,8 @@
     <Content Include="Assets\friend.png" />
     <Content Include="Assets\point.png" />
     <Content Include="Assets\Logo.scale-240.png" />
+    <Content Include="Assets\received.jpg" />
+    <Content Include="Assets\sended.jpg" />
     <Content Include="Assets\setting.png" />
     <Content Include="Assets\SmallLogo.scale-240.png" />
     <Content Include="Assets\Images\space.png" />

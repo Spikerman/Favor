@@ -65,37 +65,14 @@
                 </ToggleSwitch>
             </StackPanel>
         </DataTemplate>
-        <DataTemplate x:Key="PersonalInfoDataTemplate">
-            <StackPanel Orientation="Vertical" Background="White" Margin="0,20,0,0">
-                <StackPanel Orientation="Horizontal" Height="83" VerticalAlignment="Top" >
-                    <Border Height="40" Width="40" Margin="10,10,0,10" VerticalAlignment="Top">
-                        <Image Source="{Binding Path=publisherImageUri, Converter={StaticResource StringToImageConverter}}" Stretch="UniformToFill" Margin="0,0,-22,-18"/>
-                    </Border>
-                    <TextBlock x:Name="PublisherTextBlock" Text="{Binding publisher}" FontSize="20" FontWeight="Bold" 
-                	Margin="31,10,0,0" TextTrimming="WordEllipsis" 
-                	HorizontalAlignment="Left" VerticalAlignment="Top" Width="193" FontStyle="Normal"/>
-                    <TextBlock TextWrapping="Wrap" Text="{Binding Reposter}" VerticalAlignment="Top" Margin="-363,37,219,0" FontSize="13.333" Foreground="#FFA9AEB6"/>
-                </StackPanel>
-            </StackPanel>
-        </DataTemplate>
     </Page.Resources>
 
     <Grid Background="#F9F1ED">
-        <!--<Grid HorizontalAlignment="Left" Width="400" Grid.ColumnSpan="2" Background="#FFFF8F3D" Height="60" VerticalAlignment="Top">
-            <AppBarButton HorizontalAlignment="Left" Label="" Margin="20,-2,0,-18" VerticalAlignment="Top" Height="80" Icon="Contact" Width="80" Click="AppBarButton_Click"/>
-            <AppBarButton x:Name="AddressBookBtn" HorizontalAlignment="Left" Icon="People" Label="" Margin="210,-2,0,-18" VerticalAlignment="Top" Height="80" Click="AddressBookBtn_Click"/>
-        </Grid>
-        <AppBarButton x:Name="WishBtn" HorizontalAlignment="Stretch" Icon="Edit" Label="" Margin="300,-2,20,502" VerticalAlignment="Bottom" Height="80" Width="80" Click="WishBtn_Click"/>
-        <AppBarButton x:Name="WallBtn" HorizontalAlignment="Stretch" Icon="AllApps" Label="" Margin="110,-2,210,0" VerticalAlignment="Top" Height="80" Width="80" Click="WallBtn_Click"/>
-        <ListView x:Name="ListItems" HorizontalAlignment="Left" Height="520" Margin="0,60,0,0" 
-                  VerticalAlignment="Top" Width="400" Background="#F2F9F6F6" Foreground="Black" FontSize="20" 
-                  ItemTemplate="{StaticResource MessagesDataTemplate}" SelectionMode="Single"  />
-        -->
         <StackPanel Background="#FFFF8F3D" Margin="0,0,0,522" Height="58" VerticalAlignment="Bottom"></StackPanel>
         <Pivot x:Uid="Pivot" x:Name="pivot" Margin="0,10,0,0" SelectionChanged="Pivot_SelectionChanged">
             <Pivot.HeaderTemplate>
                 <DataTemplate>
-                    <Image Source="{Binding}" Width="110" Height="35" RenderTransformOrigin="0.492,0.81"/>
+                    <Image Source="{Binding}" Width="110" Height="35" RenderTransformOrigin="5,5"/>
                 </DataTemplate>
             </Pivot.HeaderTemplate>
             <!--Pivot item one个人中心-->
@@ -105,16 +82,18 @@
                 x:Name="PivotItemOne"
                 Margin="5,5,5,5"
                 Header="{Binding Source=../Assets/setting.png}">
-                <StackPanel HorizontalAlignment="Left" Height="493" Margin="10,10,0,0" VerticalAlignment="Top" Width="370">
-                    <StackPanel Height="207">
-                        <Image Source="{Binding Path=userimageuri, Converter={StaticResource StringToImageConverter}}"  Height="120" Width="120" Margin="124,0,126,0"/>
-                        <TextBlock TextWrapping="Wrap" Text="{Binding username}" Height="67" Margin="124,0,126,0" Foreground="#FFA9AEB6"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Height="190" Margin="5,25,5,0" VerticalAlignment="Top" Width="360">
-                        <Button Content="Sended" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="{x:Null}"  Foreground="#FFFF8F3D" Margin="10,0,0,0.833" Width="180" Height="55" Click="Sended_Button_Click" BorderThickness="0,0,0.5,0" BorderBrush="#FFA9AEB6"/>
-                        <Button Content="Received" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="183,-58,-2,0" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="#FFFF8F3D" Height="55" Width="180" Click="Received_Button_Click"/>
-                    </StackPanel>
-                </StackPanel>
+                <Grid HorizontalAlignment="Left" Height="493" Margin="10,10,0,0" VerticalAlignment="Top" Width="370">
+                    <Grid Height="207" Margin="0,0,0,286">
+                        <Image Source="{Binding Path=userimageuri, Converter={StaticResource StringToImageConverter}}"  Height="120" Width="120" Margin="124,0,126,87"/>
+                        <TextBlock TextWrapping="Wrap" Text="{Binding username}" Margin="124,157,126,20" Foreground="#FFA9AEB6"/>
+                    </Grid>
+                    <Grid Margin="10,178,0,0"  Width="360">
+                        <Button Content="{Binding}"  Background="{x:Null}"  Foreground="#FFFF8F3D" Margin="5,0,0,52" Width="175" Height="263" Click="Sended_Button_Click" BorderThickness="0,0,0.5,0" BorderBrush="#FFA9AEB6"/>
+                        <Button Content="{Binding}"  Margin="173,-2,-2,54" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="#FFFF8F3D" Height="263" Click="Received_Button_Click" Width="189" />
+                        <Image Margin="0,10,190,61" Source="../Assets/received.jpg"/>
+                        <Image Margin="185,-6,0,77" Source="../Assets/sended.jpg"/>
+                    </Grid>
+                </Grid>
             </PivotItem>
 
             <!--Pivot item two任务墙-->
