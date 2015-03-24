@@ -44,8 +44,6 @@ namespace Favor
 
             };
 
-            //控制pivot高亮
-
         }
 
         /// <summary>
