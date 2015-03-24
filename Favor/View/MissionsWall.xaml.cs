@@ -254,5 +254,6 @@ namespace Favor
             Frame.Navigate(typeof(ReceivedMissions));
         }
 
+      
     }
 }
