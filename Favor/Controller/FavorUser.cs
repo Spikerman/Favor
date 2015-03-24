@@ -93,7 +93,7 @@ namespace Favor.Controller
                             repostList.Add(repost);
                         }
                     }
-            }
+                }
 
                 //根据转发记录获得动态
                 foreach (Repost repost in repostList)
@@ -107,6 +107,15 @@ namespace Favor.Controller
                                                         .Where(accountTable => accountTable.AuthenId == repost.ReposterId)
                                                         .ToListAsync();
                     mission.Reposter = tempAccount.First().UserName;
+                    missionCollection.Add(mission);
+                }
+
+                List<Mission> sortedMissions = (from mission in missionCollection
+                                                       orderby mission.__createdAt
+                                                       select mission).ToList();
+                missionCollection.Clear();
+                foreach (Mission mission in sortedMissions)
+                {
                     missionCollection.Add(mission);
                 }
                 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Favor.Controller;
 
 namespace Favor.DataModel
 {
@@ -74,10 +75,10 @@ namespace Favor.DataModel
         {
             get
             {
-                if (received == false)
-                    return "#FFFF8F3D";
-                else
+                if (received == true || userId == FavorUser.instance.account.AuthenId)
                     return "#FFA9AEB6";
+                else
+                    return "#FFFF8F3D";
             }
         }
 
