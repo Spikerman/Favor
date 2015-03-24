@@ -27,6 +27,8 @@ namespace Favor.Controller
         public MobileServiceUser mobileServiceUser { get; set; }                          //For Authenticate()
         public MobileServiceCollection<Mission, Mission> missionCollection { get; set; }  //mission的集合
 
+        public MobileServiceCollection<Mission, Mission> receivedMissionCollection { get; set; }  //已接受mission集合
+
         public MobileServiceCollection<Account, Account> AllFriendsCollection { get; set; }         //用户的所有好友
 
         public MobileServiceCollection<UsersRelation, UsersRelation> AllUserFriendCollection { get; set; }
@@ -145,7 +147,26 @@ namespace Favor.Controller
             }
         }
 
-
+        public async Task RefreshReceivedMission()
+        {
+            
+            MobileServiceInvalidOperationException exception = null;
+            try
+            {
+                receivedMissionCollection = await MobileServiceTable.instance.missionItem
+                    .Where(missionTable => missionTable.completed == false
+                        & missionTable.receiverId == this.account.AuthenId)
+                    .ToCollectionAsync();//导入自己领取的任务
+            }
+            catch (MobileServiceInvalidOperationException e)
+            {
+                exception = e;
+            }
+            if (exception != null)
+            {
+                await new MessageDialog(exception.Message, "Error loding").ShowAsync();
+            }
+        }
 
 
 
