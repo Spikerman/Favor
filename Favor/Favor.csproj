@@ -121,6 +121,12 @@
     <Compile Include="Services\MobileServices\Favor3\push.register.cs">
       <ConnectedServiceReference>Favor3</ConnectedServiceReference>
     </Compile>
+    <Compile Include="View\ReceivedMissions.xaml.cs">
+      <DependentUpon>ReceivedMissions.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\SendedMissions.xaml.cs">
+      <DependentUpon>SendedMissions.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Signup.xaml.cs">
       <DependentUpon>Signup.xaml</DependentUpon>
     </Compile>
@@ -183,6 +189,14 @@
     <Page Include="View\PushingList.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ReceivedMissions.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\SendedMissions.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Signup.xaml">
       <SubType>Designer</SubType>

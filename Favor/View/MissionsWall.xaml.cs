@@ -246,5 +246,15 @@ namespace Favor
             }
         }
 
+        private void Sended_Button_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(SendedMissions));
+        }
+
+        private void Received_Button_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(ReceivedMissions));
+        }
+
     }
 }

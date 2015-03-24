@@ -1,0 +1,31 @@
+﻿<Page
+    x:Class="Favor.View.ReceivedMissions"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Favor.View"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Page.BottomAppBar>
+        <CommandBar x:Name="comBar" Background="#FFFF8F3D" Height="75" >
+            <AppBarButton x:Name="Back" Icon="Back" Label="Back" Click="Back_AppBarButton_Click"/>
+        </CommandBar>
+    </Page.BottomAppBar>
+
+    <Page.Resources>
+        <DataTemplate x:Key="ReceivedDataTemplate">
+            <StackPanel Orientation="Vertical" VerticalAlignment="Top" Margin="0,10,0,0" >
+                <TextBlock />
+            </StackPanel>
+        </DataTemplate>
+    </Page.Resources>
+
+    <Grid Background="#F9F1ED">
+        <StackPanel Grid.Row="0" Margin="0" Background="#F9F1ED">
+            <TextBlock Text="Favor" Style="{ThemeResource TitleTextBlockStyle}" Margin="10,12,0,0" Foreground="Black"/>
+            <TextBlock  FontSize="35" Text="Received Missions" Margin="10,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" Foreground="#000000"/>
+            <ListView  />
+        </StackPanel>
+    </Grid>
+</Page>
