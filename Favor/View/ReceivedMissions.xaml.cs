@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Favor.Controller;
+using Favor.DataModel;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -45,9 +47,17 @@ namespace Favor.View
         /// </summary>
         /// <param name="e">Event data that describes how this page was reached.
         /// This parameter is typically used to configure the page.</param>
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
+            App.statusBar.ProgressIndicator.Text = "Loading information...";
+            await App.statusBar.ProgressIndicator.ShowAsync();
+            await FavorUser.instance.RefreshReceivedMission();
+            await App.statusBar.ProgressIndicator.HideAsync();
+            App.statusBar.ProgressIndicator.Text = "Loading...";
+            MisssionListItems.ItemsSource = FavorUser.instance.receivedMissionCollection;
         }
+
+
 
         private void Back_AppBarButton_Click(object sender, RoutedEventArgs e)
         {
