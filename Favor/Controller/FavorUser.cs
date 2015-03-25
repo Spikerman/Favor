@@ -32,16 +32,16 @@ namespace Favor.Controller
         public MobileServiceCollection<Account, Account> AllFriendsCollection { get; set; }         //用户的所有好友
 
         public MobileServiceCollection<UsersRelation, UsersRelation> AllUserFriendCollection { get; set; }
-
+        
         public MobileServiceCollection<Mission, Mission> sendedMissionCollection { get; set; }
-
+        
         public Account account { get; set; }                                              //用户账户信息
 
 
         public StorageFile userImageStorageFile;//存储用户头像文件
 
 
-
+        
         /// <summary>
         /// 将任务插入MissionTable
         /// </summary>
@@ -108,26 +108,26 @@ namespace Favor.Controller
                                                         .ToListAsync();
                     if (tempMission.Count != 0)
                     {
-                        mission = tempMission.First();
-                        List<Account> tempAccount = await MobileServiceTable.instance.accountItem
-                                                            .Where(accountTable => accountTable.AuthenId == repost.ReposterId)
-                                                            .ToListAsync();
-                        mission.Reposter = tempAccount.First().UserName;
-                        missionCollection.Add(mission);
-                    }
-                   
+                    mission = tempMission.First();
+                    List<Account> tempAccount = await MobileServiceTable.instance.accountItem
+                                                        .Where(accountTable => accountTable.AuthenId == repost.ReposterId)
+                                                        .ToListAsync();
+                    mission.Reposter = tempAccount.First().UserName;
+                    missionCollection.Add(mission);
+                }
+
                 }
 
                 //
                 List<Mission> sortedMissions = (from mission in missionCollection
                                                 orderby mission.__createdAt ascending
-                                                select mission).ToList();
+                                                       select mission).ToList();
                 missionCollection.Clear();
                 foreach (Mission mission in sortedMissions)
                 {
                     missionCollection.Add(mission);
                 }
-
+                
             }
             catch (MobileServiceInvalidOperationException e)
             {
@@ -162,7 +162,8 @@ namespace Favor.Controller
             {
                 receivedMissionCollection = await MobileServiceTable.instance.missionItem
                     .Where(missionTable => missionTable.completed == false
-                        & missionTable.receiverId == this.account.AuthenId)
+                        & missionTable.receiverId == this.account.AuthenId
+                        & missionTable.received == true)
                     .ToCollectionAsync();//导入自己领取的任务
             }
             catch (MobileServiceInvalidOperationException e)
@@ -175,7 +176,11 @@ namespace Favor.Controller
             }
         }
 
-
+        public async Task CancelReceivedMission(Mission receivedMission)
+        {
+            receivedMission.received = false;
+            await MobileServiceTable.instance.missionItem.UpdateAsync(receivedMission);
+        }
 
         /// <summary>
         /// 选中之后更新MssionTable
@@ -349,7 +354,7 @@ namespace Favor.Controller
                 {
                     AccountLocalStorage.instance.SaveAccount(account);
                 }
-
+               
             }
         }
 
@@ -519,7 +524,7 @@ namespace Favor.Controller
                     try
                     {
                         searchDuplicatedUserIdList = await (from userRelationPair in MobileServiceTable.instance.usersRelationItem
-                                                            where (account.AuthenId == userRelationPair.UserId & userRelationPair.FriendId == friendId)
+                                                            where (account.AuthenId == userRelationPair.UserId & userRelationPair.FriendId == friendId) 
                                                             select userRelationPair).ToListAsync();
                     }
 
@@ -589,12 +594,12 @@ namespace Favor.Controller
                 //查询所有和该用户有关的关系记录
                 MobileServiceCollection<UsersRelation, UsersRelation> userAllFriendsRelationItem
                     = await (from relation in MobileServiceTable.instance.usersRelationItem
-                             where relation.UserId == this.account.AuthenId
+                             where relation.UserId == this.account.AuthenId 
                              select relation).ToCollectionAsync();
 
                 //根据所有记录查找用户的信息
                 this.AllFriendsCollection = null;                        //清空好友列表
-
+                
                 foreach (UsersRelation FriendRelation in userAllFriendsRelationItem)
                 {
                     if (this.AllFriendsCollection != null)
@@ -830,9 +835,9 @@ namespace Favor.Controller
             {
                 await new MessageDialog("Checking success!").ShowAsync();
             }
-
+            
             await App.statusBar.ProgressIndicator.HideAsync();
-
+                        
         }
 
         public async Task DeleteMissionInRepost(Mission mission)
