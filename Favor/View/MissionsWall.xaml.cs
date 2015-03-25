@@ -65,13 +65,19 @@ namespace Favor
 
 
             }
+            LogOut.IsEnabled = false;
             await FavorUser.instance.RefreshMissionsWall();
+            
             await FavorUser.instance.RefreshUserAllFriends();
+            
+           
+          
             await App.statusBar.ProgressIndicator.HideAsync();
             App.statusBar.ProgressIndicator.Text = "Loading...";
             MisssionListItems.ItemsSource = FavorUser.instance.missionCollection;
             FriendListItems.ItemsSource = FavorUser.instance.AllUserFriendCollection;
             PersonalCenter.DataContext = FavorUser.instance.account;
+            
 
         }
 
@@ -85,7 +91,6 @@ namespace Favor
             //注销按钮
             await FavorUser.instance.LoginOut();
             Frame.Navigate(typeof(Starting));
-
         }
 
         private void Back_AppBarButton_Click(object sender, RoutedEventArgs e)
@@ -154,7 +159,7 @@ namespace Favor
         {
             //发布任务
             string na = "";
-            Frame.Navigate(typeof(MissionWrite),na);
+            Frame.Navigate(typeof(MissionWrite), na);
         }
 
         private void AddFriend_AppBarButton_Click(object sender, RoutedEventArgs e)
@@ -255,6 +260,13 @@ namespace Favor
             Frame.Navigate(typeof(ReceivedMissions));
         }
 
-      
+        private void Call_Button_Click(object sender, RoutedEventArgs e)
+        {
+            Button clickedButton = (Button)sender;
+            Mission mission = (Mission)clickedButton.DataContext;
+            Windows.ApplicationModel.Calls.PhoneCallManager.ShowPhoneCallUI("sdads", mission.publisher);
+        }
+
+
     }
 }

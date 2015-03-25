@@ -44,8 +44,8 @@ namespace Favor.DataModel
             get
             {
                 return restTime = (__createdAt.AddHours(-ACTIVETIME).Subtract(DateTime.Now).Days*24 
-                                    + __createdAt.AddHours(-ACTIVETIME).Subtract(DateTime.Now).Hours) + "h"   //计算小时
-                                    + __createdAt.AddHours(-ACTIVETIME).Subtract(DateTime.Now).Minutes.ToString() + "min";
+                                    + __createdAt.AddHours(-ACTIVETIME).Subtract(DateTime.Now).Hours) + "'"   //计算小时
+                                    + __createdAt.AddHours(-ACTIVETIME).Subtract(DateTime.Now).Minutes.ToString() + "''";
             }
             set
             {
@@ -53,15 +53,18 @@ namespace Favor.DataModel
             }
         }
 
-        private string reposter = "";
+        private string reposter;
         public string Reposter
         {
             get
             {
                 if (reposter == "" || reposter == null)
                     return reposter;
+                else if (!reposter.Contains("'s friend"))
+                    return reposter + "'s friend";
                 else
-                    return "Reposted by "+reposter;
+                    return reposter;
+                    
             }
             set
             {
@@ -69,7 +72,7 @@ namespace Favor.DataModel
             }
         }
 
-        private string frontColor;        //状态下面按钮的颜色
+
 
         public string FrontColor
         {
