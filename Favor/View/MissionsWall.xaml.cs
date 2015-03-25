@@ -65,7 +65,7 @@ namespace Favor
 
 
             }
-            LogOut.IsEnabled = false;
+            
             await FavorUser.instance.RefreshMissionsWall();
             
             await FavorUser.instance.RefreshUserAllFriends();
