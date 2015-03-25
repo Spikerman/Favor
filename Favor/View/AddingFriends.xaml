@@ -31,7 +31,7 @@
         <!--TODO: 应将内容放入以下网格-->
         <TextBlock HorizontalAlignment="Left" Margin="10,88,0,0" TextWrapping="Wrap" 
                    Text="FriendName" VerticalAlignment="Top" FontSize="25" Foreground="White"/>
-        <TextBox x:Name="SearchInput" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Width="337" ToolTipService.ToolTip="输入用户账户" Margin="10,123,0,0"/>
-        <Button x:Name="Add_Button" Content="Search" HorizontalAlignment="Left" Margin="10,8.5,0,0" VerticalAlignment="Top" Width="135" Click="Add_Button_Click" Grid.Row="1" />
+        <TextBox x:Name="SearchInput" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Width="380" ToolTipService.ToolTip="输入用户账户" Margin="10,123,0,0"/>
+        <Button x:Name="Add_Button" Content="Search" HorizontalAlignment="Stretch" Margin="132,40.5,133,0" VerticalAlignment="Top" Click="Add_Button_Click" Grid.Row="1" />
     </Grid>
 </Page>
