@@ -25,7 +25,7 @@
                     <TextBlock x:Name="PublisherTextBlock" Text="{Binding publisher}" FontSize="20" FontWeight="Bold" 
                 	Margin="31,10,0,0" TextTrimming="WordEllipsis" 
                 	HorizontalAlignment="Left" VerticalAlignment="Top" Width="193" FontStyle="Normal"/>
-                    <AppBarButton Margin="37,8,73,0" Icon="Cancel" Width="72" Height="68" VerticalAlignment="Top" Foreground="#FFA9AEB6" FontWeight="Normal" BorderBrush="#FFA9AEB6"/>
+                    <AppBarButton Margin="37,8,73,0" Icon="Cancel" Width="72" Height="68" VerticalAlignment="Top" Foreground="#FFA9AEB6" FontWeight="Normal" BorderBrush="#FFA9AEB6" Click="CancelButton_Click"/>
                 </StackPanel>
                 <StackPanel HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Background="{x:Null}">
                     <TextBlock TextWrapping="Wrap" Text="{Binding information}" FontSize="18.667" Margin="10,0"/>

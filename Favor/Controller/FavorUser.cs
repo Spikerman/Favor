@@ -157,7 +157,8 @@ namespace Favor.Controller
             {
                 receivedMissionCollection = await MobileServiceTable.instance.missionItem
                     .Where(missionTable => missionTable.completed == false
-                        & missionTable.receiverId == this.account.AuthenId)
+                        & missionTable.receiverId == this.account.AuthenId
+                        & missionTable.received == true)
                     .ToCollectionAsync();//导入自己领取的任务
             }
             catch (MobileServiceInvalidOperationException e)
@@ -170,7 +171,11 @@ namespace Favor.Controller
             }
         }
 
-
+        public async Task CancelReceivedMission(Mission receivedMission)
+        {
+            receivedMission.received = false;
+            await MobileServiceTable.instance.missionItem.UpdateAsync(receivedMission);
+        }
 
         /// <summary>
         /// 选中之后更新MssionTable
