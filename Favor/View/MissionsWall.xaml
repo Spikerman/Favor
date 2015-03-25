@@ -25,6 +25,7 @@
 
     <Page.Resources>
         <converters:StringToImageConverter x:Key="StringToImageConverter"></converters:StringToImageConverter>
+       
         <DataTemplate x:Key="MessagesDataTemplate">
             <StackPanel Orientation="Vertical" Background="White" Margin="0,20,0,0">
                 <StackPanel Orientation="Horizontal" Height="83" VerticalAlignment="Top" >
@@ -65,20 +66,19 @@
                 </ToggleSwitch>
             </StackPanel>
         </DataTemplate>
+        
+        
     </Page.Resources>
 
     <Grid Background="#F9F1ED">
         <StackPanel Background="#FFFF8F3D" Margin="0,0,0,522" Height="58" VerticalAlignment="Bottom"></StackPanel>
+        
         <Pivot x:Uid="Pivot" x:Name="pivot" Margin="0,8,0,0" SelectionChanged="Pivot_SelectionChanged">
-            <!--<Pivot.HeaderTemplate>
+            <Pivot.HeaderTemplate>
                 <DataTemplate>
-
-                    <Image Source="{Binding}" Width="110" Height="35"  Margin="0, 6, 0, 0" RenderTransformOrigin="0.492,0.81"/>
-
-                    <Image Source="{Binding}" Width="110" Height="35" RenderTransformOrigin="5,5"/>
-
+                    <Image Source="{Binding}" Width="110" Height="35"  Margin="0, 6, 0, 0"/>
                 </DataTemplate>
-            </Pivot.HeaderTemplate>-->
+            </Pivot.HeaderTemplate>
             <!--Pivot item one个人中心-->
             <PivotItem
                 TabIndex="0"
