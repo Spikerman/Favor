@@ -30,6 +30,8 @@ namespace Favor.Controller
         public MobileServiceCollection<Account, Account> AllFriendsCollection { get; set; }         //用户的所有好友
 
         public MobileServiceCollection<UsersRelation, UsersRelation> AllUserFriendCollection { get; set; }
+
+        public MobileServiceCollection<Mission, Mission> sendedMissionCollection { get; set; }
         
         public Account account { get; set; }                                              //用户账户信息
 
@@ -748,6 +750,30 @@ namespace Favor.Controller
             repost.ReposterId = FavorUser.instance.account.AuthenId;
             await MobileServiceTable.instance.RepostItem.InsertAsync(repost);
             await new MessageDialog("Repost successful!").ShowAsync();
+        }
+
+        public async Task RefreshSendedMissions()
+        {
+            await App.statusBar.ProgressIndicator.ShowAsync();
+            MobileServiceInvalidOperationException exception = null;
+            try
+            {
+                sendedMissionCollection = await MobileServiceTable.instance.missionItem
+                        .Where(missionTable => missionTable.completed == false
+                            & missionTable.userId == this.account.AuthenId
+                            & missionTable.__createdAt > DateTime.Now.AddHours(Mission.ACTIVETIME))
+                        .ToCollectionAsync();//导入自己发布的任务
+            }
+            catch (MobileServiceInvalidOperationException e)
+            {
+                exception = e;
+            }
+
+            if (exception != null)
+            {
+                await new MessageDialog(exception.Message, "Internet Error").ShowAsync();
+            }
+            await App.statusBar.ProgressIndicator.HideAsync();
         }
     }
 }

@@ -1,10 +1,14 @@
-﻿using System;
+﻿using Favor.Controller;
+using Favor.DataModel;
+using Microsoft.WindowsAzure.MobileServices;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -45,13 +49,48 @@ namespace Favor.View
         /// </summary>
         /// <param name="e">Event data that describes how this page was reached.
         /// This parameter is typically used to configure the page.</param>
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
+            await FavorUser.instance.RefreshSendedMissions();
+            SendedMisssionListItems.ItemsSource = FavorUser.instance.sendedMissionCollection;
         }
 
         private void Back_AppBarButton_Click(object sender, RoutedEventArgs e)
         {
             Frame.Navigate(typeof(MissionsWall));
+        }
+
+        private async void CancelMissionButton(object sender, RoutedEventArgs e)
+        {
+            MobileServiceInvalidOperationException exception = null;
+
+            Frame.IsEnabled = false;
+            App.statusBar.ProgressIndicator.Text = "Deleting...";
+
+
+            try
+            {
+                await App.statusBar.ProgressIndicator.ShowAsync();
+                Button clicked = (Button)sender;
+                Mission x = (Mission)clicked.DataContext;
+                await MobileServiceTable.instance.missionItem.DeleteAsync(x);
+                await FavorUser.instance.RefreshSendedMissions();
+                await App.statusBar.ProgressIndicator.HideAsync();
+                Frame.IsEnabled = true;
+            }
+            catch (MobileServiceInvalidOperationException ee)
+            {
+                exception = ee;
+            }
+            if (exception != null)
+            {
+                await new MessageDialog(exception.Message, "Error loding, please check the Internet ").ShowAsync();
+            }
+            else
+            {
+                await new MessageDialog("Deleting success!").ShowAsync();
+            }
+
         }
     }
 }

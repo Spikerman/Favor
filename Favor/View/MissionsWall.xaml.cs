@@ -71,6 +71,7 @@ namespace Favor
             App.statusBar.ProgressIndicator.Text = "Loading...";
             MisssionListItems.ItemsSource = FavorUser.instance.missionCollection;
             FriendListItems.ItemsSource = FavorUser.instance.AllUserFriendCollection;
+            PersonalCenter.DataContext = FavorUser.instance.account;
 
         }
 
