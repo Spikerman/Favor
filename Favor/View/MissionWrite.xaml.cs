@@ -55,7 +55,10 @@ namespace Favor
         /// This parameter is typically used to configure the page.</param>
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            TextInput.Text = e.Parameter.ToString();
+            if (e.Parameter != null)
+            {
+                TextInput.Text = e.Parameter.ToString();
+            }
             await FavorUser.instance.RefreshMissionsWall();
             //这里有个bug 就是在写任务按取消时返回会出现
             this.SaveButton.IsEnabled = true;
@@ -87,10 +90,10 @@ namespace Favor
                 if (followers != null)
                 {
 
-                   foreach(UsersRelation follower in followers)
-                   {
-                       Notifications.instance.userIdTags.Add(follower.UserId);
-                   }
+                    foreach (UsersRelation follower in followers)
+                    {
+                        Notifications.instance.userIdTags.Add(follower.UserId);
+                    }
 
                 }
                 await Notifications.instance.PushToFriends();

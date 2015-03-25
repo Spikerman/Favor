@@ -17,14 +17,14 @@
         <DataTemplate x:Key="SendedDataTemplate">
             <StackPanel Orientation="Vertical" VerticalAlignment="Top" Background="White" Margin="0,10,0,0" >
 
-                <StackPanel HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Background="{x:Null}">
+                <StackPanel HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" >
                     <TextBlock TextWrapping="Wrap" Text="{Binding information}" FontSize="18.667" Margin="10,5"/>
                 </StackPanel>
 
-                <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Height="71" Margin="0,0,0,0" VerticalAlignment="Top" Width="400">
-
-                    <Button Content="Complete" VerticalAlignment="Stretch" Background="{x:Null}"  Foreground="{Binding FrontColor}" Margin="0,0,10,0.833" BorderThickness="1" BorderBrush="Black" FontSize="12" HorizontalAlignment="Right"/>
-                    <Button Content="Delete"  VerticalAlignment="Stretch" Margin="0,-59,125,0"  Foreground="{Binding FrontColor}"  BorderThickness="1" BorderBrush="Black" FontSize="12" HorizontalAlignment="Right" Click="CancelMissionButton"/>
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Right" Height="71" Margin="0,0,0,0" VerticalAlignment="Bottom" Width="400">
+                    
+                    <Button Content="Complete" VerticalAlignment="Stretch" Background="#FFFF8F3D"  Foreground="{Binding FrontColor}" Margin="0,0,10,0.833" BorderThickness="1" BorderBrush="{x:Null}" FontSize="12" HorizontalAlignment="Right" Click="CompleteMissionButton" IsEnabled="{Binding received}"/>
+                    <Button Content="Delete"  VerticalAlignment="Stretch" Margin="0,-59,125,0"  Foreground="{Binding FrontColor}"  BorderThickness="0" BorderBrush="{x:Null}" FontSize="12" HorizontalAlignment="Right" Click="CancelMissionButton" Background="#FFFFCCCC"/>
 
                 </StackPanel>
             </StackPanel>
@@ -36,8 +36,8 @@
             <TextBlock Text="Favor" Style="{ThemeResource TitleTextBlockStyle}" Margin="10,12,0,0" Foreground="Black"/>
             <TextBlock  FontSize="35" Text="Sended Missions" Margin="10,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" Foreground="#000000"/>
             <ListView x:Name="SendedMisssionListItems" HorizontalAlignment="Left" Height="504"  
-                  VerticalAlignment="Top" Width="390" Background="#F9F1ED" Foreground="Black" FontSize="20" 
-                  ItemTemplate="{StaticResource SendedDataTemplate}" SelectionMode="Single" Margin="0,0,0,0">
+                  VerticalAlignment="Top" Width="380" Background="#F9F1ED" Foreground="Black" FontSize="20" 
+                  ItemTemplate="{StaticResource SendedDataTemplate}" SelectionMode="Single" Margin="10,0,0,0">
             </ListView>
         </StackPanel>
     </Grid>

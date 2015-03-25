@@ -782,7 +782,8 @@ namespace Favor.Controller
                 sendedMissionCollection = await MobileServiceTable.instance.missionItem
                         .Where(missionTable => missionTable.completed == false
                             & missionTable.userId == this.account.AuthenId
-                            & missionTable.__createdAt > DateTime.Now.AddHours(Mission.ACTIVETIME))
+                            & missionTable.__createdAt > DateTime.Now.AddHours(Mission.ACTIVETIME)
+                         )
                         .ToCollectionAsync();//导入自己发布的任务
             }
             catch (MobileServiceInvalidOperationException e)
@@ -795,6 +796,38 @@ namespace Favor.Controller
                 await new MessageDialog(exception.Message, "Internet Error").ShowAsync();
             }
             await App.statusBar.ProgressIndicator.HideAsync();
+        }
+
+        public async Task MissionCompleteCheck(Mission mission)
+        {
+            await App.statusBar.ProgressIndicator.ShowAsync();
+            MobileServiceInvalidOperationException exception = null;
+            try
+            {
+                List<Mission> choosenMission = await MobileServiceTable.instance.missionItem
+                            .Where(missionTable => missionTable.id == mission.id)
+                            .ToListAsync();
+
+                choosenMission.First().completed = true;//设置完成为true
+
+                await MobileServiceTable.instance.missionItem.UpdateAsync(choosenMission.First());
+            }
+            catch (MobileServiceInvalidOperationException e)
+            {
+                exception = e;
+            }
+
+            if (exception != null)
+            {
+                await new MessageDialog(exception.Message, "Internet Error").ShowAsync();
+            }
+            else
+            {
+                await new MessageDialog("Checking success!").ShowAsync();
+            }
+            
+            await App.statusBar.ProgressIndicator.HideAsync();
+                        
         }
     }
 }

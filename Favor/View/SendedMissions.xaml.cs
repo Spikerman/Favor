@@ -70,12 +70,14 @@ namespace Favor.View
 
             try
             {
+                
                 await App.statusBar.ProgressIndicator.ShowAsync();
                 Button clicked = (Button)sender;
                 Mission x = (Mission)clicked.DataContext;
                 await MobileServiceTable.instance.missionItem.DeleteAsync(x);
-                await FavorUser.instance.RefreshSendedMissions();
+                FavorUser.instance.sendedMissionCollection.Remove(x);
                 await App.statusBar.ProgressIndicator.HideAsync();
+                
                 Frame.IsEnabled = true;
             }
             catch (MobileServiceInvalidOperationException ee)
@@ -91,6 +93,13 @@ namespace Favor.View
                 await new MessageDialog("Deleting success!").ShowAsync();
             }
 
+        }
+
+        private async void CompleteMissionButton(object sender, RoutedEventArgs e)
+        {
+            Button clicked = (Button)sender;
+            Mission x = (Mission)clicked.DataContext;
+            await FavorUser.instance.MissionCompleteCheck(x);
         }
     }
 }

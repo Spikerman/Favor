@@ -39,7 +39,7 @@ namespace Favor.View
                 {
                     this.Frame.GoBack();
                 }
-               
+
             };
         }
 
@@ -62,26 +62,17 @@ namespace Favor.View
             FavorUser.instance.account.AuthenId = FavorUser.instance.mobileServiceUser.UserId;
 
 
-            if (AccountLocalStorage.instance.isvaild())
+            await FavorUser.instance.Login();
+
+            if (FavorUser.instance.account.UserName == null)
             {
-                //    FavorUser.instance.account = new Account();
-                AccountLocalStorage.instance.LoadAccount(FavorUser.instance.account);
+                Frame.Navigate(typeof(AfterLogin));
+            }
+            else
+            {
                 Frame.Navigate(typeof(MissionsWall));
             }
 
-            else
-            {
-                await FavorUser.instance.Login();
-
-                if (FavorUser.instance.account.UserName == null)
-                {
-                    Frame.Navigate(typeof(AfterLogin));
-                }
-                else
-                {
-                    Frame.Navigate(typeof(MissionsWall));
-                }
-            }
 
         }
     }
