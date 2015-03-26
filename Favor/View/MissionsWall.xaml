@@ -25,7 +25,7 @@
 
     <Page.Resources>
         <converters:StringToImageConverter x:Key="StringToImageConverter"></converters:StringToImageConverter>
-       
+
         <DataTemplate x:Key="MessagesDataTemplate">
             <StackPanel Orientation="Vertical" Background="White" Margin="0,20,0,0">
                 <StackPanel Orientation="Horizontal" Height="83" VerticalAlignment="Top" >
@@ -66,12 +66,12 @@
                 </ToggleSwitch>
             </StackPanel>
         </DataTemplate>
-        
-        
+
+
     </Page.Resources>
 
     <Grid Background="#F9F1ED" >
-        
+
 
         <StackPanel Background="#FFFF8F3D" Margin="0,0,0,517" Height="63" VerticalAlignment="Bottom"></StackPanel>
 
@@ -99,14 +99,14 @@
                             <Image Margin="0,10,205,10" Source="../Assets/received.jpg"/>
                             <Image Margin="190,-6,0,30" Source="../Assets/sended.jpg"/>
                             <Grid Margin="20,40,30,30">
-                                <Button Content=" "  Foreground="#FFFF8F3D" Margin="175,1,0,5" Width="165" Height="214" Click="Sended_Button_Click" BorderThickness="0.5,0,0,0" BorderBrush="#FFA9AEB6"/>
-                                <Button Content=" "  Margin="-14,0,0,-3" Foreground="#FFFF8F3D" Height="223" Click="Received_Button_Click" Width="189" BorderBrush="{x:Null}" />
+                                <Button Content=" "  Foreground="#FFFF8F3D" Margin="175,1,0,5" Width="165" Height="214" Click="Sended_Button_Click" BorderThickness="0.5,0,0,0" BorderBrush="#FFA9AEB6" Opacity="0"/>
+                                <Button Content=" "  Margin="-14,0,0,-3" Foreground="#FFFF8F3D" Height="223" Click="Received_Button_Click" Width="189" BorderBrush="{x:Null}" Opacity="0" />
                             </Grid>
-                    </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
             </PivotItem>
-                
+
 
             <!--Pivot item two任务墙-->
             <PivotItem
