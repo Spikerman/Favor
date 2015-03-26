@@ -141,14 +141,13 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\back.jpg" />
     <Content Include="Assets\friend.png" />
     <Content Include="Assets\idcard.png" />
     <Content Include="Assets\idcard.svg" />
     <Content Include="Assets\point.png" />
     <Content Include="Assets\Logo.scale-240.png" />
-    <Content Include="Assets\received.jpg" />
-    <Content Include="Assets\sended.jpg" />
+    <Content Include="Assets\received.png" />
+    <Content Include="Assets\sended.png" />
     <Content Include="Assets\setting.png" />
     <Content Include="Assets\SmallLogo.scale-240.png" />
     <Content Include="Assets\Images\space.png" />
