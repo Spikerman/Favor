@@ -1,4 +1,6 @@
-﻿using Favor.Controller;
+﻿using Coding4Fun.Toolkit.Controls;
+using Favor.Common;
+using Favor.Controller;
 using Favor.DataModel;
 using Microsoft.WindowsAzure.MobileServices;
 using System;
@@ -26,6 +28,9 @@ namespace Favor.View
     /// </summary>
     public sealed partial class SendedMissions : Page
     {
+
+        public Mission temp;//缓存
+
         public SendedMissions()
         {
             this.InitializeComponent();
@@ -70,10 +75,15 @@ namespace Favor.View
 
             try
             {
-                
+
                 await App.statusBar.ProgressIndicator.ShowAsync();
                 Button clicked = (Button)sender;
                 Mission x = (Mission)clicked.DataContext;
+                if(x.received==true)
+                {
+                    Notifications.instance.userIdTags.Add(x.receiverId);
+                    await Notifications.instance.PushToFriends("has canceled the mission you took");
+                }
                 await MobileServiceTable.instance.missionItem.DeleteAsync(x);
                 FavorUser.instance.sendedMissionCollection.Remove(x);
                 await App.statusBar.ProgressIndicator.HideAsync();
@@ -99,7 +109,28 @@ namespace Favor.View
         {
             Button clicked = (Button)sender;
             Mission x = (Mission)clicked.DataContext;
+            temp = x;
             await FavorUser.instance.MissionCompleteCheck(x);
+            FavorUser.instance.sendedMissionCollection.Remove(x);
+            Flyout flyout = new Flyout();
+            flyout.ShowAt(this);
+            InputPrompt input = new InputPrompt();
+            input.Completed += input_Completed;
+            input.Title = "Check Successfully";
+            input.Message = "Expressing Thanks?";
+            input.Show();
+
+
+
+
+        }
+        async void input_Completed(object sender, PopUpEventArgs<string, PopUpResult> e)
+        {
+            Notifications.instance.userIdTags.Add(temp.receiverId);
+            if (e.Result == "")
+                e.Result = "Thanks to do me a favor";
+            await Notifications.instance.PushToFriends(e.Result);
+            temp = null;
         }
     }
 }

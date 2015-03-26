@@ -56,6 +56,30 @@ namespace Favor.Common
             }
 
         }
+        public async Task PushToFriends(string thanks)
+        {
+            JObject x = new JObject();
+            string message = FavorUser.instance.account.UserName+": "+ thanks;
+            x.Add("toast", message);
+            for (int i = 0; i < userIdTags.Count; i++)
+            {
+                try
+                {
+                    x.Add("usertag", userIdTags[i]);
+                    await App.MobileService.GetPush().RegisterNativeAsync(channel.Uri);
+                    await App.MobileService.InvokeApiAsync("notifyAllUsers", x);
+                    userIdTags.Clear();
+                }
+
+
+
+                catch (Exception exception)
+                {
+                    HandleRegisterException(exception);
+                }
+            }
+
+        }
         private static void HandleRegisterException(Exception exception)
         {
             Notifications.instance.userIdTags.Clear();

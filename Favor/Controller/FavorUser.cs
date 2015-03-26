@@ -833,7 +833,7 @@ namespace Favor.Controller
             }
             else
             {
-                await new MessageDialog("Checking success!").ShowAsync();
+                
             }
             
             await App.statusBar.ProgressIndicator.HideAsync();
