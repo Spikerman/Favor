@@ -77,7 +77,7 @@ namespace Favor.View
                 await MobileServiceTable.instance.missionItem.DeleteAsync(x);
                 FavorUser.instance.sendedMissionCollection.Remove(x);
                 await App.statusBar.ProgressIndicator.HideAsync();
-                
+                await FavorUser.instance.DeleteMissionInRepost(x);
                 Frame.IsEnabled = true;
             }
             catch (MobileServiceInvalidOperationException ee)

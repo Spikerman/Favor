@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -62,6 +63,20 @@ namespace Favor.View
         private void Back_AppBarButton_Click(object sender, RoutedEventArgs e)
         {
             Frame.Navigate(typeof(MissionsWall));
+        }
+
+        private async void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button cancelButton = (Button)sender;
+            Mission cancelMission = (Mission)cancelButton.DataContext;
+            await FavorUser.instance.CancelReceivedMission(cancelMission);
+
+            App.statusBar.ProgressIndicator.Text = "Loading information...";
+            await App.statusBar.ProgressIndicator.ShowAsync();
+            await FavorUser.instance.RefreshReceivedMission();
+            await App.statusBar.ProgressIndicator.HideAsync();
+            App.statusBar.ProgressIndicator.Text = "Loading...";
+            MisssionListItems.ItemsSource = FavorUser.instance.receivedMissionCollection;
         }
     }
 }

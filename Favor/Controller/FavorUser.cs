@@ -82,17 +82,17 @@ namespace Favor.Controller
                 //导入自己和朋友转发的任务
 
                 //读取所有和用户有关的转发记录
-                List<Repost> repostList= await MobileServiceTable.instance.RepostItem
+                List<Repost> repostList = await MobileServiceTable.instance.RepostItem
                                                 .Where(repostTable => repostTable.ReposterId == this.account.AuthenId)
                                                 .ToListAsync();
                 if (AllFriendsCollection != null)
                 {
                     foreach (Account friendAccount in AllFriendsCollection)
                     {
-                        List<Repost> tempRepost =await MobileServiceTable.instance.RepostItem
+                        List<Repost> tempRepost = await MobileServiceTable.instance.RepostItem
                                                         .Where(repostTable => repostTable.ReposterId == friendAccount.AuthenId)
                                                         .ToListAsync();
-                        foreach(Repost repost in tempRepost)
+                        foreach (Repost repost in tempRepost)
                         {
                             repostList.Add(repost);
                         }
@@ -104,8 +104,10 @@ namespace Favor.Controller
                 {
                     Mission mission = new Mission();
                     List<Mission> tempMission = await MobileServiceTable.instance.missionItem
-                                                        .Where(missonTable => missonTable.id == repost.MissionId)
+                                                        .Where(missonTable => missonTable.id == repost.MissionId & missonTable.completed == false)
                                                         .ToListAsync();
+                    if (tempMission.Count != 0)
+                    {
                     mission = tempMission.First();
                     List<Account> tempAccount = await MobileServiceTable.instance.accountItem
                                                         .Where(accountTable => accountTable.AuthenId == repost.ReposterId)
@@ -114,8 +116,11 @@ namespace Favor.Controller
                     missionCollection.Add(mission);
                 }
 
+                }
+
+                //
                 List<Mission> sortedMissions = (from mission in missionCollection
-                                                       orderby mission.__createdAt
+                                                orderby mission.__createdAt ascending
                                                        select mission).ToList();
                 missionCollection.Clear();
                 foreach (Mission mission in sortedMissions)
@@ -157,7 +162,8 @@ namespace Favor.Controller
             {
                 receivedMissionCollection = await MobileServiceTable.instance.missionItem
                     .Where(missionTable => missionTable.completed == false
-                        & missionTable.receiverId == this.account.AuthenId)
+                        & missionTable.receiverId == this.account.AuthenId
+                        & missionTable.received == true)
                     .ToCollectionAsync();//导入自己领取的任务
             }
             catch (MobileServiceInvalidOperationException e)
@@ -170,7 +176,11 @@ namespace Favor.Controller
             }
         }
 
-
+        public async Task CancelReceivedMission(Mission receivedMission)
+        {
+            receivedMission.received = false;
+            await MobileServiceTable.instance.missionItem.UpdateAsync(receivedMission);
+        }
 
         /// <summary>
         /// 选中之后更新MssionTable
@@ -540,8 +550,8 @@ namespace Favor.Controller
                         }
                         else
                         {
-                            UsersRelation userRelation = new UsersRelation { UserId = account.AuthenId, FriendId = friendId,FriendImageUri=imageUri,FriendName=friendName};
-                            UsersRelation userRelationX = new UsersRelation { UserId = friendId, FriendId = account.AuthenId, FriendImageUri=account.UserImageUri,FriendName=account.UserName };
+                            UsersRelation userRelation = new UsersRelation { UserId = account.AuthenId, FriendId = friendId, FriendImageUri = imageUri, FriendName = friendName };
+                            UsersRelation userRelationX = new UsersRelation { UserId = friendId, FriendId = account.AuthenId, FriendImageUri = account.UserImageUri, FriendName = account.UserName };
                             try
                             {
                                 await MobileServiceTable.instance.usersRelationItem.InsertAsync(userRelation);//若为新好友，则向用户关系表中插入数据
@@ -828,6 +838,32 @@ namespace Favor.Controller
             
             await App.statusBar.ProgressIndicator.HideAsync();
                         
+        }
+
+        public async Task DeleteMissionInRepost(Mission mission)
+        {
+            MobileServiceInvalidOperationException exception = null;
+            try
+            {
+                List<Repost> deletingMission = await MobileServiceTable.instance.RepostItem
+                    .Where(repostItem => repostItem.MissionId == mission.id)
+                    .ToListAsync();
+                if (deletingMission.Count != 0)
+                {
+                    await MobileServiceTable.instance.RepostItem.DeleteAsync(deletingMission.First());
+                }
+            }
+
+
+            catch (MobileServiceInvalidOperationException e)
+            {
+                exception = e;
+            }
+
+            if (exception != null)
+            {
+                await new MessageDialog(exception.Message, "Internet Error").ShowAsync();
+            }
         }
     }
 }

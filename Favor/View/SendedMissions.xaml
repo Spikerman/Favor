@@ -23,7 +23,7 @@
 
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Right" Height="71" Margin="0,0,0,0" VerticalAlignment="Bottom" Width="400">
                     
-                    <Button Content="Complete" VerticalAlignment="Stretch" Background="#FFFF8F3D"  Foreground="{Binding FrontColor}" Margin="0,0,10,0.833" BorderThickness="1" BorderBrush="{x:Null}" FontSize="12" HorizontalAlignment="Right" Click="CompleteMissionButton" IsEnabled="{Binding received}"/>
+                    <Button Content="Complete" VerticalAlignment="Stretch" Background="#FF99FF94"  Foreground="{Binding FrontColor}" Margin="0,0,10,0.833" BorderThickness="0" BorderBrush="{x:Null}" FontSize="12" HorizontalAlignment="Right" Click="CompleteMissionButton" IsEnabled="{Binding received}"/>
                     <Button Content="Delete"  VerticalAlignment="Stretch" Margin="0,-59,125,0"  Foreground="{Binding FrontColor}"  BorderThickness="0" BorderBrush="{x:Null}" FontSize="12" HorizontalAlignment="Right" Click="CancelMissionButton" Background="#FFFFCCCC"/>
 
                 </StackPanel>
