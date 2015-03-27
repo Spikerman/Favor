@@ -20,6 +20,8 @@
             <!--由于空间问题先隐藏返回按钮采用物理键返回<AppBarButton Icon="Back" Label="Return" Click="Back_AppBarButton_Click"/>-->
             <!--退出登录-->
             <AppBarButton x:Name="LogOut" Icon="Cancel" Label="Out" Click="Cancel_AppBarButton_Click"/>
+            <!--刷新-->
+            <AppBarButton x:Name="Refresh" Icon="Refresh" Label="Refresh" Click="Refresh_AppBarButton_Click"/>
         </CommandBar>
     </Page.BottomAppBar>
 

@@ -181,17 +181,20 @@ namespace Favor
                 comBar.PrimaryCommands.Remove(AddFriend);
                 comBar.PrimaryCommands.Remove(WriteMission);
                 comBar.PrimaryCommands.Remove(LogOut);
+                comBar.PrimaryCommands.Remove(Refresh);
 
                 comBar.PrimaryCommands.Add(LogOut);
             }
             else if (pivot.SelectedIndex == 1)
             {
-                //墙：写任务 
+                //墙：写任务 刷新
                 comBar.PrimaryCommands.Remove(AddFriend);
                 comBar.PrimaryCommands.Remove(WriteMission);
                 comBar.PrimaryCommands.Remove(LogOut);
+                comBar.PrimaryCommands.Remove(Refresh);
 
                 comBar.PrimaryCommands.Add(WriteMission);
+                comBar.PrimaryCommands.Add(Refresh);
 
             }
             else if (pivot.SelectedIndex == 2)
@@ -200,6 +203,7 @@ namespace Favor
                 comBar.PrimaryCommands.Remove(AddFriend);
                 comBar.PrimaryCommands.Remove(WriteMission);
                 comBar.PrimaryCommands.Remove(LogOut);
+                comBar.PrimaryCommands.Remove(Refresh);
 
                 comBar.PrimaryCommands.Add(AddFriend);
             }
@@ -265,6 +269,11 @@ namespace Favor
             Button clickedButton = (Button)sender;
             Mission mission = (Mission)clickedButton.DataContext;
             Windows.ApplicationModel.Calls.PhoneCallManager.ShowPhoneCallUI("sdads", mission.publisher);
+        }
+
+        private void Refresh_AppBarButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
 
 
