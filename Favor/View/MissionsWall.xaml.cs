@@ -271,9 +271,35 @@ namespace Favor
             Windows.ApplicationModel.Calls.PhoneCallManager.ShowPhoneCallUI("sdads", mission.publisher);
         }
 
-        private void Refresh_AppBarButton_Click(object sender, RoutedEventArgs e)
+        private async void Refresh_AppBarButton_Click(object sender, RoutedEventArgs e)
         {
+            Frame.IsEnabled = false;
+            App.statusBar.ProgressIndicator.Text="Refreshing...";
+            await App.statusBar.ProgressIndicator.ShowAsync();
 
+            if (MobileServiceTable.instance.usersRelationItem != null)
+            {
+                FavorUser.instance.AllUserFriendCollection = await(from userRelationPair in MobileServiceTable.instance.usersRelationItem
+                                                                   where (FavorUser.instance.account.AuthenId == userRelationPair.UserId)
+                                                                   select userRelationPair).ToCollectionAsync();
+
+
+
+            }
+
+            await FavorUser.instance.RefreshMissionsWall();
+
+            await FavorUser.instance.RefreshUserAllFriends();
+
+
+
+            await App.statusBar.ProgressIndicator.HideAsync();
+            App.statusBar.ProgressIndicator.Text = "Loading...";
+            MisssionListItems.ItemsSource = FavorUser.instance.missionCollection;
+            FriendListItems.ItemsSource = FavorUser.instance.AllUserFriendCollection;
+            PersonalCenter.DataContext = FavorUser.instance.account;
+            App.statusBar.ProgressIndicator.Text = "Loading...";
+            Frame.IsEnabled = true;
         }
 
 
