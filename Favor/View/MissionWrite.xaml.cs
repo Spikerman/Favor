@@ -99,10 +99,10 @@ namespace Favor
                 await Notifications.instance.PushToFriends();
                 App.statusBar.ProgressIndicator.Text = "Loading...";
                 Frame.IsEnabled = true;
-                await App.statusBar.ProgressIndicator.HideAsync();
+                //await App.statusBar.ProgressIndicator.HideAsync();
 
                 this.Frame.Navigate(typeof(MissionsWall));
-                await App.statusBar.ProgressIndicator.HideAsync();
+                //await App.statusBar.ProgressIndicator.HideAsync();
             }
 
         }

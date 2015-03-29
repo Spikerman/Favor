@@ -120,7 +120,7 @@ namespace Favor.Controller
 
                 //
                 List<Mission> sortedMissions = (from mission in missionCollection
-                                                orderby mission.__createdAt ascending
+                                                orderby mission.__createdAt descending
                                                        select mission).ToList();
                 missionCollection.Clear();
                 foreach (Mission mission in sortedMissions)

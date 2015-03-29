@@ -53,9 +53,10 @@ namespace Favor
         /// 此参数通常用于配置页。</param>
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
+            LogOut.IsEnabled = false;
             App.statusBar.ProgressIndicator.Text = "Loading information...";
             await App.statusBar.ProgressIndicator.ShowAsync();
-
+            Frame.IsEnabled = false;
             if (MobileServiceTable.instance.usersRelationItem != null)
             {
                 FavorUser.instance.AllUserFriendCollection = await (from userRelationPair in MobileServiceTable.instance.usersRelationItem
@@ -77,7 +78,8 @@ namespace Favor
             MisssionListItems.ItemsSource = FavorUser.instance.missionCollection;
             FriendListItems.ItemsSource = FavorUser.instance.AllUserFriendCollection;
             PersonalCenter.DataContext = FavorUser.instance.account;
-            
+            Frame.IsEnabled = true;
+            LogOut.IsEnabled = true;
 
         }
 
